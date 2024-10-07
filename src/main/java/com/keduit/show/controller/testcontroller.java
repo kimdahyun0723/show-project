@@ -13,7 +13,7 @@ public class testcontroller {
 
     @GetMapping("/")
     public String test() {
-        return "test";
+        return "layout1";
     }
 
 }
