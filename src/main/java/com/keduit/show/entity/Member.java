@@ -1,9 +1,11 @@
 package com.keduit.show.entity;
 
 import com.keduit.show.constant.Role;
+import com.keduit.show.dto.MemberDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -37,6 +39,20 @@ public class Member {
     private String imgname;
 
     private String imgUrl;
+
+    public static Member createMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder) {
+        Member member = new Member();
+        member.setId(memberDTO.getId());
+        member.setName(memberDTO.getName());
+        member.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
+        member.setEmail(memberDTO.getEmail());
+        member.setPhone(memberDTO.getPhone());
+        member.setAddress(memberDTO.getAddress());
+        member.setRole(Role.USER);
+        member.setImgname(memberDTO.getImgname());
+        member.setImgUrl(memberDTO.getImgUrl());
+        return member;
+    }
 
 
 
