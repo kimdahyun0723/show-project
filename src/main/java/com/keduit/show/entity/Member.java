@@ -34,7 +34,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    
+    private String imgname;
+
+    private String imgUrl;
+
+
 
 
 }
