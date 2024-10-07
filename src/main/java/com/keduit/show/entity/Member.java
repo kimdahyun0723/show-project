@@ -38,6 +38,8 @@ public class Member {
 
     private String imgname;
 
+    private String oriImgName;
+
     private String imgUrl;
 
     public static Member createMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder) {

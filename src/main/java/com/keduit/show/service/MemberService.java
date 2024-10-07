@@ -3,12 +3,17 @@ package com.keduit.show.service;
 import com.keduit.show.entity.Member;
 import com.keduit.show.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
+
+import java.io.IOException;
 
 @Service
 @Transactional
@@ -16,6 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+
+    private final FileService fileService;
+
+    @Value("C:/shop/item")
+    private String memberImgLocation;
 
     private void validateMember(Member member) {
         Member findMember = memberRepository.findById(member.getId());
@@ -37,5 +47,18 @@ public class MemberService implements UserDetailsService {
                 .password(member.getPassword())
                 .roles(member.getRole().toString())
                 .build();
+    }
+
+    public void saveMemberImg(Member member, MultipartFile memberImgFile) throws IOException {
+        String originalFileName = memberImgFile.getOriginalFilename();
+        String imgName = "";
+        String imtUrl = "";
+
+
+        if (!StringUtils.isEmpty(originalFileName)) {
+//            imgName = fileService.uploadFile();
+        }
+
+
     }
 }
