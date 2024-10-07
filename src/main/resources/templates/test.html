@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout1}">
-<!-- 사용자 js 추가 -->
-<th:block layout:fragment="script">
-    <script th:inline="javascript">
-
-
-
-    </script>
-</th:block>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout1}">
 
 <!-- 사용자 css 추가 -->
 <th:block layout:fragment="css">
@@ -17,7 +8,13 @@
 
     </style>
 </th:block>
+<!-- 사용자 js 추가 -->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+
 <div layout:fragment="content">
-   <h1>테스트</h1>
+    <h1>시발아</h1>
 </div>
-</html>
