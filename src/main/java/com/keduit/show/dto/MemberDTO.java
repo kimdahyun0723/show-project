@@ -26,6 +26,7 @@ public class MemberDTO {
     private String phone;
 
 
+    // 주소
     private String address;
 
     @NotEmpty(message = "비밀번호는 필수 입력입니다.")
