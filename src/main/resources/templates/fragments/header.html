@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">SHOP</a>
+        <a class="navbar-brand" href="/">SHOW</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,19 +12,19 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active"
                     sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                    <a class="nav-link" href="/admin/item/new">상품등록 </a>
+                    <a class="nav-link" href="/admin/item/new"></a>
                 </li>
                 <li class="nav-item"
                     sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                    <a class="nav-link" href="/admin/items">상품관리</a>
+                    <a class="nav-link" href="/admin/items"></a>
                 </li>
                 <li class="nav-item"
                     sec:authorize="isAuthenticated()">
-                    <a class="nav-link" href="/cart">장바구니</a>
+                    <a class="nav-link" href="/cart">예매이력</a>
                 </li>
                 <li class="nav-item"
                     sec:authorize="isAuthenticated()">
-                    <a class="nav-link" href="/orders">구매이력</a>
+                    <a class="nav-link" href="/orders">마이페이지</a>
                 </li>
                 <li class="nav-item"
                     sec:authorize="isAnonymous()">
