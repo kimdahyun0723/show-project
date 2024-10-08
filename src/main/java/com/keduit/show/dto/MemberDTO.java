@@ -1,5 +1,7 @@
 package com.keduit.show.dto;
 
+import com.keduit.show.entity.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,16 +27,9 @@ public class MemberDTO {
     @NotBlank(message = "전화번호는 필수 입력입니다.")
     private String phone;
 
-
-    // 주소
-    private String address;
-
     @NotEmpty(message = "비밀번호는 필수 입력입니다.")
     @Length(min = 4, max=16, message = "비밀번호는 4자이상 16자 이하로 입력하세요")
     private String password;
 
-    private String imgname;
-
-    private String imgUrl;
 
 }
