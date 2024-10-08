@@ -19,7 +19,7 @@
             max-width: 400px; /* 폼의 최대 너비 설정 */
             margin: 100px auto; /* 폼을 화면 중앙에 배치 */
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
-            max-height: 650px;
+            max-height: 1000px;
 
         }
 
@@ -49,7 +49,8 @@
             padding: 12px; /* 버튼 내부 여백 */
             font-size: 18px; /* 텍스트 크기 */
             border-radius: 5px; /* 둥근 모서리 */
-            width: 100%; /* 버튼 너비를 100%로 설정 */
+            width: 200px; /* 버튼 너비를 100%로 설정 */
+            margin-bottom: 13px;
         }
 
         .btn-primary:hover {
@@ -59,6 +60,7 @@
         .form-group label {
             font-weight: bold; /* 레이블을 굵게 표시 */
         }
+
 
         .form-text {
             color: #f8d7da; /* 설명 텍스트를 오류 메시지와 같은 색상으로 설정 */
@@ -84,6 +86,20 @@
             font-size: 18px; /* 아티클 본문 폰트 크기 */
             line-height: 1.6; /* 줄 간격 설정 */
         }
+        .simpleLogin img {
+            width: 200px; /* 이미지 너비를 300px로 설정 */
+            /* 높이는 비율에 맞게 자동 조정 */
+            max-width: 100%; /* 화면 크기에 맞춰서 이미지가 넘치지 않게 조정 */
+            height: 50px;
+        }
+
+        /* 간격 조정 */
+        .simpleLogin {
+            margin-bottom: 13px; /* 이미지 사이에 여백 추가 */
+            text-align: center; /* 이미지를 중앙 정렬 */
+        }
+
+
 
     </style>
 </th:block>
@@ -118,9 +134,9 @@
                 <small class="form-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect Data</small>
             </div>
             <div class="form-group">
-                <label for="phone">전화번호⭐</label>
+                <label for="phone">전화번호⭐('-'는 빼고 입력해주세요)</label>
                 <input type="text" class="form-control" id="phone" th:field="*{phone}" placeholder="전화번호를 입력하십시오">
-                <small class="form-text" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Incorrect Data</small>
+                <small class="form-text" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Incorrect Data</small>
             </div>
             <div class="form-group">
                 <label for="password">비밀번호⭐</label>
@@ -138,6 +154,17 @@
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         </form>
+        <div class="simpleLogin">
+            <a th:href="${location}">
+                <img src="/images/kakao_login_medium_narrow.png">
+            </a>
+        </div>
+        <div class="simpleLogin">
+            <a href="https://nid.naver.com/oauth2.0/authorize"
+               th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverClientId}, redirect_uri=${naverRedirectUri}, response_type='code', state=${state})}">
+                <img src="/images/btnG_완성형.png"  >
+            </a>
+        </div>
     </div>
 
 
