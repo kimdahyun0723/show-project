@@ -1,5 +1,6 @@
 package com.keduit.show.entity;
 
+import com.keduit.show.dto.MemberDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 public class MemberImg {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +31,5 @@ public class MemberImg {
     public void updateUrl(String url) {
         this.url = url;
     }
+
 }
