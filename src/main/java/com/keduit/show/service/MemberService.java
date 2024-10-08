@@ -22,10 +22,13 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-    private final FileService fileService;
 
-    @Value("C:/shop/item")
-    private String memberImgLocation;
+    public Member saveMember(Member member) {
+        validateMember(member);
+        return memberRepository.save(member);
+    }
+
+
 
     private void validateMember(Member member) {
         Member findMember = memberRepository.findById(member.getId());

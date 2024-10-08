@@ -36,7 +36,13 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return "member/memberForm";
         }
-        Member member = Member.createMember(memberDTO, passwordEncoder);
+        try {
+            Member member = Member.createMember(memberDTO, passwordEncoder);
+            memberService.saveMember(member);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/memberForm";
+        }
         return  "redirect:/";
     }
 
