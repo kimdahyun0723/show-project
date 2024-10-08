@@ -95,7 +95,7 @@
 <!-- 로그인 폼 추가 -->
 <div layout:fragment="content">
     <div class="form-container">
-        <form action="/login" role="form" method="post">
+        <form action="/members/login" role="form" method="post">
             <!-- 오류 메시지 표시 -->
             <div th:if="${errorMessage != null}" class="error-message">
                 <p th:text="${errorMessage}">아이디 또는 비밀번호가 잘못되었습니다.</p>
