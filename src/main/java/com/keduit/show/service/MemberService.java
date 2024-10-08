@@ -1,5 +1,6 @@
 package com.keduit.show.service;
 
+import com.keduit.show.dto.MemberDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.MemberImg;
 import com.keduit.show.repository.MemberImgRepository;
@@ -60,4 +61,9 @@ public class MemberService implements UserDetailsService {
     }
 
 
+    public Member findMember(String id) {
+        Member member = memberRepository.findById(id);
+
+        return member;
+    }
 }
