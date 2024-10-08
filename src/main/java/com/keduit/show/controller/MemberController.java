@@ -84,4 +84,13 @@ public class MemberController {
         return "/member/info";
     }
 
+    @GetMapping("/updateInfo")
+    public String updateInfo(Model model, Principal principal) {
+        Member member = memberService.findMember(principal.getName());
+
+        model.addAttribute("member", member);
+
+        return "redirect:/members/info";
+    }
+
 }
