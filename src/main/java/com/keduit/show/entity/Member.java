@@ -31,7 +31,6 @@ public class Member extends BaseEntity {
 
     private String phone;
 
-    private String address;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -46,7 +45,6 @@ public class Member extends BaseEntity {
         member.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
         member.setEmail(memberDTO.getEmail());
         member.setPhone(memberDTO.getPhone());
-        member.setAddress(memberDTO.getAddress());
         member.setRole(Role.USER);
         return member;
     }
