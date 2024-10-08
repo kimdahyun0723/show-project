@@ -45,6 +45,10 @@ public class MemberController {
         }
         return  "redirect:/";
     }
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "member/loginForm";
+    }
 
     @GetMapping("/login")
     public String login(Model model) {
