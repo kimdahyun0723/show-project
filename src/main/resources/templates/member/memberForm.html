@@ -86,18 +86,7 @@
             font-size: 18px; /* 아티클 본문 폰트 크기 */
             line-height: 1.6; /* 줄 간격 설정 */
         }
-        .simpleLogin img {
-            width: 200px; /* 이미지 너비를 300px로 설정 */
-            /* 높이는 비율에 맞게 자동 조정 */
-            max-width: 100%; /* 화면 크기에 맞춰서 이미지가 넘치지 않게 조정 */
-            height: 50px;
-        }
 
-        /* 간격 조정 */
-        .simpleLogin {
-            margin-bottom: 13px; /* 이미지 사이에 여백 추가 */
-            text-align: center; /* 이미지를 중앙 정렬 */
-        }
 
 
 
@@ -108,28 +97,17 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function() {
-            const errorMessage = [[${errorMessage}]];
+            // 제출 시 비밀번호와 비밀번호 확인이 일치하는지 확인하는 함수
+            $('form').on('submit', function(event) {
+                const password = $('#password').val();
+                const confirmPassword = $('#password1').val();
 
-            console.log("errorMessage =>", errorMessage);
-
-            if (errorMessage !== null && errorMessage !== 'undefined') {
-                alert(errorMessage);
-
-            }
-            function checkPasswordMatch() {
-                var password = $('#password').val();
-                var password1 = $('#password1').val();
-
-                if (password !== password1) {
-                    $('#passwordMatchError').text("비밀번호가 일치하지 않습니다."); // 에러 메시지 출력
-                } else {
-                    $('#passwordMatchError').text(""); // 에러 메시지 제거
+                // 비밀번호와 비밀번호 확인이 일치하지 않으면 경고를 띄우고 제출을 막음
+                if (password !== confirmPassword) {
+                    event.preventDefault(); // 폼 제출 막기
+                    alert('비밀번호가 일치하지 않습니다. 비밀번호 확인창을 다시 확인해주세요.');
                 }
-            }
-
-            // 비밀번호 확인 필드에서 입력이 변경될 때마다 확인
-            $('#password1').on('input', checkPasswordMatch);
-
+            });
         });
     </script>
 </th:block>
@@ -174,17 +152,6 @@
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         </form>
-        <div class="simpleLogin">
-            <a th:href="${location}">
-                <img src="/images/kakao_login_medium_narrow.png">
-            </a>
-        </div>
-        <div class="simpleLogin">
-            <a href="https://nid.naver.com/oauth2.0/authorize"
-               th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverClientId}, redirect_uri=${naverRedirectUri}, response_type='code', state=${state})}">
-                <img src="/images/btnG_완성형.png"  >
-            </a>
-        </div>
     </div>
 
 
