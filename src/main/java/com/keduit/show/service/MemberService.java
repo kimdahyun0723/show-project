@@ -49,16 +49,5 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
-    public void saveMemberImg(Member member, MultipartFile memberImgFile) throws IOException {
-        String originalFileName = memberImgFile.getOriginalFilename();
-        String imgName = "";
-        String imtUrl = "";
 
-
-        if (!StringUtils.isEmpty(originalFileName)) {
-//            imgName = fileService.uploadFile();
-        }
-
-
-    }
 }

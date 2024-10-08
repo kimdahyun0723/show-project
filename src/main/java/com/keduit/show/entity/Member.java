@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +36,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String imgname;
-
-    private String oriImgName;
-
-    private String imgUrl;
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private MemberImg memberImg;
 
     public static Member createMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder) {
         Member member = new Member();
@@ -51,8 +48,6 @@ public class Member {
         member.setPhone(memberDTO.getPhone());
         member.setAddress(memberDTO.getAddress());
         member.setRole(Role.USER);
-        member.setImgname(memberDTO.getImgname());
-        member.setImgUrl(memberDTO.getImgUrl());
         return member;
     }
 
