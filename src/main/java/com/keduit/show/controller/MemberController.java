@@ -90,7 +90,7 @@ public class MemberController {
 
         model.addAttribute("member", member);
 
-        return "redirect:/members/info";
+        return "member/updateInfo";
     }
 
 }
