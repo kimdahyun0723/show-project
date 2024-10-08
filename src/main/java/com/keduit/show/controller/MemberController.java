@@ -50,9 +50,4 @@ public class MemberController {
         return "member/loginForm";
     }
 
-    @GetMapping("/login")
-    public String login(Model model) {
-        return "member/memberLoginForm";
-    }
-
 }
