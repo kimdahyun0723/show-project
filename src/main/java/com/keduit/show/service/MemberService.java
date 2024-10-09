@@ -66,4 +66,9 @@ public class MemberService implements UserDetailsService {
 
         return member;
     }
+
+    public void deleteMember(String name) {
+        Member member = findMember(name);
+        memberRepository.delete(member);
+    }
 }

@@ -78,7 +78,6 @@ public class MemberController {
         model.addAttribute("member", member);
         model.addAttribute("image", image);
 
-        System.out.println("image===================" + image);
         System.out.println(image.getUrl());
 
         return "/member/info";
@@ -91,6 +90,13 @@ public class MemberController {
         model.addAttribute("member", member);
 
         return "member/updateInfo";
+    }
+
+    @GetMapping("/delete")
+    public String delete(Principal principal) {
+        memberService.deleteMember(principal.getName());
+
+        return "redirect:/members/logout";
     }
 
 }

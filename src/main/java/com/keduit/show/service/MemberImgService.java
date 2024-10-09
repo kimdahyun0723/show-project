@@ -36,24 +36,37 @@ public class MemberImgService {
         File destinationFile = new File(uploadFolder + imageFileName);
 
         try {
-            file.transferTo(destinationFile);
+            // 기존 이미지 가져오기
+            MemberImg existingImage = memberImgRepository.findByMember(member);
+            if (existingImage != null) {
+                // 기존 이미지 파일 경로
+                String existingImagePath = uploadFolder + existingImage.getUrl().substring("/profileImages/".length());
 
-            MemberImg image = memberImgRepository.findByMember(member);
-            if (image != null) {
-                // 이미지가 이미 존재하면 url 업데이트
-                image.updateUrl("/images/" + imageFileName);
+                // 기존 이미지 파일이 존재하면 삭제
+                File existingFile = new File(existingImagePath);
+                if (existingFile.exists()) {
+                    existingFile.delete(); // 기존 이미지 파일 삭제
+                }
+
+                // URL 업데이트
+                existingImage.updateUrl("/profileImages/" + imageFileName);
+                memberImgRepository.save(existingImage);
             } else {
-                // 이미지가 없으면 객체 생성 후 저장
-                image = MemberImg.builder()
+                // 이미지가 없으면 새로운 MemberImg 객체 생성 후 저장
+                MemberImg newImage = MemberImg.builder()
                         .member(member)
-                        .url("/images/" + imageFileName)
+                        .url("/profileImages/" + imageFileName)
                         .build();
+                memberImgRepository.save(newImage);
             }
-            memberImgRepository.save(image);
+
+            // 새 이미지 파일 저장
+            file.transferTo(destinationFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public ImageResponseDTO findImage(String id) {
         Member member = memberRepository.findById(id);
