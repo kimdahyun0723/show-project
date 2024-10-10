@@ -77,7 +77,6 @@ public class MemberController {
 
     @GetMapping("/info")
     public String memberInfo(Model model, Principal principal) {
-        System.out.println("=================================" + principal.getName());
         Member member = memberService.findMember(principal.getName());
         ImageResponseDTO image = memberImgService.findImage(principal.getName());
 
@@ -90,7 +89,6 @@ public class MemberController {
 
     @GetMapping("/updateInfo")
     public String updateInfo(Model model, Principal principal) {
-        System.out.println("name===============================" + principal.getName());
         Member member = memberService.findMember(principal.getName());
 
         model.addAttribute("member", member);

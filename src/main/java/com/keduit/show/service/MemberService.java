@@ -24,7 +24,7 @@ public class MemberService implements UserDetailsService {
 
     private final MemberImgRepository memberImgRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     public Member saveMember(Member member) {
@@ -93,8 +93,6 @@ public class MemberService implements UserDetailsService {
 
     public void updateMember(String id,MemberDTO memberDTO) {
         Member member = findMember(id);
-        System.out.println("member============================= " + member);
-        System.out.println("dto=================================== " + memberDTO);
         member.updateMember(memberDTO, passwordEncoder);
 
     }
