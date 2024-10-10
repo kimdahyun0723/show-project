@@ -2,11 +2,13 @@ package com.keduit.show.controller;
 
 import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.dto.MemberDTO;
+import com.keduit.show.dto.MemberUpdateDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.repository.MemberImgRepository;
 import com.keduit.show.service.KakaoService;
 import com.keduit.show.service.MemberImgService;
 import com.keduit.show.service.MemberService;
+import com.keduit.show.service.NaverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +35,8 @@ public class MemberController {
     private final MemberImgService memberImgService;
 
     private final KakaoService kakaoService;
+
+    private final NaverService naverService;
 
 
     private final PasswordEncoder passwordEncoder;
@@ -65,6 +69,7 @@ public class MemberController {
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
+        model.addAttribute("naverUrl", naverService.getNaverLogin());
 
         return "member/loginForm";
     }
@@ -104,12 +109,12 @@ public class MemberController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid MemberDTO memberDTO, BindingResult bindingResult, Model model, Principal principal) {
+    public String update(@Valid MemberUpdateDTO memberUpdateDTO, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
-            return "member/updateInfo";
+            return "redirect:/members/updateInfo";
         }
 
-        memberService.updateMember(principal.getName(), memberDTO);
+        memberService.updateMember(principal.getName(), memberUpdateDTO);
 
 
 

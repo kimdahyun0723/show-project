@@ -2,6 +2,8 @@ package com.keduit.show.service;
 
 import com.keduit.show.dto.KakaoDTO;
 import com.keduit.show.dto.MemberDTO;
+import com.keduit.show.dto.MemberUpdateDTO;
+import com.keduit.show.dto.NaverDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.MemberImg;
 import com.keduit.show.repository.MemberImgRepository;
@@ -54,6 +56,21 @@ public class MemberService implements UserDetailsService {
             memberRepository.save(member);
         }
 
+    }  public void naverLogin(NaverDTO naverDTO) {
+        if (naverDTO == null) {
+            throw new IllegalArgumentException("naverDTO cannot be null");
+        }
+        String userId = naverDTO.getName();
+        Member member = memberRepository.findById(userId);
+
+        if(member == null) {
+            member = new Member();
+            member.setId(naverDTO.getId());
+            member.setEmail(naverDTO.getEmail());
+            member.setName(naverDTO.getName());
+            memberRepository.save(member);
+        }
+
     }
 
 
@@ -91,9 +108,9 @@ public class MemberService implements UserDetailsService {
         memberRepository.delete(member);
     }
 
-    public void updateMember(String id,MemberDTO memberDTO) {
+    public void updateMember(String id, MemberUpdateDTO memberUpdateDTO) {
         Member member = findMember(id);
-        member.updateMember(memberDTO, passwordEncoder);
+        member.updateMember(memberUpdateDTO, passwordEncoder);
 
     }
 }

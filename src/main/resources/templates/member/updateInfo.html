@@ -17,7 +17,16 @@
                     event.preventDefault(); // 폼 제출 막기
                     alert('비밀번호가 일치하지 않습니다. 비밀번호 확인창을 다시 확인해주세요.');
                 }
+
+                // 비밀번호가 null이거나 빈 문자열이 아닐 때 길이 체크
+                if (password && password.length < 4 || password.length > 16) {
+                    event.preventDefault(); // 폼 제출 막기
+                    alert('비밀번호는 4~16자 사이로 입력해주세요.');
+                }
+
             });
+
+
 
             // '정보 수정' 버튼 클릭 시 폼 제출
             $('#infoUpdateBtn').on('click', function(event) {
@@ -36,6 +45,8 @@
                     });
                 }
             });
+
+
         });
     </script>
 </th:block>

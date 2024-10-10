@@ -2,6 +2,7 @@ package com.keduit.show.entity;
 
 import com.keduit.show.constant.Role;
 import com.keduit.show.dto.MemberDTO;
+import com.keduit.show.dto.MemberUpdateDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -51,7 +52,7 @@ public class Member extends BaseEntity {
         return member;
     }
 
-    public void updateMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder) {
+    public void updateMember(MemberUpdateDTO memberDTO, PasswordEncoder passwordEncoder) {
         this.name = memberDTO.getName();
         if (memberDTO.getPassword() != null && !memberDTO.getPassword().isEmpty()) {
             this.password = passwordEncoder.encode(memberDTO.getPassword());
