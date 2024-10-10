@@ -31,11 +31,7 @@ public class MemberDTO {
     @Length(min = 4, max=16, message = "비밀번호는 4자이상 16자 이하로 입력하세요")
     private String password;
 
-    // provider : google이 들어감
-    private String provider;
 
-    // providerId : 구굴 로그인 한 유저의 고유 ID가 들어감
-    private String providerId;
 
 
 }

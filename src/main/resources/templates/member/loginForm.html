@@ -118,7 +118,7 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         </form>
         <div class="simpleLogin">
-            <a th:href="${location}">
+            <a th:href="@{|${kakaoUrl}|}">
                 <img src="/images/kakao_login_medium_narrow.png">
             </a>
         </div>

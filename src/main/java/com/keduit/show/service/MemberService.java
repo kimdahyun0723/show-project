@@ -1,5 +1,6 @@
 package com.keduit.show.service;
 
+import com.keduit.show.dto.KakaoDTO;
 import com.keduit.show.dto.MemberDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.MemberImg;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     private final MemberImgRepository memberImgRepository;
+
+    private PasswordEncoder passwordEncoder;
 
 
     public Member saveMember(Member member) {
@@ -36,6 +40,21 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(member);
     }
 
+    public void kakaoLogin(KakaoDTO kakaoDTO) {
+        if (kakaoDTO == null) {
+            throw new IllegalArgumentException("KakaoDTO cannot be null");
+        }
+        String userId = kakaoDTO.getNickname();
+        Member member = memberRepository.findById(userId);
+
+        if(member == null) {
+            member = new Member();
+            member.setId(kakaoDTO.getNickname());
+            member.setEmail(kakaoDTO.getEmail());
+            memberRepository.save(member);
+        }
+
+    }
 
 
     private void validateMember(Member member) {
@@ -70,5 +89,13 @@ public class MemberService implements UserDetailsService {
     public void deleteMember(String name) {
         Member member = findMember(name);
         memberRepository.delete(member);
+    }
+
+    public void updateMember(String id,MemberDTO memberDTO) {
+        Member member = findMember(id);
+        System.out.println("member============================= " + member);
+        System.out.println("dto=================================== " + memberDTO);
+        member.updateMember(memberDTO, passwordEncoder);
+
     }
 }

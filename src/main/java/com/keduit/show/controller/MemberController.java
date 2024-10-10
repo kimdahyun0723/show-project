@@ -4,6 +4,7 @@ import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.dto.MemberDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.repository.MemberImgRepository;
+import com.keduit.show.service.KakaoService;
 import com.keduit.show.service.MemberImgService;
 import com.keduit.show.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final MemberImgService memberImgService;
+
+    private final KakaoService kakaoService;
 
 
     private final PasswordEncoder passwordEncoder;
@@ -61,6 +64,8 @@ public class MemberController {
     }
     @GetMapping("/login")
     public String login(Model model) {
+        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
+
         return "member/loginForm";
     }
 
@@ -72,19 +77,20 @@ public class MemberController {
 
     @GetMapping("/info")
     public String memberInfo(Model model, Principal principal) {
+        System.out.println("=================================" + principal.getName());
         Member member = memberService.findMember(principal.getName());
         ImageResponseDTO image = memberImgService.findImage(principal.getName());
 
         model.addAttribute("member", member);
         model.addAttribute("image", image);
 
-        System.out.println(image.getUrl());
 
         return "/member/info";
     }
 
     @GetMapping("/updateInfo")
     public String updateInfo(Model model, Principal principal) {
+        System.out.println("name===============================" + principal.getName());
         Member member = memberService.findMember(principal.getName());
 
         model.addAttribute("member", member);
@@ -97,6 +103,19 @@ public class MemberController {
         memberService.deleteMember(principal.getName());
 
         return "redirect:/members/logout";
+    }
+
+    @PostMapping("/update")
+    public String update(@Valid MemberDTO memberDTO, BindingResult bindingResult, Model model, Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "member/updateInfo";
+        }
+
+        memberService.updateMember(principal.getName(), memberDTO);
+
+
+
+        return "redirect:/members/info";
     }
 
 }
