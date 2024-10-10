@@ -4,25 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Setter
 @Getter
 @Entity
-public class Post {
+public class Comment {
 
-  // Getters and Setters
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String title;
   private String content;
 
-  @Setter
-  @Getter
-  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Comment> comments;
-
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id", nullable = false)
+  private Post post;
 
 }

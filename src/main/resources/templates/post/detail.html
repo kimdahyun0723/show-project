@@ -10,11 +10,22 @@
 <h2 th:text="${post.title}">제목</h2>
 <p th:text="${post.content}">내용</p>
 
-<a th:href="@{/posts/edit/{id}(id=${post.id})}">수정</a>
-<form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" style="display:inline;">
-    <input type="hidden" name="_method" value="delete">
-    <button type="submit">삭제</button>
+<h3>댓글</h3>
+<ul>
+    <li th:each="comment : ${post.comments}">
+        <span th:text="${comment.content}">댓글 내용</span>
+        <form th:action="@{/comments/delete/{id}(id=${comment.id})}" method="post" style="display:inline;">
+            <button type="submit">삭제</button>
+        </form>
+    </li>
+</ul>
+
+<h4>댓글 작성</h4>
+<form th:action="@{/comments/add/{postId}(postId=${post.id})}" method="post">
+    <textarea name="content"></textarea>
+    <button type="submit">댓글 작성</button>
 </form>
+
 <br>
 <a href="/">목록으로 돌아가기</a>
 </body>
