@@ -30,9 +30,13 @@
                     sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/members/login">로그인</a>
                 </li>
-                <li class="nav-item"
-                    sec:authorize="isAuthenticated()">
+                <!-- 일반 로그아웃 링크는 로그인한 사용자에게만 보임 -->
+                <li class="nav-item" sec:authorize="isAuthenticated() and !hasAnyAuthority('ROLE_KAKAO')">
                     <a class="nav-link" href="/members/logout">로그아웃</a>
+                </li>
+                <!-- 카카오 로그아웃 링크는 카카오 로그인한 사용자에게만 보임 -->
+                <li class="nav-item" sec:authorize="isAuthenticated() and hasAnyAuthority('ROLE_KAKAO')">
+                    <a class="nav-link" href="https://kauth.kakao.com/oauth/logout?client_id=f48ecc65ecda977f9898414bd97c69ce&logout_redirect_uri=http://localhost:8282/kakao/logout">카카오 로그아웃</a>
                 </li>
             </ul>
 

@@ -29,6 +29,9 @@ public class KakaoService {
     @Value("${kakao.redirect.url}")
     private String KAKAO_REDIRECT_URL;
 
+    @Value("${kakao.redirect.url.logout}")
+    private String KAKAO_REDIRECT_URL_LOGOUT;
+
     private final static String KAKAO_AUTH_URI = "https://kauth.kakao.com";
     private final static String KAKAO_API_URI = "https://kapi.kakao.com";
 
@@ -37,6 +40,10 @@ public class KakaoService {
                 + "?client_id=" + KAKAO_CLIENT_ID
                 + "&redirect_uri=" + KAKAO_REDIRECT_URL
                 + "&response_type=code";
+    }
+
+    public String getKakaoLogout() {
+        return "https://kauth.kakao.com/oauth/logout?client_id=" + KAKAO_CLIENT_ID + "&logout_redirect_uri=" + KAKAO_REDIRECT_URL_LOGOUT;
     }
 
     public KakaoDTO getKakaoInfo(String code) throws Exception {

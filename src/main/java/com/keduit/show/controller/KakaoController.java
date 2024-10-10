@@ -33,9 +33,9 @@ public class KakaoController {
 
         if (kakaoInfo != null) {
             // 세션에 사용자 정보 저장
-            HttpSession session = request.getSession();
-            session.setAttribute("user", kakaoInfo);
-            session.setAttribute("isLoggedIn", true);
+//            HttpSession session = request.getSession();
+//            session.setAttribute("user", kakaoInfo);
+//            session.setAttribute("isLoggedIn", true);
 
             // 사용자 인증 정보 생성
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -51,6 +51,16 @@ public class KakaoController {
 
 
     }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        kakaoService.getKakaoLogin();
+
+
+        response.sendRedirect("http://localhost:8282");
+    }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.keduit.show.service;
 
+import com.keduit.show.constant.Role;
 import com.keduit.show.dto.KakaoDTO;
 import com.keduit.show.dto.MemberDTO;
 import com.keduit.show.dto.MemberUpdateDTO;
@@ -53,6 +54,7 @@ public class MemberService implements UserDetailsService {
             member = new Member();
             member.setId(kakaoDTO.getNickname());
             member.setEmail(kakaoDTO.getEmail());
+            member.setRole(Role.KAKAO);
             memberRepository.save(member);
         }
 
