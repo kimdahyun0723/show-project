@@ -52,9 +52,10 @@ public class Member extends BaseEntity {
     }
 
     public void updateMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder) {
-        System.out.println("member안에 dto=========================== " + memberDTO);
         this.name = memberDTO.getName();
-        this.password = passwordEncoder.encode(memberDTO.getPassword());
+        if (memberDTO.getPassword() != null && !memberDTO.getPassword().isEmpty()) {
+            this.password = passwordEncoder.encode(memberDTO.getPassword());
+        }
         this.email = memberDTO.getEmail();
         this.phone = memberDTO.getPhone();
 
