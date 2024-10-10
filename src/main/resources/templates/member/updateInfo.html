@@ -12,7 +12,7 @@
     <!-- 회원 정보 수정 폼 -->
     <div class="row">
         <div class="col-md-12">
-            <form th:action="@{/members/update}" th:method="post">
+            <form th:action="@{/members/update}" th:method="post" id="updateForm">
                 <!-- 이름 -->
                 <div class="mb-3">
                     <label for="name" class="form-label">이름</label>
@@ -38,6 +38,17 @@
                            placeholder="새 비밀번호를 입력하세요">
                 </div>
 
+                <!-- 비밀번호 확인 -->
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                           placeholder="비밀번호를 입력하세요">
+                </div>
+                <!-- 비밀번호 불일치 경고 메시지 -->
+                <div id="passwordMismatchError" class="text-danger" style="display: none;">
+                    비밀번호가 일치하지 않습니다. 다시 확인해주세요.
+                </div>
+
                 <!-- 전화번호 -->
                 <div class="mb-3">
                     <label for="phone" class="form-label">전화번호</label>
@@ -45,13 +56,32 @@
                 </div>
 
                 <!-- 수정 버튼 -->
-                <button type="submit" class="btn btn-primary">정보 수정</button>
+                <a th:href="@{members/info}" class="btn btn-outline-warning">정보 수정</a>
+                <a th:href="@{/members/withdrawal}" class="btn btn-outline-danger">회원 탈퇴</a>
             </form>
 
             <!-- 회원 탈퇴 버튼 -->
-            <a th:href="@{/members/delete}" class="btn btn-outline-danger">회원 탈퇴</a>
+
         </div>
     </div>
 </div>
+
+<!-- JavaScript 비밀번호 확인 로직 -->
+<script>
+    const form = document.getElementById('updateForm');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const errorDiv = document.getElementById('passwordMismatchError');
+
+    form.addEventListener('submit', function(event) {
+        // 비밀번호가 일치하는지 확인
+        if (password.value !== confirmPassword.value) {
+            event.preventDefault();  // 폼 제출을 막음
+            errorDiv.style.display = 'block';  // 에러 메시지 표시
+        } else {
+            errorDiv.style.display = 'none';  // 에러 메시지 숨김
+        }
+    });
+</script>
 
 </html>
