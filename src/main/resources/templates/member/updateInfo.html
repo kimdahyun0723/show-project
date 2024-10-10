@@ -3,6 +3,26 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
 
+<!-- 사용자 js 추가 -->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            // 제출 시 비밀번호와 비밀번호 확인이 일치하는지 확인하는 함수
+            $('form').on('submit', function(event) {
+                const password = $('#password').val();
+                const confirmPassword = $('#password1').val();
+
+                // 비밀번호와 비밀번호 확인이 일치하지 않으면 경고를 띄우고 제출을 막음
+                if (password !== confirmPassword) {
+                    event.preventDefault(); // 폼 제출 막기
+                    alert('비밀번호가 일치하지 않습니다. 비밀번호 확인창을 다시 확인해주세요.');
+                }
+            });
+        });
+
+    </script>
+</th:block>
+
 <div layout:fragment="content">
     <!-- 회원 정보 수정 헤더 -->
     <th:block th:if="${member.getName() != null}">
@@ -32,6 +52,7 @@
                 </div>
 
                 <!-- 비밀번호 -->
+                <th:block th:if="${member.getPassword() != null}">
                 <div class="mb-3">
                     <label for="password" class="form-label">비밀번호</label>
                     <input type="password" class="form-control" id="password" name="password"
@@ -39,15 +60,13 @@
                 </div>
 
                 <!-- 비밀번호 확인 -->
+
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">비밀번호 확인</label>
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                    <label for="password1" class="form-label">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="password1" name="confirmPassword"
                            placeholder="비밀번호를 입력하세요">
                 </div>
-                <!-- 비밀번호 불일치 경고 메시지 -->
-                <div id="passwordMismatchError" class="text-danger" style="display: none;">
-                    비밀번호가 일치하지 않습니다. 다시 확인해주세요.
-                </div>
+                    </th:block>
 
                 <!-- 전화번호 -->
                 <div class="mb-3">
@@ -66,22 +85,5 @@
     </div>
 </div>
 
-<!-- JavaScript 비밀번호 확인 로직 -->
-<script>
-    const form = document.getElementById('updateForm');
-    const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirmPassword');
-    const errorDiv = document.getElementById('passwordMismatchError');
-
-    form.addEventListener('submit', function(event) {
-        // 비밀번호가 일치하는지 확인
-        if (password.value !== confirmPassword.value) {
-            event.preventDefault();  // 폼 제출을 막음
-            errorDiv.style.display = 'block';  // 에러 메시지 표시
-        } else {
-            errorDiv.style.display = 'none';  // 에러 메시지 숨김
-        }
-    });
-</script>
 
 </html>
