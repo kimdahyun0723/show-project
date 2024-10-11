@@ -54,7 +54,8 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
 	// oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
+	//Json
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
 
 

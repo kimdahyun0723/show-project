@@ -1,7 +1,5 @@
 package com.keduit.show.dto;
 
-import com.keduit.show.entity.Member;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @ToString
-public class MemberDTO {
+public class MemberUpdateDTO {
 
     @NotBlank(message = "아이디는 필수 입력입니다.")
     private String id;
@@ -27,11 +25,6 @@ public class MemberDTO {
     @NotBlank(message = "전화번호는 필수 입력입니다.")
     private String phone;
 
-    @NotEmpty(message = "비밀번호는 필수 입력입니다.")
-    @Length(min = 4, max=16, message = "비밀번호는 4자이상 16자 이하로 입력하세요")
     private String password;
-
-
-
 
 }

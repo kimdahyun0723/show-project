@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +27,10 @@ public class SecurityConfig {
                 .failureUrl("/members/login/error")
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                .logoutRequestMatcher(new OrRequestMatcher(
+                        new AntPathRequestMatcher("/members/logout"),
+                        new AntPathRequestMatcher("/kakao/logout")
+                ))
                 .logoutSuccessUrl("/");
         
         // permitAll() : 모든 사용자가 인증없이 해당 경로에 접근 가능
@@ -34,7 +38,7 @@ public class SecurityConfig {
         // .anyRequest().authenticated() : 위의 경우 이외의 페이지는 인증절차가 필요함
         http.authorizeRequests()
                 .mvcMatchers("/", "/members/**", "/item/**",
-                        "/images/**", "error", "favicon.ico", "/juso").permitAll()
+                        "/images/**", "error", "favicon.ico", "/juso", "/kakao/**", "/naver/**").permitAll()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
 

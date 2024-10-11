@@ -2,10 +2,13 @@ package com.keduit.show.controller;
 
 import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.dto.MemberDTO;
+import com.keduit.show.dto.MemberUpdateDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.repository.MemberImgRepository;
+import com.keduit.show.service.KakaoService;
 import com.keduit.show.service.MemberImgService;
 import com.keduit.show.service.MemberService;
+import com.keduit.show.service.NaverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 
@@ -30,6 +34,10 @@ public class MemberController {
     private final MemberService memberService;
 
     private final MemberImgService memberImgService;
+
+    private final KakaoService kakaoService;
+
+    private final NaverService naverService;
 
 
     private final PasswordEncoder passwordEncoder;
@@ -61,6 +69,9 @@ public class MemberController {
     }
     @GetMapping("/login")
     public String login(Model model) {
+        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
+        model.addAttribute("naverUrl", naverService.getNaverLogin());
+
         return "member/loginForm";
     }
 
@@ -78,7 +89,6 @@ public class MemberController {
         model.addAttribute("member", member);
         model.addAttribute("image", image);
 
-        System.out.println(image.getUrl());
 
         return "/member/info";
     }
@@ -97,6 +107,19 @@ public class MemberController {
         memberService.deleteMember(principal.getName());
 
         return "redirect:/members/logout";
+    }
+
+    @PostMapping("/update")
+    public String update(@Valid MemberUpdateDTO memberUpdateDTO, BindingResult bindingResult, Model model, Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/members/updateInfo";
+        }
+
+        memberService.updateMember(principal.getName(), memberUpdateDTO);
+
+
+
+        return "redirect:/members/info";
     }
 
 }

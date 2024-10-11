@@ -118,13 +118,13 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         </form>
         <div class="simpleLogin">
-            <a th:href="${location}">
+            <a th:href="@{|${kakaoUrl}|}">
                 <img src="/images/kakao_login_medium_narrow.png">
             </a>
         </div>
         <div class="simpleLogin">
             <a href="https://nid.naver.com/oauth2.0/authorize"
-               th:href="@{https://nid.naver.com/oauth2.0/authorize(client_id=${naverClientId}, redirect_uri=${naverRedirectUri}, response_type='code', state=${state})}">
+               th:href="@{|${naverUrl}|}">
                 <img src="/images/btnG_완성형.png"  >
             </a>
         </div>

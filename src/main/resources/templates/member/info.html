@@ -5,7 +5,7 @@
 
 <div layout:fragment="content">
     <!-- 회원 정보 헤더 -->
-    <h5 th:text="|${member.getName()} 님의 정보|"></h5>
+    <h5 th:text="|${member.getId()} 님의 정보|"></h5>
 
     <!-- 프로필 이미지 및 업로드 폼 -->
     <div class="row">
@@ -40,11 +40,6 @@
                     <input type="email" class="form-control" id="email" name="email" th:value="${member.getEmail()}" readonly>
                 </div>
 
-                <!-- 비밀번호 (마스킹 처리) -->
-                <div class="mb-3">
-                    <label for="password" class="form-label">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" value="******" readonly>
-                </div>
 
                 <!-- 전화번호 -->
                 <div class="mb-3">
@@ -55,7 +50,6 @@
 
             <!-- 정보 수정 및 회원 탈퇴 버튼 -->
             <a th:href="@{/members/updateInfo}" class="btn btn-outline-warning">정보 수정</a>
-            <a th:href="@{/members/withdrawal}" class="btn btn-outline-danger">회원 탈퇴</a>
         </div>
     </div>
 </div>
