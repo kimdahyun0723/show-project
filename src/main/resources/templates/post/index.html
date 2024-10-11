@@ -1,19 +1,92 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판</title>
-</head>
-<body>
-<h1>게시글 목록</h1>
-<a href="/posts/new">새 게시글 작성</a>
-<ul>
-    <li th:each="post : ${posts}">
-        <strong th:text="${post.title}">제목</strong> -
-        <span th:text="${post.content}">내용</span>
-        <a th:href="@{/posts/{id}(id=${post.id})}">상세보기</a>
-    </li>
-</ul>
-</body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<th:block layout:fragment="css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 게시판 목록 스타일 */
+        .post-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .post-list li {
+            background-color: #f8f9fa; /* 연한 배경색 */
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+            transition: transform 0.3s ease; /* 마우스 오버 효과 */
+        }
+
+        .post-list li:hover {
+            transform: translateY(-5px); /* 마우스 오버 시 약간 위로 올라가는 효과 */
+        }
+
+        .post-title {
+            font-weight: bold;
+            color: #343a40; /* 어두운 제목 색상 */
+        }
+
+        .post-content {
+            color: #6c757d; /* 회색 텍스트 */
+        }
+
+        .post-actions a {
+            margin-left: 10px;
+            color: #007bff; /* Bootstrap 기본 링크 색상 */
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .post-actions a:hover {
+            text-decoration: underline; /* 링크에 호버 시 밑줄 표시 */
+        }
+
+        /* 버튼 스타일 */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+    </style>
+
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+
+<div class="container">
+    <h1>게시글 목록</h1>
+    <a href="/posts/new" class="btn btn-primary mb-3">새 게시글 작성</a>
+
+    <ul class="post-list">
+        <li th:each="post : ${posts}">
+            <div class="post-title" th:text="${post.title}">제목</div>
+            <div class="post-content" th:text="${post.content}">내용</div>
+            <div class="post-actions">
+                <a th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-sm btn-outline-info">상세보기</a>
+                <a th:href="@{/posts/edit/{id}(id=${post.id})}" class="btn btn-sm btn-outline-warning">수정</a>
+                <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+</div>
+
 </html>

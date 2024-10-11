@@ -1,32 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 상세보기</title>
-</head>
-<body>
-<h1>게시글 상세보기</h1>
-<h2 th:text="${post.title}">제목</h2>
-<p th:text="${post.content}">내용</p>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
 
-<h3>댓글</h3>
-<ul>
-    <li th:each="comment : ${post.comments}">
-        <span th:text="${comment.content}">댓글 내용</span>
-        <form th:action="@{/comments/delete/{id}(id=${comment.id})}" method="post" style="display:inline;">
-            <button type="submit">삭제</button>
-        </form>
-    </li>
-</ul>
+<th:block layout:fragment="css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
 
-<h4>댓글 작성</h4>
-<form th:action="@{/comments/add/{postId}(postId=${post.id})}" method="post">
-    <textarea name="content"></textarea>
-    <button type="submit">댓글 작성</button>
-</form>
+    </style>
+</th:block>
 
-<br>
-<a href="/">목록으로 돌아가기</a>
-</body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <body>
+    <h1>게시글 상세보기</h1>
+    <h2 th:text="${post.title}">제목</h2>
+    <p th:text="${post.content}">내용</p>
+
+    <h3>댓글</h3>
+    <ul>
+        <li th:each="comment : ${post.comments}">
+            <span th:text="${comment.content}">댓글 내용</span>
+            <form th:action="@{/comments/delete/{id}(id=${comment.id})}" method="post" style="display:inline;">
+                <button type="submit">삭제</button>
+            </form>
+        </li>
+    </ul>
+
+    <h4>댓글 작성</h4>
+    <form th:action="@{/comments/add/{postId}(postId=${post.id})}" method="post">
+        <textarea name="content"></textarea>
+        <button type="submit">댓글 작성</button>
+    </form>
+
+    <br>
+    <a href="/">목록으로 돌아가기</a>
+    </body>
+
+
+</div>
 </html>
