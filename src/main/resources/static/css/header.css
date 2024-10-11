@@ -1,0 +1,40 @@
+/* 드롭다운 메뉴 스타일 */
+.navbar-nav .dropdown {
+    position: relative;
+}
+
+/* 드롭다운 메뉴가 기본적으로 숨겨짐 */
+.navbar-nav .dropdown-menu {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute; /* 드롭다운 메뉴 위치 */
+    top: 100%; /* 상위 메뉴 바로 아래에 표시 */
+    left: 0;
+    background-color: #34495e;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0; /* 초기에는 투명하게 설정 */
+    visibility: hidden; /* 초기에 보이지 않도록 설정 */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* 서브 메뉴 애니메이션 */
+}
+
+/* 마우스를 올렸을 때 드롭다운 메뉴가 보이도록 설정 */
+.navbar-nav .nav-item:hover .dropdown-menu {
+    display: block;
+    opacity: 1; /* 드롭다운 메뉴가 서서히 보이도록 설정 */
+    visibility: visible; /* 보이도록 설정 */
+}
+
+/* 드롭다운 아이템 스타일 */
+.navbar-nav .dropdown-item {
+    color: #ecf0f1;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+/* 드롭다운 아이템 호버 시 스타일 */
+.navbar-nav .dropdown-item:hover {
+    background-color: #f39c12; /* 호버 시 황금색 배경 */
+    color: #fff;
+}
