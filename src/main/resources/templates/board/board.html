@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout1}">
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        select {
+            margin-right: 10px;
+        }
+    </style>
+</th:block>
+
+<!-- 사용자 스크립트 추가-->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+            $('#searchBtn').on("click", function (e) {
+                e.preventDefault();
+                page(0);
+            });
+            const message = [[${message}]];
+            if (message) {
+                alert(message);
+            }
+            console.log("message" + message);
+
+        });
+
+        function page(page) {
+            const searchDateType = $("#searchDateType").val(); // 상품 등록 기간
+            const searchBy = $("#searchBy").val();
+            const searchQuery = $("#searchQuery").val();
+
+            location.href = "/board/" + page + "?searchDateType=" + searchDateType
+                + "&searchBy=" + searchBy
+                + "&searchQuery=" + searchQuery;
+        }
+
+        function writeboard() {
+            const memberId = $("#memberId").val();
+            if (memberId == "login") {
+                alert("로그인 후 이용하세요")
+                location.href = "/member/login";
+            } else {
+                location.href = "/board/write";
+            }
+
+        }
+
+
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <input id="memberId" type="hidden" th:value="${memberId}">
+    <h1>게시판</h1>
+    <form th:action="@{'/board/' + ${boards.number}}" role="form" method="get" th:object="${boards}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board, status : ${boards}">
+                <td th:text="${status.count}"></td>
+                <td>
+                    <a th:href="'/board/boardDtl/' + ${board.num}" th:text="${board.title}"></a>
+                </td>
+                <td th:text="${board.createBy}"></td>
+                <td th:text="${(T(java.time.LocalDateTime).now().minusHours(24).isAfter(board.regTime)) ?
+                #temporals.format(board.regTime, 'yyyy-MM-dd') :
+                #temporals.format(board.regTime, 'HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button id="regBtn" type="button"
+                class="btn btn-primary" onclick="writeboard()">글쓰기
+        </button>
+
+        <!-- start: (현재페이지 번호 / 보여줄 페이지 수) * 보여줄 페이지 수 + 1 -->
+        <!-- end : 현재 페이지에서 보여줄 마지막 페이지 번호 -->
+        <div th:with="start = ${(boards.number / maxPage) * maxPage + 1},
+            end = (${(boards.totalPages == 0) ? 1 :
+            (start + (maxPage - 1) < boards.totalPages ? start + (maxPage - 1) :
+            boards.totalPages)})">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${boards.first} ? 'disabled'">
+                    <a th:onclick="'javascript: page(' + ${boards.number -1 } + ')'"
+                       aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">
+                            Previous
+                        </span>
+                    </a>
+                </li>
+
+                <!-- Page 객체에서 number는 현재 페이지를 나타냄. -->
+                <!-- [[${page}]]: 타임리프에서 HTML콘텐츠 영역 안에 직접 데이터를 출력할 때 사용-->
+                <!-- Page 객체에서 시작 페이지는 0부터 이므로 해당 페이지를 호출할 때에는 page -1을 함. -->
+                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
+                    th:classappend="${boards.number eq page - 1} ? 'active' : ''">
+                    <a th:onclick="'javascript:page(' +${page - 1} + ')'"
+                       th:inline="text" class="page-link">[[${page}]]</a>
+                </li>
+
+                <li class="page-item" th:classappend="${boards.last} ? 'disabled'">
+                    <a th:onclick="'javascript: page(' + ${boards.number + 1 } + ')'"
+                       aria-label="Next" class="page-link">
+                        <span aria-hidden="true">
+                            Next
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="form-inline justify-content-center" th:object="${boardSearchDTO}">
+            <select th:field="*{searchDateType}" class="form-control" style="width:auto;" id="searchDateType">
+                <option value="all">전체기간</option>
+                <option value="1d">1일</option>
+                <option value="1w">1주</option>
+                <option value="1m">1개월</option>
+                <option value="6m">6개월</option>
+            </select>
+            <select th:field="*{searchBy}" class="form-control" style="width:auto;" id="searchBy">
+                <option value="title">제목</option>
+                <option value="createBy">등록자</option>
+            </select>
+            <input th:field="*{searchQuery}" class="form-control" placeholder="검색어를 입력해주세요." id="searchQuery">
+            <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+        </div>
+    </form>
+
+</div>
+</html>

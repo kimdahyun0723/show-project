@@ -41,9 +41,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 	// https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
-	implementation group: 'com.querydsl', name: 'querydsl-jpa'
-	// https://mvnrepository.com/artifact/com.querydsl/querydsl-apt
-	implementation group: 'com.querydsl', name: 'querydsl-apt'
 	// https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect
 	implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect'
 	// https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity5
@@ -57,15 +54,45 @@ dependencies {
 	//Json
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+	//쿼리 dsl 을 사용하기 위한 라이브러리 jpa, Qclass 를 찾아줄 apt
+	implementation 'com.querydsl:querydsl-apt:5.0.0'
+	implementation 'com.querydsl:querydsl-jpa:5.0.0'
+	implementation 'com.querydsl:querydsl-core'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+	annotationProcessor 'javax.persistence:javax.persistence-api'
+	annotationProcessor 'javax.annotation:javax.annotation-api'
+	//jackson
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	//json
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-
-
-
-
-
-
+	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.1'
 
 }
+
+// Querydsl 빌드 옵션 설정
+def generated = 'src/main/generated'
+
+
+	tasks.withType(JavaCompile) {
+		options.getGeneratedSourceOutputDirectory().set(file(generated))
+	}
+
+// java source set 에 querydsl QClass 위치 추가
+	sourceSets {
+		main.java.srcDirs += [ generated ]
+	}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+	clean {
+		delete file(generated)
+	}
+
+
+
+
+
 
 tasks.named('test') {
 	useJUnitPlatform()
