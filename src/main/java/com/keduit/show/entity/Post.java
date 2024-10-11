@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-public class Post {
+public class Post extends BaseEntity {
 
   // Getters and Setters
   @Id
@@ -19,8 +19,11 @@ public class Post {
   private String title;
   private String content;
 
-  @Setter
-  @Getter
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_num")
+  private Member member;
+
+
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
 

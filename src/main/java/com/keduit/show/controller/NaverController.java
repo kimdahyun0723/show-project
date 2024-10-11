@@ -46,4 +46,12 @@ public class NaverController {
         }
     }
 
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession();
+        session.removeAttribute("user");
+        session.removeAttribute("isLoggedIn");
+        response.sendRedirect("http://localhost:8282");
+    }
+
 }

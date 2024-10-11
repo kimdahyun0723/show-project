@@ -70,6 +70,7 @@ public class MemberService implements UserDetailsService {
             member.setId(naverDTO.getId());
             member.setEmail(naverDTO.getEmail());
             member.setName(naverDTO.getName());
+            member.setRole(Role.NAVER);
             memberRepository.save(member);
         }
 
