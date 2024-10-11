@@ -38,7 +38,7 @@ public class CommentController {
   @PostMapping("/delete/{commentId}")
   public String deleteComment(@PathVariable Long commentId, Model model) {
     Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
-    Long postId = comment.getPost().getId();
+    Long postId = comment.getPost().getNum();
 
     commentRepository.delete(comment);
 

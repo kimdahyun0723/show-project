@@ -1,5 +1,6 @@
 package com.keduit.show.entity;
 
+import com.keduit.show.dto.PostDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,8 @@ public class Post extends BaseEntity {
   // Getters and Setters
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Column(name = "post_num")
+  private Long num;
 
   private String title;
   private String content;
@@ -26,6 +28,13 @@ public class Post extends BaseEntity {
 
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
+
+  public static Post createPost(PostDTO postDTO) {
+    Post post = new Post();
+    post.setTitle(postDTO.getTitle());
+    post.setContent(postDTO.getContent());
+    return post;
+  }
 
 
 }

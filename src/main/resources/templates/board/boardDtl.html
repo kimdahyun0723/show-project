@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout1}">
+
+<!-- 사용자 js 추가-->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            const errorMessage = [[${errorMessage}]];
+            console.log("errorMes" + errorMessage);
+            if (errorMessage != null) {
+                alert(errorMessage)
+            }
+        })
+
+
+    </script>
+</th:block>
+
+<!-- 사용자 css 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .input-group {
+            margin-bottom: 15px
+        }
+
+        .img-div {
+            margin-bottom: 10px
+        }
+
+        .fieldError {
+            color: #bd2130
+        }
+    </style>
+
+
+</th:block>
+
+<div layout:fragment="content">
+    <form role="form" method="post" th:object="${boardDTO}" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{num}">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text" th:for="title">제목</label>
+            </div>
+            <input type="text" class="form-control" id="title" th:field="*{title}"
+                   placeholder="제목을 입력하세요" readonly>
+            <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="fieldError">Incorrect data</p>
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text" th:for="content">내용</label>
+            </div>
+            <textarea class="form-control" name="content" id="content" rows="10" th:field="*{content}"
+                      placeholder="내용입력" readonly></textarea>
+            <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="fieldError">Incorrect data</p>
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text" th:for="writer">작성자</label>
+            </div>
+            <input id="writer" type="text" class="form-control"
+                   th:value="${boardDTO.createBy}"
+                   readonly>
+        </div>
+
+        <div th:if="${boardDTO.createBy == memberId}" style="text-align: center">
+            <button th:formaction="@{'/board/showModify/' + ${boardDTO.num}}" type="submit"
+                    class="btn btn-danger">
+                수정
+            </button>
+            <button th:formaction="@{'/board/delete/' + ${boardDTO.num}}" type="submit" class="btn btn-danger">삭제
+            </button>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        </div>
+    </form>
+    <div class="card my-4">
+        <h5 class="card-header">댓글 남기기</h5>
+        <div class="card-body">
+            <form th:action="@{/board/{id}/reply(id=${id})}" th:method="post">
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="hidden" name="idx" th:value="*{idx}"/>
+                    <textarea name="content" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">댓글작성</button>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            </form>
+        </div>
+    </div>
+    <!-- Display Comments -->
+    <div class="card my-4" th:if="${replys.size()} != 0">
+        <h5 class="card-header">Comments:</h5>
+        <div class="card-body">
+            <div th:each="reply : ${replys}">
+                <div class="media mb-4">
+                    <div class="media-body">
+                        <div class="d-flex align-items-start">
+                            <img class="d-flex mr-3 rounded-circle" th:src="${reply.getImageUrl()}" alt="User image" width="50">
+                            <div>
+                                <h5 class="mt-0" th:text="${reply.getUserId()}">User Name</h5>
+                                <p th:text="${reply.getReply()}" th:id="'comment-' + ${reply.getUserId()}">Comment content</p>
+                                <small class="text-muted" th:text="${#temporals.format(reply.getRegTime(), 'yyyy-MM-dd HH:mm')}">Comment Date</small>
+                            </div>
+                        </div>
+                        <div th:if="${reply.getUserId() == #authentication.principal.userId}">
+                            <button class="btn btn-sm btn-outline-warning" th:attr="data-id=${reply.getUserId()}" onclick="editComment(this)">Edit</button>
+                            <a th:href="@{/board/{id}/comment/{commentId}/remove(id=${id}, commentId=${reply.getUserId()})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this comment?')">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
