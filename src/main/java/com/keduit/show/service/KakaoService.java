@@ -122,5 +122,9 @@ public class KakaoService {
     }
 
 
+    public void deleteMember() {
 
+
+
+    }
 }

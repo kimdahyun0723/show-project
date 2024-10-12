@@ -88,6 +88,7 @@ public class MemberController {
 
         model.addAttribute("member", member);
         model.addAttribute("image", image);
+        System.out.println(principal.getName() + "==============================================");
 
 
         return "/member/info";
@@ -108,6 +109,7 @@ public class MemberController {
 
         return "redirect:/members/logout";
     }
+
 
     @PostMapping("/update")
     public String update(@Valid MemberUpdateDTO memberUpdateDTO, BindingResult bindingResult, Model model, Principal principal) {

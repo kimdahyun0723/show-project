@@ -4,11 +4,13 @@ import com.keduit.show.entity.Reply;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class ReplyResponseDTO {
 
     private LocalDateTime regTime;

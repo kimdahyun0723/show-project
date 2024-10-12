@@ -26,8 +26,8 @@ public class ReplyServiceImpl implements ReplyService{
     private final ReplyRepository replyRepository;
 
     @Override
-    public Long writeComment(ReplyRequestDTO replyRequestDTO, Long boardId, String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
+    public Long writeComment(ReplyRequestDTO replyRequestDTO, Long boardId, String id) {
+        Member member = memberRepository.findById(id);
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
         Reply result = Reply.builder()
                 .reply(replyRequestDTO.getReply())
@@ -44,12 +44,14 @@ public class ReplyServiceImpl implements ReplyService{
         Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
         List<Reply> comments = replyRepository.findByBoard(board);
 
-        return comments.stream()
+        List<ReplyResponseDTO> list = comments.stream()
                 .map(reply -> ReplyResponseDTO.builder()
                         .reply(reply)
                         .build())
                 .collect(Collectors.toList());
+        System.out.println();
 
+        return list;
     }
 
     @Override

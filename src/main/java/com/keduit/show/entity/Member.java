@@ -41,7 +41,12 @@ public class Member extends BaseEntity {
     private MemberImg memberImg;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts;
+    private List<Reply> replies;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Board> boards;
+
+
 
 
 

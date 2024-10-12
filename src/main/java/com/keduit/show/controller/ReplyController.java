@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 public class ReplyController {
 
     private final ReplyService replyService;
 
-    @PostMapping("/board/{num}/reply")
-    public String writeComment(@PathVariable Long num, ReplyRequestDTO replyRequestDTO, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        replyService.writeComment(replyRequestDTO, num, userDetails.getUsername());
+    @PostMapping("/board/{id}/reply")
+    public String writeComment(@PathVariable Long id, ReplyRequestDTO replyRequestDTO, Principal principal) {
+        replyService.writeComment(replyRequestDTO, id, principal.getName());
 
-        return "redirect:/board/boardDtl/" + num;
+        return "redirect:/board/boardDtl/" + id;
     }
 
     @PostMapping("/board/{id}/reply/{replyId}/update")
