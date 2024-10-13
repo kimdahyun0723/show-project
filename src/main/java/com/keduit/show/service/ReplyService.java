@@ -2,6 +2,7 @@ package com.keduit.show.service;
 
 import com.keduit.show.dto.ReplyRequestDTO;
 import com.keduit.show.dto.ReplyResponseDTO;
+import com.keduit.show.entity.Reply;
 
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface ReplyService {
      * 댓글 작성
 
      */
-    Long writeComment(ReplyRequestDTO replyRequestDTO, Long boardId, String email);
+    Reply writeComment(ReplyRequestDTO replyRequestDTO, Long boardId, String email);
 
     /**
      * 댓글 조회
@@ -22,7 +23,7 @@ public interface ReplyService {
     /**
      * 댓글 수정
      */
-    void updateComment(ReplyRequestDTO replyRequestDTO, Long commentId);
+    Reply updateComment(ReplyRequestDTO replyRequestDTO, Long commentId);
 
     /**
      * 댓글 삭제
