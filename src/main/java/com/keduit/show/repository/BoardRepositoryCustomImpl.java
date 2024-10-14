@@ -2,6 +2,7 @@ package com.keduit.show.repository;
 
 import com.keduit.show.dto.BoardSearchDTO;
 import com.keduit.show.entity.Board;
+import com.keduit.show.entity.Member;
 import com.keduit.show.entity.QBoard;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
@@ -48,6 +49,9 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         }
         return null;
     }
+
+
+
 
     @Override
     public Page<Board> getBoardsPage(BoardSearchDTO boardSearchDTO, Pageable pageable) {

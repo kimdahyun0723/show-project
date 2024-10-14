@@ -3,12 +3,10 @@ package com.keduit.show.controller;
 import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.dto.MemberDTO;
 import com.keduit.show.dto.MemberUpdateDTO;
+import com.keduit.show.entity.Board;
 import com.keduit.show.entity.Member;
 import com.keduit.show.repository.MemberImgRepository;
-import com.keduit.show.service.KakaoService;
-import com.keduit.show.service.MemberImgService;
-import com.keduit.show.service.MemberService;
-import com.keduit.show.service.NaverService;
+import com.keduit.show.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/members")
@@ -34,6 +33,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final MemberImgService memberImgService;
+
+    private final BoardService boardService;
 
     private final KakaoService kakaoService;
 
@@ -118,10 +119,15 @@ public class MemberController {
         }
 
         memberService.updateMember(principal.getName(), memberUpdateDTO);
-
-
-
         return "redirect:/members/info";
+    }
+
+    @GetMapping("myBoards")
+    public String myBoards(Model model, Principal principal) {
+        Member member = memberService.findMember(principal.getName());
+        List<Board> boards = boardService.findBoard(member);
+        model.addAttribute("boards", boards);
+        return "member/myBoards";
     }
 
 }
