@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
+<div th:fragment="footer">
+    <!-- 최신 Font Awesome CDN 링크 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 구글 폰트와 Font Awesome 아이콘 추가 -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* 푸터 스타일 */
         .footer {
-            background-color: #004d40; /* 짙은 청록색 배경 */
-            color: white;
+            background-color: white;
+            color: black;
             font-family: 'Roboto', sans-serif;
+            width: 100%;
+            padding: 20px 0;
+            text-align: left; /* 기본적으로 왼쪽 정렬 */
+            position: fixed; /* 푸터를 화면 하단에 고정 */
+            bottom: 0; /* 하단에 위치 */
+            left: 0;
+            z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+            display: flex; /* Flexbox 사용 */
+            justify-content: space-between; /* 좌우로 공간을 분리 */
+            align-items: center; /* 수직 가운데 정렬 */
         }
 
-        .page-footer {
-            padding: 30px 0; /* 여백을 약간 더 추가하여 시각적으로 여유롭게 */
-            text-align: center;
-        }
-
-        .footer-logo {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .footer-description {
-            font-size: 16px;
-            margin-bottom: 20px;
+        .footer-logo, .footer-description {
+            margin-left: 20px; /* 좌측 여백 추가 */
         }
 
         .social-icons {
-            margin: 15px 0;
+            margin-right: 20px; /* 우측 여백 추가 */
         }
 
         .social-icons a {
-            margin: 0 15px; /* 여백을 조금 넓혀서 아이콘 간 간격 확보 */
-            color: white;
+            margin: 0 15px;
+            color: black; /* 아이콘 색상 */
             text-decoration: none;
-            font-size: 22px; /* 아이콘 크기를 조금 키워서 더 잘 보이게 */
+            font-size: 22px; /* 아이콘 크기 */
             transition: color 0.3s;
         }
 
@@ -44,41 +44,26 @@
             color: #00bfa5; /* 호버 시 연한 청록색 */
         }
 
-        .footer-copyright {
-            padding: 15px;
-            font-size: 14px;
-            background-color: #00332c; /* 살짝 더 어두운 배경 */
-            margin-top: 20px;
-        }
-
-        /* 반응형 디자인 */
-        @media (max-width: 768px) {
-            .social-icons a {
-                font-size: 18px;
-                margin: 0 10px; /* 모바일에서 간격을 줄여서 컴팩트하게 */
-            }
-        }
     </style>
-</head>
-<body>
-<div class="footer" th:fragment="footer">
-    <footer class="page-footer font-small cyan darken-3">
-        <!-- 푸터 로고 및 설명 -->
-        <div class="footer-logo">SHOW Korea</div>
-        <div class="footer-description">Experience the Best of Entertainment with SHOW Korea</div>
 
-        <!-- 소셜 미디어 아이콘 섹션 -->
-        <div class="social-icons">
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+    <footer class="footer">
+        <div>
+            <div class="footer-logo">SHOW Korea</div>
+            <div class="footer-description">Experience the Best of Entertainment with SHOW Korea</div>
         </div>
 
-        <!-- 저작권 표시 -->
-        <div class="footer-copyright">
-            © 2024 SHOW Korea Corporation. All Rights Reserved.
+        <!-- 소셜 미디어 아이콘 섹션 (오른쪽으로 이동) -->
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank">
+                <i class="fa-brands fa-facebook-f"></i> <!-- Font Awesome 아이콘 클래스 -->
+            </a>
+            <a href="https://twitter.com" target="_blank">
+                <i class="fa-brands fa-twitter"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
         </div>
     </footer>
 </div>
-</body>
 </html>

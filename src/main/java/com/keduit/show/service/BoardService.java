@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 
 @Service
@@ -55,10 +56,7 @@ public class BoardService {
         System.out.println("===================================" + savedMember.getId());
         System.out.println("===================================" + member.getId());
 
-        if (!StringUtils.equals(savedMember.getId(), member.getId())) {
-            return false;
-        }
-        return true;
+        return StringUtils.equals(savedMember.getId(), member.getId());
     }
 
     public void deleteBoard(Long BoardId) {
@@ -71,5 +69,10 @@ public class BoardService {
         board.updateBoard(boardDTO);
 
 
+    }
+
+    public List<Board> findBoard(Member member) {
+       List<Board> boards =  boardRepository.findByMember(member);
+        return boards;
     }
 }

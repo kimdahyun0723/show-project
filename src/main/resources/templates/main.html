@@ -31,10 +31,10 @@
                 <!-- 전시회 API 데이터를 Thymeleaf로 반복 처리 -->
                 <th:block th:each="exhibition : ${exhibitionList}">
                     <div class="carousel-item" th:classappend="${exhibitionStat.index == 0} ? 'active'">
-                        <img th:src="${exhibition.poster}" alt="Exhibition Poster">
+                        <img th:src="${exhibition.posterUrl}" alt="Exhibition Poster">
                         <div class="carousel-caption d-none d-md-block">
-                            <h5 th:text="${exhibition.prfnm}">Exhibition Title</h5>
-                            <p th:text="'상영 날짜: ' + ${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}">상영 날짜</p>
+                            <h5 th:text="${exhibition.title}">Exhibition Title</h5>
+                            <p th:text="'상영 날짜: ' + ${exhibition.startDate} + ' ~ ' + ${exhibition.endDate}">상영 날짜</p>
                         </div>
                     </div>
                 </th:block>
