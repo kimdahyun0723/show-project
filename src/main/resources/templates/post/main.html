@@ -25,16 +25,22 @@
 </th:block>
 
 <div layout:fragment="content">
+    <!-- 슬라이드 섹션 -->
     <div class="container mt-5">
         <div id="exhibitionCarousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 <!-- 전시회 API 데이터를 Thymeleaf로 반복 처리 -->
                 <th:block th:each="exhibition : ${exhibitionList}">
                     <div class="carousel-item" th:classappend="${exhibitionStat.index == 0} ? 'active'">
-                        <img th:src="${exhibition.posterUrl}" alt="Exhibition Poster">
+                        <!-- XML 데이터의 poster URL을 이미지로 사용 -->
+                        <img th:src="${exhibition.poster}" alt="Exhibition Poster">
                         <div class="carousel-caption d-none d-md-block">
-                            <h5 th:text="${exhibition.title}">Exhibition Title</h5>
-                            <p th:text="'상영 날짜: ' + ${exhibition.startDate} + ' ~ ' + ${exhibition.endDate}">상영 날짜</p>
+                            <!-- 전시회 제목 -->
+                            <h5 th:text="${exhibition.prfnm}">Exhibition Title</h5>
+                            <!-- 전시회 날짜 -->
+                            <p th:text="'전시 날짜: ' + ${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}">전시 날짜</p>
+                            <!-- 전시회 장소 -->
+                            <p th:text="'장소: ' + ${exhibition.fcltynm}">장소</p>
                         </div>
                     </div>
                 </th:block>
@@ -48,6 +54,29 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
             </a>
+        </div>
+    </div>
+
+    <!-- 이번 주 전시회 섹션 -->
+    <div class="container mt-5">
+        <h2>이번 주 전시회</h2>
+        <div class="row">
+            <!-- 전시회 목록을 3행 5열로 출력 -->
+            <th:block th:each="exhibition : ${weeklyExhibitions}">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <!-- XML 데이터의 포스터 이미지 -->
+                        <img th:src="${exhibition.poster}" class="card-img-top" alt="Exhibition Poster">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${exhibition.prfnm}">Exhibition Title</h5>
+                            <!-- 전시회 날짜 -->
+                            <p class="card-text" th:text="'전시 날짜: ' + ${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}">전시 날짜</p>
+                            <!-- 전시회 장소 -->
+                            <p class="card-text" th:text="'장소: ' + ${exhibition.fcltynm}">장소</p>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
         </div>
     </div>
 </div>
