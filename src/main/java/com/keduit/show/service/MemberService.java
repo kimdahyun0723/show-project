@@ -50,12 +50,19 @@ public class MemberService implements UserDetailsService {
         String userId = kakaoDTO.getNickname();
         Member member = memberRepository.findById(userId);
 
+
         if(member == null) {
             member = new Member();
             member.setId(kakaoDTO.getNickname());
             member.setEmail(kakaoDTO.getEmail());
             member.setRole(Role.KAKAO);
             memberRepository.save(member);
+            MemberImg memberImg = MemberImg.builder()
+                    .url("/images/defaultProfile.png")
+                    .member(member)
+                    .build();
+
+            memberImgRepository.save(memberImg);
         }
 
     }  public void naverLogin(NaverDTO naverDTO) {

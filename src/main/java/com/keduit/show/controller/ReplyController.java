@@ -1,15 +1,17 @@
 package com.keduit.show.controller;
 
 import com.keduit.show.dto.ReplyRequestDTO;
+import com.keduit.show.dto.ReplyResponseDTO;
+import com.keduit.show.entity.Reply;
 import com.keduit.show.service.ReplyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -17,29 +19,34 @@ public class ReplyController {
 
     private final ReplyService replyService;
 
-    @PostMapping("/board/{num}/reply")
-    public String writeComment(@PathVariable Long num, ReplyRequestDTO replyRequestDTO, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        replyService.writeComment(replyRequestDTO, num, userDetails.getUsername());
+    @PostMapping("/board/{id}/reply")
+    @ResponseBody
+    public ResponseEntity<ReplyResponseDTO> writeComment(@PathVariable Long id, @RequestBody ReplyRequestDTO replyRequestDTO, Principal principal) {
+        Reply savedReply = replyService.writeComment(replyRequestDTO, id, principal.getName());
 
-        return "redirect:/board/boardDtl/" + num;
+        // 생성된 댓글 정보를 DTO로 변환
+        ReplyResponseDTO response = new ReplyResponseDTO(savedReply);
+
+        return ResponseEntity.ok(response); // JSON 응답 반환
     }
 
     @PostMapping("/board/{id}/reply/{replyId}/update")
-    public String updateComment(@PathVariable Long id, @PathVariable Long replyId, ReplyRequestDTO replyRequestDTO) {
-        replyService.updateComment(replyRequestDTO, replyId);
-        return "redirect:/board/boardDtl/" + id;
+    @ResponseBody
+    public ResponseEntity<ReplyResponseDTO> updateComment(@PathVariable Long id, @PathVariable Long replyId, @RequestBody ReplyRequestDTO replyRequestDTO) {
+        Reply updatedReply = replyService.updateComment(replyRequestDTO, replyId); // 댓글 수정 서비스 호출
+
+        // 수정된 댓글 정보를 담은 DTO 생성
+        ReplyResponseDTO response = new ReplyResponseDTO(updatedReply);
+
+        return ResponseEntity.ok(response); // 수정된 댓글 정보를 JSON 형식으로 반환
     }
 
-    /**
-     * 댓글 삭제
-     * @param id 게시물
-     * @return 해당 게시물 리다이렉트
-     */
-    @GetMapping("/board/{id}/reply/{replyId}/remove")
-    public String deleteComment(@PathVariable Long id, @PathVariable Long replyId) {
+
+    @DeleteMapping("/board/{id}/reply/{replyId}/remove")
+    @ResponseBody
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id, @PathVariable Long replyId) {
         replyService.deleteComment(replyId);
-        return "redirect:/board/boardDtl/" + id;
+        return ResponseEntity.ok().build(); // 성공 시 200 OK 응답
     }
 
 

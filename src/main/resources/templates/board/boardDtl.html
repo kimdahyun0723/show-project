@@ -2,6 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout1}">
 
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+
 <!-- 사용자 js 추가-->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
@@ -11,7 +17,133 @@
             if (errorMessage != null) {
                 alert(errorMessage)
             }
-        })
+
+            $('#replyForm').on('submit', function (event) {
+                event.preventDefault(); // 기본 제출 동작 방지
+                submitComment(); // AJAX 요청 함수 호출
+            });
+
+        });
+
+        function editComment(button) {
+            const id = [[${id}]];
+            const commentId = button.getAttribute('data-id');
+            const replyContentElement = document.getElementById('replyContent-' + commentId); // 댓글 내용 요소 찾기
+
+            if (!replyContentElement) {
+                console.error("댓글 내용을 찾을 수 없습니다."); // 에러 메시지 로깅
+                return;
+            }
+
+            const commentContent = replyContentElement.textContent; // 댓글 내용 가져오기
+
+            const newContent = prompt('Edit your comment:', commentContent);
+            if (newContent) {
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+                // AJAX 요청 보내기
+                $.ajax({
+                    url: `/board/${id}/reply/${commentId}/update`,
+                    type: 'POST',
+                    headers: {
+                        [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
+                    },
+                    data: JSON.stringify({ reply: newContent }), // 'reply' 필드에 수정된 댓글 내용
+                    contentType: 'application/json', // JSON 형식으로 데이터 전송
+                    success: function(data) {
+                        replyContentElement.textContent = newContent; // 댓글 내용 업데이트
+                        alert("댓글이 수정되었습니다."); // 수정 완료 메시지
+                    },
+                    error: function(xhr) {
+                        console.error("Error:", xhr);
+                        alert("Error occurred: " + xhr.statusText); // 에러 메시지 표시
+                    }
+                });
+            }
+        }
+
+        function submitComment() {
+            const id = [[${id}]]; // 게시글 ID
+            const replyContent = document.getElementById('replyContent').value; // 댓글 내용 입력값
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            const currentUserId = [[${userId}]]; // 현재 로그인한 사용자 ID
+
+            // AJAX 요청 보내기
+            $.ajax({
+                url: `/board/${id}/reply`, // 댓글 작성 URL
+                type: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
+                },
+                data: JSON.stringify({ reply: replyContent }), // 댓글 내용
+                contentType: 'application/json', // JSON 형식으로 데이터 전송
+                success: function(data) {
+                    const commentList = document.getElementById('commentList'); // 댓글 리스트 요소
+                    if (!commentList) {
+                        console.error("댓글 리스트를 찾을 수 없습니다."); // 에러 메시지 로깅
+                        return;
+                    }
+
+                    const newComment = document.createElement('div');
+                    newComment.className = 'media mb-4';
+                    newComment.id = 'comment-' + data.num; // 댓글 ID 설정
+                    newComment.innerHTML = `
+                <div class="media-body">
+                    <div class="d-flex align-items-start">
+                        <img class="d-flex mr-3 rounded-circle" src="${data.imageUrl}" alt="User image" width="50">
+                        <div>
+                            <h5 class="mt-0">${data.userId}</h5>
+                            <p id="replyContent-${data.num}">${data.reply}</p> <!-- 댓글 내용 ID 설정 -->
+                            <small class="text-muted">${data.regTime}</small>
+                        </div>
+                    </div>
+                    <div style="display: ${data.userId === currentUserId ? 'block' : 'none'};"> <!-- 수정 및 삭제 버튼 추가 -->
+                        <button type="button" class="btn btn-sm btn-outline-warning" data-id="${data.num}" onclick="editComment(this)">Edit</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-id="${data.num}" onclick="deleteComment(this)">Delete</button>
+                    </div>
+                </div>
+            `;
+                    commentList.appendChild(newComment); // 새 댓글 추가
+
+                    // 입력 필드 초기화
+                    document.getElementById('replyContent').value = '';
+                    alert("댓글이 작성되었습니다."); // 피드백 알림
+                },
+                error: function(xhr) {
+                    console.error("Error:", xhr);
+                    alert("Error occurred: " + xhr.statusText); // 에러 메시지 표시
+                }
+            });
+        }
+
+        function deleteComment(button) {
+            const replyId = button.getAttribute('data-id'); // 댓글 ID
+            const boardId = [[${id}]]; // 게시글 ID
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: `/board/${boardId}/reply/${replyId}/remove`, // 삭제 URL
+                    type: 'DELETE', // DELETE 요청
+                    headers: {
+                        [csrfHeader]: csrfToken // CSRF 토큰 추가
+                    },
+                    success: function() {
+                        // 댓글 삭제 성공 시, DOM에서 댓글 제거
+                        const commentElement = button.closest('.media'); // 해당 댓글 요소 찾기
+                        commentElement.remove(); // 댓글 요소 제거
+                        alert("댓글이 삭제되었습니다."); // 피드백 알림
+                    },
+                    error: function(xhr) {
+                        console.error("Error:", xhr);
+                        alert("댓글 삭제 중 오류가 발생했습니다: " + xhr.statusText); // 에러 메시지 표시
+                    }
+                });
+            }
+        }
 
 
     </script>
@@ -74,42 +206,41 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         </div>
     </form>
+
+    <!-- Display Comments -->
+    <div class="card-body" id="commentList"> <!-- 이 부분이 존재해야 합니다 -->
+        <div th:each="reply : ${replys}">
+            <div class="media mb-4" th:id="'comment-' + ${reply.getNum()}"> <!-- 고유 ID 설정 -->
+                <div class="media-body">
+                    <div class="d-flex align-items-start">
+                        <img class="d-flex mr-3 rounded-circle" th:src="${reply.getImageUrl()}" alt="User image" width="50">
+                        <div>
+                            <h5 class="mt-0" th:text="${reply.getUserId()}">User Name</h5>
+                            <p th:text="${reply.getReply()}" th:id="'replyContent-' + ${reply.getNum()}">Comment content</p>
+                            <small class="text-muted" th:text="${#temporals.format(reply.getRegTime(), 'yyyy-MM-dd HH:mm')}">Comment Date</small>
+                        </div>
+                    </div>
+                    <div th:if="${reply.getUserId() == userId}">
+                        <button type="button" class="btn btn-sm btn-outline-warning" th:attr="data-id=${reply.getNum()}" onclick="editComment(this)">Edit</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" th:attr="data-id=${reply.getNum()}" onclick="deleteComment(this)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card my-4">
         <h5 class="card-header">댓글 남기기</h5>
         <div class="card-body">
-            <form th:action="@{/board/{id}/reply(id=${id})}" th:method="post">
+            <form id="replyForm">
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <input type="hidden" name="idx" th:value="*{idx}"/>
-                    <textarea name="content" class="form-control" rows="3"></textarea>
+                    <textarea name="reply" class="form-control" rows="3" id="replyContent" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">댓글작성</button>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             </form>
         </div>
     </div>
-    <!-- Display Comments -->
-    <div class="card my-4" th:if="${replys.size()} != 0">
-        <h5 class="card-header">Comments:</h5>
-        <div class="card-body">
-            <div th:each="reply : ${replys}">
-                <div class="media mb-4">
-                    <div class="media-body">
-                        <div class="d-flex align-items-start">
-                            <img class="d-flex mr-3 rounded-circle" th:src="${reply.getImageUrl()}" alt="User image" width="50">
-                            <div>
-                                <h5 class="mt-0" th:text="${reply.getUserId()}">User Name</h5>
-                                <p th:text="${reply.getReply()}" th:id="'comment-' + ${reply.getUserId()}">Comment content</p>
-                                <small class="text-muted" th:text="${#temporals.format(reply.getRegTime(), 'yyyy-MM-dd HH:mm')}">Comment Date</small>
-                            </div>
-                        </div>
-                        <div th:if="${reply.getUserId() == #authentication.principal.userId}">
-                            <button class="btn btn-sm btn-outline-warning" th:attr="data-id=${reply.getUserId()}" onclick="editComment(this)">Edit</button>
-                            <a th:href="@{/board/{id}/comment/{commentId}/remove(id=${id}, commentId=${reply.getUserId()})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this comment?')">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 </html>

@@ -27,7 +27,7 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "member_num")
     private Member member;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Reply> replies;
 
     public void updateBoard(BoardDTO boardDTO) {

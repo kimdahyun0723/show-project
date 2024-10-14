@@ -109,6 +109,7 @@ public class BoardController {
         String memberId = principal != null ? principal.getName() : "noOne";
         model.addAttribute("memberId", memberId);
         model.addAttribute("id", boardId);
+        model.addAttribute("userId", principal.getName());
 
         return "board/boardDtl";
     }
