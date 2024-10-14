@@ -10,15 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequiredArgsConstructor
 public class testcontroller {
 
-    @GetMapping("/")
-    public String test() {
-        return "test";
-    }
 
-    @PostMapping("/juso")
-    public @ResponseBody String dfd(String roadFullAddr){
-        System.out.println("테스트 : "+ roadFullAddr);
-        return "ok";
-    }
 
 }
