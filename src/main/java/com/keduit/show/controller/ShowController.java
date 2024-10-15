@@ -2,7 +2,11 @@ package com.keduit.show.controller;
 
 import com.keduit.show.constant.Sort;
 import com.keduit.show.dto.*;
+import com.keduit.show.entity.Favorite;
+import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Showing;
+import com.keduit.show.repository.FavoriteRepository;
+import com.keduit.show.repository.MemberRepository;
 import com.keduit.show.service.ShowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -24,6 +30,10 @@ public class ShowController {
 
     @Autowired
     private ShowService showService;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     //전체 목록 확인
     @GetMapping({"/shows", "/shows/{page}"})
@@ -38,17 +48,35 @@ public class ShowController {
         model.addAttribute("showLists", shows);
         model.addAttribute("showSearchDTO", showSearchDTO);
         model.addAttribute("maxPage", 5);
-        return "show/showList";
+        return "show/showList"; //공연목록페이지
     }
 
 
     //상세조회
     @GetMapping("/show/{mt20id}")
-    public String showDetail(@PathVariable("mt20id") String mt20id, Model model) {
+    public String showDetail(@PathVariable("mt20id") String mt20id, Model model, Principal principal) {
         ShowingDTO showingDTO = showService.getShowById(mt20id);
         ShowFacilityDTO showFacilityDTO = showService.getShowFacilityById(mt20id); //시설상세
         model.addAttribute("show", showingDTO);
         model.addAttribute("showFacility", showFacilityDTO);
+
+        //로그인 체크 모델
+        model.addAttribute("isLogin", principal != null);
+
+        //즐겨찾기 버튼 활성화
+        if (principal != null) { //로그인 여부
+            String id = principal.getName();
+            Member member = memberRepository.findById(id);
+            //즐겨찾기 여부
+            List<Favorite> favorites = member.getFavorites();
+            for (Favorite favorite : favorites) {
+                if (favorite.getShowing().getMt20id().equals(mt20id)) {
+                    model.addAttribute("favoriteShow", "btn-primary");
+                    return "show/showDetail";
+                }
+            }
+        }
+        model.addAttribute("favoriteShow", "btn-outline-primary");
         return "show/showDetail";
     }
 

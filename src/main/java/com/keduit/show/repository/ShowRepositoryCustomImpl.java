@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ShowRepositoryCustomImpl implements ShowRepositoryCustom {
@@ -89,5 +90,32 @@ public class ShowRepositoryCustomImpl implements ShowRepositoryCustom {
                 .orderBy(createOrderSpecifier(showSearchDTO.getSort()))
                 .fetchOne();
         return new PageImpl<>(result, pageable, total);
+    }
+
+    //공연의 즐겨찾기 갯수 더하기 빼기
+    public void updateCount(Showing showing2, boolean b){
+        if(b){
+            queryFactory.update(QShowing.showing)
+                    .set(QShowing.showing.likeCount, QShowing.showing.likeCount.add(1))
+                    .where(QShowing.showing.mt20id.eq(showing2.getMt20id()))
+                    .execute();
+        }else{
+            queryFactory.update(QShowing.showing)
+                    .set(QShowing.showing.likeCount, QShowing.showing.likeCount.subtract(1))
+                    .where(QShowing.showing.mt20id.eq(showing2.getMt20id()))
+                    .execute();
+        }
+    }
+
+    //오늘을 기준으로 전후 일주일 공연 리스트 반환
+    public List<Showing> getShowWeeksList(){
+        LocalDate now = LocalDate.now();
+        LocalDate start = now.minusWeeks(1);
+        LocalDate end = now.plusWeeks(1);
+        return queryFactory.select(QShowing.showing)
+                .from(QShowing.showing)
+                .where(QShowing.showing.prfpdto.between(start, end))
+                .orderBy(QShowing.showing.prfpdto.desc()) //내림차순
+                .fetch();
     }
 }

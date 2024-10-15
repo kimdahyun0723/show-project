@@ -26,9 +26,14 @@ public class ShowService {
     @Autowired
     private ShowFacilityRepository showFacilityRepository;
 
-    //전체 공연 리스트 조회
+    //오늘을 기준으로 전후 일주일 공연 리스트 조회
     public List<Showing> getShow(){
-        return showRepository.findAll();
+        return showRepository.getShowWeeksList();
+    }
+
+    //공연 하나 조회
+    public Showing findOne(String mt20id){
+        return showRepository.findById(mt20id).orElse(null);
     }
 
     //필터, 페이지에 따른 공연 목록 조회

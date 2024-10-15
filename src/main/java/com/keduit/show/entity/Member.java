@@ -37,17 +37,17 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private MemberImg memberImg;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Board> boards;
 
-
-
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites;
 
 
     public static Member createMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder) {
@@ -68,8 +68,22 @@ public class Member extends BaseEntity {
         }
         this.email = memberDTO.getEmail();
         this.phone = memberDTO.getPhone();
-
     }
+
+    //즐겨찾기 추가
+    public void addFavorite(Favorite favorite) {
+        for(Favorite f : favorites) {
+            if(f.getShowing().equals(favorite.getShowing())) return;
+        }
+        favorites.add(favorite);
+        favorite.setMember(this);
+    }
+    //즐겨찾기 삭제
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
+        favorite.setMember(null);
+    }
+
 
 
 
