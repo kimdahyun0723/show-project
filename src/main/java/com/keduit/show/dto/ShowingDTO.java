@@ -1,8 +1,6 @@
 package com.keduit.show.dto;
 
-import com.keduit.show.constant.Genre;
-import com.keduit.show.constant.Location;
-import com.keduit.show.constant.State;
+import com.keduit.show.constant.*;
 import com.keduit.show.entity.Showing;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -47,6 +45,10 @@ public class ShowingDTO {
     private String mt10id; //공연시설아이디 -> 시설상세
 
     private Integer likeCount; //좋아요수
+    
+    private Integer ticket; // 티켓 갯수
+
+    private TicketStatus ticketStatus;
 
 
     private static ModelMapper modelMapper = new ModelMapper();

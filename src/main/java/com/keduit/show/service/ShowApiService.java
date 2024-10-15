@@ -3,6 +3,7 @@ package com.keduit.show.service;
 import com.keduit.show.constant.Genre;
 import com.keduit.show.constant.Location;
 import com.keduit.show.constant.State;
+import com.keduit.show.constant.TicketStatus;
 import com.keduit.show.dto.ShowFacilityDTO;
 import com.keduit.show.dto.ShowingDTO;
 import com.keduit.show.entity.ShowFacility;
@@ -146,11 +147,13 @@ public class ShowApiService {
 
                 String mt10id = getElementValue(dbElement, "mt10id");
                 Integer likeCount = 0;
+                Integer ticket = 30;
+                TicketStatus ticketStatus = TicketStatus.SELL;
 
                 showDto = new ShowingDTO(mt20id, prfnm, prfpdfrom, prfpdto
                         , fcltynm, prfcast, prfcrew, prfruntime, prfage
                         , entrpsnm, entrpsnmH, pcseguidance, poster, area
-                        , genrenm, prfstate, styurl, mt10id, likeCount);
+                        , genrenm, prfstate, styurl, mt10id, likeCount, ticket, ticketStatus);
             }
         }
         return showDto;
@@ -270,7 +273,7 @@ public class ShowApiService {
 //    @Async
 //    @Scheduled(cron="0 0 0 * * *") //매일 자정에 실행
     public void deleteShow(){
-        List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(1));
+        List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(2));
         for(String showId : showIds){
             showRepository.deleteById(showId);
         }

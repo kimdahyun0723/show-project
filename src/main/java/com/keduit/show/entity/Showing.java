@@ -3,11 +3,15 @@ package com.keduit.show.entity;
 import com.keduit.show.constant.Genre;
 import com.keduit.show.constant.Location;
 import com.keduit.show.constant.State;
+import com.keduit.show.constant.TicketStatus;
+import com.keduit.show.exception.OutOfStockException;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -72,4 +76,26 @@ public class Showing {
     @ColumnDefault("0")
     private Integer likeCount; //좋아요수(기본값0)
 
+    @Column
+    @ColumnDefault("30")
+    private Integer ticket; //공연당 티켓 수(무조건 30장)
+
+    @Enumerated(EnumType.STRING)
+    private TicketStatus ticketStatus;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+    public void removeTicket(int ticketNumber) {
+        int restTicket = this.ticket - ticketNumber;
+        if (restTicket < 0) {
+            throw new OutOfStockException("티켓의 재고가 부족합니다.(현재 잔여 티켓 : " + this.ticket);
+        }
+        this.ticket = restTicket;
+    }
+
+
+    public void cancel(int cancelTicket) {
+        this.ticket += cancelTicket;
+    }
 }
