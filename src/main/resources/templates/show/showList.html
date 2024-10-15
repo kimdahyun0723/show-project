@@ -1,47 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
-<body>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
 
-<script th:inline="javascript">
-    $(document).ready(function (){
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
 
-        //검색 버튼 클릭 이벤트
-        $('#searchBtn').on("click", function (e){
-            e.preventDefault();
-            page(0);
+        $(document).ready(function (){
+
+            //검색 버튼 클릭 이벤트
+            $('#searchBtn').on("click", function (e){
+                e.preventDefault();
+                page(0);
+            })
+
+            // 정렬 버튼 클릭 이벤트
+            $('.sortBtn').on("click", function (e){
+                e.preventDefault();
+                const sort = $(this).data('sort');
+                page(0, sort);
+            })
+
         })
+        function page(page, sort='DEFAULT'){
+            const searchGenre = $('#searchGenre').val();
+            const searchLocation = $('#searchLocation').val();
+            const searchState = $('#searchState').val();
+            const searchBy = $('#searchBy').val();
+            const searchQuery = $('#searchQuery').val();
+            location.href = "/shows/" + page +
+                "?searchGenre=" + searchGenre +
+                "&searchLocation=" + searchLocation +
+                "&searchState=" + searchState +
+                "&searchBy=" + searchBy +
+                "&searchQuery=" + searchQuery +
+                "&sort=" + sort;
+        }
 
-        // 정렬 버튼 클릭 이벤트
-        $('.sortBtn').on("click", function (e){
-            e.preventDefault();
-            const sort = $(this).data('sort');
-            page(0, sort);
-        })
+    </script>
+</th:block>
 
-    })
-    function page(page, sort='DEFAULT'){
-        const searchGenre = $('#searchGenre').val();
-        const searchLocation = $('#searchLocation').val();
-        const searchState = $('#searchState').val();
-        const searchBy = $('#searchBy').val();
-        const searchQuery = $('#searchQuery').val();
-        location.href = "/shows/" + page +
-            "?searchGenre=" + searchGenre +
-            "&searchLocation=" + searchLocation +
-            "&searchState=" + searchState +
-            "&searchBy=" + searchBy +
-            "&searchQuery=" + searchQuery +
-            "&sort=" + sort;
-    }
-</script>
+<div layout:fragment="content">
 
 <div class="container">
 
@@ -164,7 +163,5 @@
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
+</div>
 </html>
