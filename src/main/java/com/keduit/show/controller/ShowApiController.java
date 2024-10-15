@@ -17,11 +17,11 @@ public class ShowApiController {
     private ShowApiService showApiService;
 
     //api 수동 실행
-    @GetMapping("/item/api")
+    @GetMapping("/show/api")
     public String saveShow() throws Exception {
-        showApiService.saveShow();
-        showApiService.saveShowFacility();
-        showApiService.deleteShow();
+        showApiService.saveShow(); //공연목록
+        showApiService.saveShowFacility(); //시설목록
+        showApiService.deleteShow(); //공연완료후 2주일이 지나면 삭제
         return "main";
     }
 
