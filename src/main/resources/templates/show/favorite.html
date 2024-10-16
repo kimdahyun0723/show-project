@@ -28,6 +28,10 @@
     function getBoard(no){
       location.href = '/board/boardDtl/' + no;
     }
+    function alertCancel(){
+      alert("즐겨찾기가 취소됐습니다");
+      document.cancelFavorite.submit();
+    }
   </script>
 </th:block>
 
@@ -76,10 +80,10 @@
                   <p class="card-text" th:if="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdto}]]</p>
                   <p class="card-text" th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</p>
                   <a th:href="'/show/' + ${show.mt20id}" class="btn btn-primary">상세보기</a>
-
-                  <form th:action="@{/favorite/{mt20id}/cancel(mt20id=${show.mt20id})}" th:method="post">
+                  <!--즐겨찾기 취소-->
+                  <form th:name="cancelFavorite" th:action="@{/favorite/{mt20id}/cancel(mt20id=${show.mt20id})}" th:method="post">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <button type="submit" class="btn btn-outline-primary">즐겨찾기 취소</button>
+                    <button type="button" th:onclick="alertCancel()" class="btn btn-outline-primary">즐겨찾기 취소</button>
                   </form>
                 </div>
               </div>

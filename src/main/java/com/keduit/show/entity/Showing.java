@@ -86,6 +86,10 @@ public class Showing {
     @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
+    //공연후기
+    @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
+
     public void removeTicket(int ticketNumber) {
         int restTicket = this.ticket - ticketNumber;
         if (restTicket < 0) {

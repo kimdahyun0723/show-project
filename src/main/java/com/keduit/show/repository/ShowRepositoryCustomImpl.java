@@ -118,4 +118,12 @@ public class ShowRepositoryCustomImpl implements ShowRepositoryCustom {
                 .orderBy(QShowing.showing.prfpdto.desc()) //내림차순
                 .fetch();
     }
+
+    //장르필터 공연 리스트 반환
+    public List<Showing> getShowFilterGenre(ShowSearchDTO showSearchDTO){
+        return  queryFactory.selectFrom(QShowing.showing)
+                .where(searchGenreEq(showSearchDTO.getSearchGenre()))
+                .where(QShowing.showing.prfstate.eq(State.ING)) //상영중인 공연
+                .fetch();
+    }
 }
