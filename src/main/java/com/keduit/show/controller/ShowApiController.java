@@ -21,7 +21,7 @@ public class ShowApiController {
     public String saveShow() throws Exception {
         showApiService.saveShow(); //공연목록
         showApiService.saveShowFacility(); //시설목록
-        showApiService.deleteShow(); //공연완료후 2주일이 지나면 삭제
+        showApiService.deleteShow(1); //공연완료후 2주일이 지나면 삭제
         return "main";
     }
 

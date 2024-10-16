@@ -272,8 +272,8 @@ public class ShowApiService {
     //공연종료 후 일주일이 지난 공연 삭제
 //    @Async
 //    @Scheduled(cron="0 0 0 * * *") //매일 자정에 실행
-    public void deleteShow(){
-        List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(2));
+    public void deleteShow(int standard){
+        List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(standard));
         for(String showId : showIds){
             showRepository.deleteById(showId);
             System.out.println("------------------종료된 공연 삭제합니다." + showId);

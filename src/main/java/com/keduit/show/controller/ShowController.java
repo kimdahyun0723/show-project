@@ -68,6 +68,7 @@ public class ShowController {
         if (principal != null) { //로그인 여부
             String id = principal.getName();
             Member member = memberService.findMember(id);
+            model.addAttribute("member", member);
             //즐겨찾기 여부
             List<Favorite> favorites = member.getFavorites();
             for (Favorite favorite : favorites) {
