@@ -83,7 +83,7 @@ public class Showing {
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     public void removeTicket(int ticketNumber) {

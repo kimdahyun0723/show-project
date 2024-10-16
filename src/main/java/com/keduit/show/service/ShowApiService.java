@@ -276,6 +276,7 @@ public class ShowApiService {
         List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(2));
         for(String showId : showIds){
             showRepository.deleteById(showId);
+            System.out.println("------------------종료된 공연 삭제합니다." + showId);
         }
     }
 

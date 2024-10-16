@@ -31,6 +31,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
+    public final ListPath<Favorite, QFavorite> favorites = this.<Favorite, QFavorite>createList("favorites", Favorite.class, QFavorite.class, PathInits.DIRECT2);
+
     public final StringPath id = createString("id");
 
     public final QMemberImg memberImg;
@@ -41,6 +43,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath name = createString("name");
 
     public final NumberPath<Long> num = createNumber("num", Long.class);
+
+    public final ListPath<Order, QOrder> orders = this.<Order, QOrder>createList("orders", Order.class, QOrder.class, PathInits.DIRECT2);
 
     public final StringPath password = createString("password");
 
