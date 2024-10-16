@@ -38,10 +38,10 @@
             margin-bottom: 30px;
         }
 
-        /* 금주의 전시회 날짜 빨간색으로 설정 */
+        /* 금주의 전시회 날짜 색상 설정 */
         .exhibition-date {
             font-size: 0.9rem;
-            color: gray; /* 날짜를 빨간색으로 설정 */
+            color: gray;
         }
 
         /* 포스터 스타일 및 크기 */
@@ -49,11 +49,26 @@
             margin-bottom: 30px;
         }
 
+        /* 링크 기본 스타일 제거 */
+        .exhibition-item a {
+            text-decoration: none; /* 기본 밑줄 제거 */
+            color: inherit; /* 기본 파란색 제거, 텍스트 상속된 색상 사용 */
+        }
+
+        .exhibition-item a:hover {
+            text-decoration: none; /* 호버 시에도 밑줄 제거 */
+        }
+
         .exhibition-item img {
             width: 100%;
             height: 350px; /* 고정된 포스터 크기 */
             object-fit: cover;
             border-radius: 10px;
+            transition: transform 0.3s ease; /* 호버 애니메이션 추가 */
+        }
+
+        .exhibition-item img:hover {
+            transform: scale(1.05); /* 호버 시 이미지 커짐 */
         }
 
         .exhibition-title {
@@ -87,6 +102,12 @@
             font-size: 16px;
         }
 
+        /* 버튼 활성화 시 스타일 */
+        .btn-active {
+            background-color: black;
+            color: white;
+        }
+
     </style>
 </th:block>
 
@@ -95,24 +116,29 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        // 필터링 기능
+        let currentGenre = 'all';  // 기본값 '전체보기'
         function filterRankings(genre) {
-            // 모든 카드를 숨기고, 선택한 장르에 맞는 카드만 보이게 함
-            $('.col-lg-2').hide();
-            if (genre === 'all') {
-                $('.col-lg-2').show();
-            } else {
-                $('.col-lg-2[th\\:if*="' + genre + '"]').show();
-            }
+            currentGenre = genre;
 
-            // 필터 버튼 활성화 처리
-            $('.genre-filter button').removeClass('active');
-            $('button[th\\:onclick*="' + genre + '"]').addClass('active');
+            // 장르별 필터링
+            document.querySelectorAll('.exhibition-item').forEach(item => {
+                const itemGenre = item.getAttribute('data-genre');
+                if (genre === 'all' || itemGenre === genre) {
+                    item.style.display = 'block';  // 해당 장르일 경우 보임
+                } else {
+                    item.style.display = 'none';  // 해당 장르가 아니면 숨김
+                }
+            });
+
+            document.querySelectorAll('.genre-filter a').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.genre-filter a').forEach(btn => btn.classList.remove('btn-active'));
+                    this.classList.add('btn-active');
+                });
+            });
+
         }
-
-        // 페이지 로드 시 모든 항목 표시
-        $(document).ready(function() {
-            filterRankings('all');
-        });
     </script>
 </th:block>
 
@@ -126,10 +152,12 @@
             <div class="carousel-inner">
                 <th:block th:each="exhibition, stat : ${exhibitionList}">
                     <div class="carousel-item" th:classappend="${stat.index == 0} ? 'active'">
-                        <img th:src="${exhibition.poster}" alt="Exhibition Poster">
+                        <a th:href="'/show/'+${exhibition.mt20id}">
+                            <img th:src="${exhibition.poster}" alt="Exhibition Poster">
+                        </a>
                         <div class="carousel-caption d-none d-md-block">
                             <h5 th:text="${exhibition.prfnm}">Exhibition Title</h5>
-                            <p th:text="'상영 날짜: ' + ${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}">상영 날짜</p>
+                            <p th:text="${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}">상영 날짜</p>
                         </div>
                     </div>
                 </th:block>
@@ -153,12 +181,14 @@
                 <!-- 4행 4열로 포스터 및 공연 날짜 표시 -->
                 <th:block th:each="exhibition, stat : ${exhibitionList}">
                     <div class="col-lg-3 col-md-4 col-sm-6 exhibition-item">
-                        <div class="poster-wrapper">
-                            <img th:src="${exhibition.poster}" class="poster-img" alt="Exhibition Poster">
-                            <div class="exhibition-title" th:text="${exhibition.prfnm}">뮤지컬 &lt;제목&gt;</div>
-                            <div class="exhibition-fcltynm" th:text="${exhibition.fcltynm}">장소</div>
-                            <div class="exhibition-date" th:text="${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}"></div>
-                        </div>
+                        <a th:href="'/show/'+${exhibition.mt20id}">
+                            <div class="poster-wrapper">
+                                <img th:src="${exhibition.poster}" class="poster-img" alt="Exhibition Poster">
+                                <div class="exhibition-title" th:text="${exhibition.prfnm}">뮤지컬 &lt;제목&gt;</div>
+                                <div class="exhibition-venue" th:text="${exhibition.fcltynm}">장소</div>
+                                <div class="exhibition-date" th:text="${exhibition.prfpdfrom} + ' ~ ' + ${exhibition.prfpdto}"></div>
+                            </div>
+                        </a>
                     </div>
                 </th:block>
             </div>
@@ -167,28 +197,30 @@
         <!-- 장르별 랭킹 영역 -->
         <div class="genre-exhibition mt-5">
             <h1 class="section-title">장르별 랭킹</h1>
+            <!-- 장르별 랭킹 영역 (장르별 버튼과 URL 연결) -->
             <div class="genre-filter">
-                <button class="btn btn-outline-dark active" th:onclick="|filterRankings('all')|">전체보기</button>
-                <button class="btn btn-outline-dark" th:onclick="|filterRankings('뮤지컬')|">뮤지컬</button>
-                <button class="btn btn-outline-dark" th:onclick="|filterRankings('연극')|">연극</button>
-                <button class="btn btn-outline-dark" th:onclick="|filterRankings('무용')|">무용</button>
-                <button class="btn btn-outline-dark" th:onclick="|filterRankings('한국음악')|">한국음악</button>
-                <button class="btn btn-outline-dark" th:onclick="|filterRankings('서양음악')|">서양음악</button>
-                <button class="btn btn-outline-dark" th:onclick="|filterRankings('대중음악')|">대중음악</button>
+                <a th:href="@{/exhibitions/genre/MUSICAL}" class="btn btn-outline-dark">뮤지컬</a>
+                <a th:href="@{/exhibitions/genre/CONCERT}" class="btn btn-outline-dark">콘서트</a>
+                <a th:href="@{/exhibitions/genre/PLAY}" class="btn btn-outline-dark">연극</a>
+                <a th:href="@{/exhibitions/genre/EXHIBITION}" class="btn btn-outline-dark">전시</a>
+                <!-- 추가로 필요한 장르 버튼들 -->
             </div>
             <div class="row">
                 <!-- 5열로 포스터 및 공연 날짜 표시 -->
-                <th:block th:each="ranking, stat : ${exhibitionList}">
-                    <div class="col-lg-2 col-md-4 col-sm-6 exhibition-item" th:if="${ranking.genre == 'all' || ranking.genre == currentGenre}">
-                        <div class="poster-wrapper">
-                            <img th:src="${ranking.poster}" class="poster-img" alt="Ranking Poster">
-                            <div class="exhibition-title" th:text="${ranking.title}">뮤지컬 &lt;제목&gt;</div>
-                            <div class="exhibition-venue" th:text="${ranking.fcltynm}">장소</div>
-                            <div class="exhibition-date" th:text="${ranking.prfpdfrom} + ' ~ ' + ${ranking.prfpdto}"></div>
-                        </div>
+                <th:block th:each="ranking, stat : ${rankingList}">
+                    <div class="col-lg-2 col-md-4 col-sm-6 exhibition-item" th:data-genre="${ranking.genrenm}">
+                        <a th:href="'/show/'+${ranking.mt20id}">
+                            <div class="poster-wrapper">
+                                <img th:src="${ranking.poster}" class="poster-img" alt="Ranking Poster">
+                                <div class="exhibition-title" th:text="${ranking.prfnm}">뮤지컬 &lt;제목&gt;</div>
+                                <div class="exhibition-venue" th:text="${ranking.fcltynm}">장소</div>
+                                <div class="exhibition-date" th:text="${ranking.prfpdfrom} + ' ~ ' + ${ranking.prfpdto}"></div>
+                            </div>
+                        </a>
                     </div>
                 </th:block>
             </div>
+
         </div>
     </div>
 </div>
