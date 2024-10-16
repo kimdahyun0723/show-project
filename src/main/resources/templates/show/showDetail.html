@@ -64,11 +64,6 @@
                 }
             })
         }
-
-
-
-
-
     </script>
 </th:block>
 
@@ -129,7 +124,7 @@
             <form th:action="@{/favorite}" th:method="post" onsubmit="return checkLogin();">
                 <input type="hidden" name="mt20id" th:value="${show.mt20id}">
                 <input type="hidden" name="isLogin" th:value="${isLogin}">
-                <button type="submit" class="btn" th:classappend="${favoriteShow}">즐겨찾기</button>
+                <button type="button" class="btn" th:classappend="${favoriteShow}" onclick="alertFavorite()">즐겨찾기</button>
                 <h4 th:text="${show.likeCount}"></h4>
             </form>
 
@@ -203,6 +198,8 @@
             }
             return true;
         }
+        //즐겨찾기 추가, 취소 alert
+        let favoriteShow = document.getElementsByClassName('btn-primary')
 
         let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
         let la = $('input[name=la]').val();
