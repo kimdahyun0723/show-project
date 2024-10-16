@@ -58,6 +58,8 @@ public class QShowing extends EntityPathBase<Showing> {
 
     public final EnumPath<com.keduit.show.constant.State> prfstate = createEnum("prfstate", com.keduit.show.constant.State.class);
 
+    public final ListPath<Review, QReview> reviews = this.<Review, QReview>createList("reviews", Review.class, QReview.class, PathInits.DIRECT2);
+
     public final StringPath styurl = createString("styurl");
 
     public final NumberPath<Integer> ticket = createNumber("ticket", Integer.class);
