@@ -7,6 +7,7 @@ import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Showing;
 import com.keduit.show.repository.FavoriteRepository;
 import com.keduit.show.repository.MemberRepository;
+import com.keduit.show.service.MemberService;
 import com.keduit.show.service.ShowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ShowController {
     @Autowired
     private ShowService showService;
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberService memberService;
     @Autowired
     private FavoriteRepository favoriteRepository;
 
@@ -60,13 +61,14 @@ public class ShowController {
         model.addAttribute("show", showingDTO);
         model.addAttribute("showFacility", showFacilityDTO);
 
-        //로그인 체크 모델
+        //로그인 체크 여부 모델
         model.addAttribute("isLogin", principal != null);
 
         //즐겨찾기 버튼 활성화
         if (principal != null) { //로그인 여부
             String id = principal.getName();
-            Member member = memberRepository.findById(id);
+            Member member = memberService.findMember(id);
+            model.addAttribute("member", member);
             //즐겨찾기 여부
             List<Favorite> favorites = member.getFavorites();
             for (Favorite favorite : favorites) {

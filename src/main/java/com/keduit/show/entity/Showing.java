@@ -83,8 +83,12 @@ public class Showing {
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    //공연후기
+    @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 
     public void removeTicket(int ticketNumber) {
         int restTicket = this.ticket - ticketNumber;

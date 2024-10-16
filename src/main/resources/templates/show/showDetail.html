@@ -18,17 +18,6 @@
             });
         });
 
-        //즐겨찾기 로그인체크
-        const isLogin = $('input[name=isLogin]').val();
-        console.log(isLogin);
-        function checkLogin(){
-            if(!isLogin){
-                alert("로그인 후 이용해주세요");
-                return false;
-            }
-            return true;
-        }
-
         function calculateTotalPrice() {
             const count = $("#count").val();
             const price = $("#price").val();
@@ -36,50 +25,92 @@
             $("#totalPrice").html(totalPrice + "원");
         }
 
-        function order() {
-            const token = $("meta[name='_csrf']").attr("content");
-            const header = $("meta[name='_csrf_header']").attr("content");
 
-            const url = "/order";
+        var IMP = window.IMP;
 
-            // 객체로 생성
-            const paramData = { showNum : $("#showNum").val(),
-                count : $("#count").val()};
-            // 객체를 JSON으로 변환
-            const param = JSON.stringify(paramData);
+        function requestPay() {
+            const count = $("#count").val();
+            const price = $("#price").val();
+            const totalPrice = count * price;
+            const email = [[${member.email}]];
+            const name = [[${member.name}]];
+            console.log(email);
+            console.log(name);
 
-            $.ajax({
-                url : url,
-                type : "POST",
-                /* 서버에게 보내는 데이터 타입 */
-                contentType : "application/json",
-                data : param,
-                beforeSend : function(xhr) {
-                    /* 데이터를 전송하기 전에 헤더에 csrf 값을 설정 */
-                    xhr.setRequestHeader(header, token)
+            IMP.init("imp23776017");
+            IMP.request_pay(
+                {
+                    pg: "html5_inicis",		//KG이니시스 pg파라미터 값
+                    pay_method: "card",		//결제 방법
+                    merchant_uid: generateOrderNumber(),//주문번호
+                    name: `[[${show.prfnm}]]`,		//상품 명
+                    amount: 100,			//금액
+                    buyer_email: email,
+                    buyer_name: name
+
                 },
-                /* 서버에게 결과값으로 받을 데이터 타입 */
-                dataType : "json",
-                cache : false,
-                success : function(result, status) {
-                    alert("주문이 완료되었습니다.");
-                    location.href='/';
-                },
-                error : function(xhr, status, error) {
-                    if(xhr.status == '401') {
-                        alert("로그인 후 주문해주세요")
-                        location.href="/members/login";
+                function (rsp) {
+                    //rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
+                    if (rsp.success) {
+                        const token = $("meta[name='_csrf']").attr("content");
+                        const header = $("meta[name='_csrf_header']").attr("content");
+
+                        const url = "/order";
+
+                        // 객체로 생성
+                        const paramData = { showNum : $("#showNum").val(),
+                            count : $("#count").val()};
+                        // 객체를 JSON으로 변환
+                        const param = JSON.stringify(paramData);
+
+                        $.ajax({
+                            url : url,
+                            type : "POST",
+                            /* 서버에게 보내는 데이터 타입 */
+                            contentType : "application/json",
+                            data : param,
+                            beforeSend : function(xhr) {
+                                /* 데이터를 전송하기 전에 헤더에 csrf 값을 설정 */
+                                xhr.setRequestHeader(header, token)
+                            },
+                            /* 서버에게 결과값으로 받을 데이터 타입 */
+                            dataType : "json",
+                            cache : false,
+                            success : function(result, status) {
+                                alert("주문이 완료되었습니다.");
+                                location.href='/orders';
+                            },
+                            error : function(xhr, status, error) {
+                                if(xhr.status == '401') {
+                                    alert("로그인 후 주문해주세요")
+                                    location.href="/members/login";
+                                } else {
+                                    alert(xhr.responseText)
+                                }
+                            }
+                        })
                     } else {
-                        alert(xhr.responseText)
+                        alert(rsp.error_msg);
                     }
                 }
-            })
+            );
         }
 
+        function generateOrderNumber() {
+            // 오늘 날짜를 YYYYMMDD 형식으로 가져오기
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // 1월은 0이므로 +1
+            const day = String(today.getDate()).padStart(2, '0');
+            const dateString = `${year}${month}${day}`; // YYYYMMDD 형식
 
+            // 000부터 999까지의 랜덤 숫자 생성
+            const randomNumber = String(Math.floor(Math.random() * 1000)).padStart(3, '0'); // 3자리로 맞추기
 
-
-
+            // 주문번호 생성
+            const orderNumber = `${dateString}${randomNumber}`;
+            return orderNumber;
+        }
     </script>
 </th:block>
 
@@ -95,14 +126,13 @@
         <div class="d-flex">
             <div class="wd50">
 
-                <button onclick="requestPay()">결제하기</button>
-
                 <div class="text-right" th:if="${show.ticketStatus == T(com.keduit.show.constant.TicketStatus).SELL}">
                     <hr class="my-4">
                     <div class="text-right">
                         <div class="h4 text-danger text-left">
                             <input type="hidden" th:value="${show.pcseguidance}" id="price" name="price">
                             <span th:text="${show.pcseguidance}"></span> 원
+
                         </div>
                         <div class="input-group w-50">
                             <div class="input-group-prepend">
@@ -118,7 +148,7 @@
                         <h5>결제금액</h5>
                         <h3 class="font-weight-bold" name="totalPrice" id="totalPrice"></h3>
                     </div>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="order()">예매하기</button>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="requestPay()">예매하기</button>
                 </div>
                 <div class="text-right"
                      th:if="${show.ticketStatus == T(com.keduit.show.constant.TicketStatus).SOLD_OUT}">
@@ -130,7 +160,13 @@
         <input type="hidden" id="showDetail" th:value="${show.mt20id}">
         <h1 th:text="${show.prfnm}"></h1>
 
-        <p th:text="${show.prfstate}"></p>
+        <!--공연상태-->
+        <div th:switch="${show.prfstate.name()}">
+            <span th:case="'EXPECT'" class="badge bg-primary">공연예정</span>
+            <span th:case="'ING'" class="badge bg-success">공연중</span>
+            <span th:case="'COMPLETE'" class="badge bg-secondary">공연완료</span>
+        </div>
+
         <div class="d-flex">
             <div class="poster">
                 <img th:src="${show.poster}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
@@ -201,9 +237,25 @@
         <input type="hidden" name="adres" th:value="${showFacility.adres}">
         <h3 th:text="${showFacility.adres}"></h3>
         <div id="map" style="width: 500px; height: 400px;"></div>
+
+        <div th:replace="show/review::review"></div>
+
     </div>
 
     <script>
+        //즐겨찾기 로그인체크
+        const isLogin = $('input[name=isLogin]').val();
+        console.log("로그인여부" + isLogin);
+        function checkLogin(){
+            if(!isLogin){
+                alert("로그인 후 이용해주세요");
+                return false;
+            }
+            return true;
+        }
+        //즐겨찾기 추가, 취소 alert
+        let favoriteShow = document.getElementsByClassName('btn-primary')
+
         let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
         let la = $('input[name=la]').val();
         let lo = $('input[name=lo]').val();

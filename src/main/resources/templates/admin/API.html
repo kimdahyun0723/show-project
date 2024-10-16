@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/adminLayout.html}">
+
+<div layout:fragment="content">
+  <a href="/admin/managementAPI/update">api 업데이트</a>
+  <form action="/admin/managementAPI/delete" method="post">
+    <select name="standard">
+      <option>삭제 기간 기준</option>
+      <option value="1">1주</option>
+      <option value="2">2주</option>
+      <option value="3">3주</option>
+    </select>
+    <button type="submit">삭제하기</button>
+  </form>
+</div>

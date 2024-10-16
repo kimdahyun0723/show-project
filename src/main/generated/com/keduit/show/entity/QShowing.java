@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -35,6 +36,8 @@ public class QShowing extends EntityPathBase<Showing> {
 
     public final StringPath mt20id = createString("mt20id");
 
+    public final ListPath<Order, QOrder> orders = this.<Order, QOrder>createList("orders", Order.class, QOrder.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> pcseguidance = createNumber("pcseguidance", Integer.class);
 
     public final StringPath poster = createString("poster");
@@ -55,7 +58,13 @@ public class QShowing extends EntityPathBase<Showing> {
 
     public final EnumPath<com.keduit.show.constant.State> prfstate = createEnum("prfstate", com.keduit.show.constant.State.class);
 
+    public final ListPath<Review, QReview> reviews = this.<Review, QReview>createList("reviews", Review.class, QReview.class, PathInits.DIRECT2);
+
     public final StringPath styurl = createString("styurl");
+
+    public final NumberPath<Integer> ticket = createNumber("ticket", Integer.class);
+
+    public final EnumPath<com.keduit.show.constant.TicketStatus> ticketStatus = createEnum("ticketStatus", com.keduit.show.constant.TicketStatus.class);
 
     public QShowing(String variable) {
         super(Showing.class, forVariable(variable));

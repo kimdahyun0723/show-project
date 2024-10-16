@@ -17,7 +17,7 @@
                 </li>
                 <li class="nav-item"
                     sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                    <a class="nav-link" href="/admin/items"></a>
+                    <a class="nav-link" href="/admin/adminpage">관리자페이지</a>
                 </li>
                 <li class="nav-item"
                     sec:authorize="isAuthenticated()">
@@ -40,7 +40,7 @@
                     <a class="nav-link" href="/members/login">로그인</a>
                 </li>
                 <!-- 일반 로그아웃 링크는 로그인한 사용자에게만 보임 -->
-                <li class="nav-item" sec:authorize="isAuthenticated() and hasAnyAuthority('ROLE_USER')">
+                <li class="nav-item" sec:authorize="isAuthenticated() and hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')">
                     <a class="nav-link" href="/members/logout">로그아웃</a>
                 </li>
                 <!-- 카카오 로그아웃 링크는 카카오 로그인한 사용자에게만 보임 -->

@@ -15,4 +15,7 @@ public interface ShowRepositoryCustom {
 
     //오늘을 기준으로 전후 일주일 공연 리스트 반환
     List<Showing> getShowWeeksList();
+
+    //장르필터 공연 리스트
+    List<Showing> getShowFilterGenre(ShowSearchDTO showSearchDTO);
 }

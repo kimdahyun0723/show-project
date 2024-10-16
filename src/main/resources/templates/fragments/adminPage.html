@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+<div th:fragment="adminPage">
+  <div th:fragment="body" class="flex-shrink-0 p-3" style="width: 280px;" id="infoheader">
+    <a href="/admin/adminpage"
+       class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+      <svg class="bi pe-none me-2" width="30" height="24">
+        <use xlink:href="#bootstrap"></use>
+      </svg>
+      <span class="fs-2 fw-semibold">관리자페이지</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+      <li class="mb-1">
+        <a href="/admin/managementAPI"
+           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+          API관리
+        </a>
+      </li>
+      <li class="mb-1">
+        <a href="/admin/managementMember"
+           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+          회원관리
+        </a>
+      </li><li class="mb-1">
+        <a href="/admin/managmentBoard"
+           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+          게시물 관리
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</div>

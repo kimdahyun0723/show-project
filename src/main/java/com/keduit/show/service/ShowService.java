@@ -56,5 +56,10 @@ public class ShowService {
         return showFacilityDTO;
     }
 
+    //장르에 따른 상영중인 공연 목록 조회
+    public List<Showing> getShowFilterGenre(ShowSearchDTO searchDTO){
+        return showRepository.getShowFilterGenre(searchDTO);
+    }
+
 
 }
