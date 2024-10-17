@@ -6,6 +6,7 @@ import lombok.*;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Setter
 @Getter
@@ -50,6 +51,8 @@ public class ShowingDTO {
 
     private TicketStatus ticketStatus;
 
+    //리뷰 리스트
+    private List<ReviewResponseDTO> reviews;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

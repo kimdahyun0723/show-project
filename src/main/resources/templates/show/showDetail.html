@@ -32,8 +32,8 @@
             const count = $("#count").val();
             const price = $("#price").val();
             const totalPrice = count * price;
-            const email = [[${member.email}]];
-            const name = [[${member.name}]];
+            const email = [[${member != null ? member.email : ''}]];
+            const name = [[${member != null ? member.name : ''}]];
             console.log(email);
             console.log(name);
 
@@ -111,6 +111,85 @@
             const orderNumber = `${dateString}${randomNumber}`;
             return orderNumber;
         }
+
+        $(document).ready(function(){
+            $('#review-form').on('submit', function(event){
+                event.preventDefault();
+                createReview(); //리뷰 생성 함수
+            });
+        });
+
+        //후기 추가
+        function createReview(){
+            const mt20id = [[${mt20id}]]; //현재 페이지 공연아이디
+            const reviewRating = document.getElementById('review-rating').value;
+            const reviewContent = document.getElementById('review-content').value;
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            const memberId = [[${memberId}]]; //현재 로그인 회원 아이디
+
+            $.ajax({
+                url: `/show/${mt20id}/review`,
+                type: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                data: JSON.stringify({
+                    rating: reviewRating,
+                    content: reviewContent
+                }),
+                contentType: 'application/json',
+                success: function (data){
+                    const reviewList = document.getElementById('review-list');
+                    if(!reviewList){
+                        console.error("후기 리스트를 찾을 수 없습니다");
+                        return;
+                    }
+                    const newReview = document.createElement('li');
+                    newReview.className = 'list-group-item';
+                    newReview.id = 'review-' + data.num;
+                    newReview.innerHTML = `
+                        <p id="'rating-' + ${data.num}">${data.rating}</p>
+                        <p id="'content-' + ${data.num}">${data.content}</p>
+                        <span>
+                            <span style="font-size: small">${data.memberId}</span>
+                            <span style="font-size: small" >${data.createDate}</span>&nbsp;
+                            <div>
+                                <button type="button" class="badge bi bi-pencil-square"
+                                        data-id="${data.num}" onclick="updateReview(this)">수정</button>
+                                <button type="button" class="badge bi bi-trash"
+                                        data-id="${data.num}" onclick="deleteReview(this)">삭제</button>
+                            </div>
+                        </span>
+                    `;
+                    reviewList.appendChild(newReview);
+                    document.getElementById('review-content').value = '';
+                    alert("후기가 작성됐습니다");
+                },
+                error: function (xhr){
+                    console.log("error : ", xhr);
+                    alert("error : " + xhr.statusText);
+                }
+            });
+        }
+
+        //후기 수정
+        // function updateReview(button){
+        //     const mt20id = [[${mt20id}]];
+        //     const reviewId = button.getAttribute('data-id');
+        //     const reviewRatingId = document.getElementById('rating-' + reviewId); //평점
+        //     const reviewContentId = document.getElementById('content-' + reviewId); //내용
+        //
+        //     if(!reviewContentId){
+        //         console.log("후기 내용을 찾을 수 없습니다");
+        //         return;
+        //     }
+        //
+        //     const newRating = reviewRatingId.textContent;
+        //     const reviewContent = reviewContentId.textContent;
+        //     const
+        // }
+
     </script>
 </th:block>
 
@@ -238,7 +317,51 @@
         <h3 th:text="${showFacility.adres}"></h3>
         <div id="map" style="width: 500px; height: 400px;"></div>
 
-        <div th:replace="show/review::review"></div>
+
+        <!--공연후기 작성 폼 createReview()으로 실행-->
+        <div class="card">
+            <div class="card-header bi bi-chat-right-dots">후기를 작성해 주세요</div>
+            <form id="review-form">
+                <!--로그인이 되어잇을 경우-->
+                <div th:if="${isLogin} == true">
+                    <div class="card-body">
+                        <input name="review" type="number" id="review-rating" class="form-control" min="0" max="10" placeholder="평점을 입력하세요">
+                        <textarea name="review" id="review-content" class="form-control" placeholder="후기를 입력하세요"></textarea>
+                    </div>
+                    <button type="submit" id="review-save-btn" class="btn btn-outline-primary bi bi-pencil-square">등록</button>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                </div>
+                <!--로그인이 안되어 잇는 경우-->
+                <div th:unless="${isLogin} == true">
+                    <div class="card-body" style="font-size: small">
+                        로그인 후 이용가능 합니다
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!--공연후기 리스트-->
+        <div class="card" id="review-list">
+            <div class="card-header bi bi-chat-dots" >Reviews</div>
+            <ul class="list-group-flush">
+                <th:block th:each="review : ${reviews}">
+                    <li class="list-group-item" th:id="'review-' + ${review.getNum()}">
+                        <p th:text="${review.getRating()}" th:id="'rating-' + ${review.getNum()}">평점</p>
+                        <p th:text="${review.getContent()}" th:id="'content-' + ${review.getNum()}">내용</p>
+                        <span>
+                            <span style="font-size: small" th:text="${review.getMemberId()}">작성자아이디</span>
+                            <span style="font-size: small" th:text="${review.getCreateDate()}">작성일</span>&nbsp;
+                            <div th:if="${review.getMemberId() == memberId}">
+                                <button type="button" class="badge bi bi-pencil-square"
+                                        th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정</button>
+                                <button type="button" class="badge bi bi-trash"
+                                        th:attr="data-id=${review.getNum()}" onclick="deleteReview(this)">삭제</button>
+                            </div>
+                        </span>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
 
     </div>
 

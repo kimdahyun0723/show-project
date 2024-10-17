@@ -1,25 +1,42 @@
 package com.keduit.show.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.keduit.show.entity.Review;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class ReviewResponseDTO {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime regTime; //작성일
-    private LocalDateTime updateTime; //수정일
+    //리뷰 요청에 따른 반환
+
     private Long num;
+
     private Integer rating;
     private String content;
-    private String userId;
-    
+
+    private String createDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    private String modifyDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+    private String memberId; //작성자 아이디
+    private String mt20id; //공연 아이디
+
+    //entity -> dto
+    //테이블에서 리뷰 데이터를 가져와 dto 로 화면에 전달
+    public static ReviewResponseDTO toDTO(Review review) {
+        return new ReviewResponseDTO(
+                review.getNum(),
+                review.getRating(),
+                review.getContent(),
+                review.getCreateDate(),
+                review.getModifyDate(),
+                review.getMember().getId(),
+                review.getShowing().getMt20id()
+        );
+    }
 }

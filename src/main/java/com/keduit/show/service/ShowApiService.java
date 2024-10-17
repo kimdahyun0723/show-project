@@ -4,6 +4,7 @@ import com.keduit.show.constant.Genre;
 import com.keduit.show.constant.Location;
 import com.keduit.show.constant.State;
 import com.keduit.show.constant.TicketStatus;
+import com.keduit.show.dto.ReviewResponseDTO;
 import com.keduit.show.dto.ShowFacilityDTO;
 import com.keduit.show.dto.ShowingDTO;
 import com.keduit.show.entity.ShowFacility;
@@ -153,7 +154,8 @@ public class ShowApiService {
                 showDto = new ShowingDTO(mt20id, prfnm, prfpdfrom, prfpdto
                         , fcltynm, prfcast, prfcrew, prfruntime, prfage
                         , entrpsnm, entrpsnmH, pcseguidance, poster, area
-                        , genrenm, prfstate, styurl, mt10id, likeCount, ticket, ticketStatus);
+                        , genrenm, prfstate, styurl, mt10id, likeCount
+                        , ticket, ticketStatus, null);
             }
         }
         return showDto;

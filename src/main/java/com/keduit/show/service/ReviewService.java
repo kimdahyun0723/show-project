@@ -1,6 +1,7 @@
 package com.keduit.show.service;
 
 import com.keduit.show.dto.ReviewRequestDTO;
+import com.keduit.show.dto.ReviewResponseDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Review;
 import com.keduit.show.entity.Showing;
@@ -12,8 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,38 +28,43 @@ public class ReviewService {
     private final ShowRepository showRepository;
 
     //리뷰추가
-    public Review save(String mt20id, String createBy, ReviewRequestDTO reviewRequestDTO) {
-        Member member = memberRepository.findById(createBy);
+    public Review save(String memberId, String mt20id, ReviewRequestDTO reviewRequestDTO) {
+        Member member = memberRepository.findById(memberId);
         Showing showing = showRepository.findById(mt20id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 공연이 없습니다"));
-        reviewRequestDTO.setShowing(mt20id);
-        reviewRequestDTO.setCreateBy(createBy);
-        return reviewRepository.save(reviewRequestDTO.toEntity(showing, member));
+                .orElseThrow(() -> new IllegalArgumentException("해당 공연이 존재하지 않습니다"));
+        reviewRequestDTO.setMember(member);
+        reviewRequestDTO.setShowing(showing);
+        Review review = reviewRequestDTO.toEntity();
+        reviewRepository.save(review);
+        return review;
     }
 
     //리뷰 전체 조회
-    @Transactional(readOnly = true)
-    public List<Review> findAll(String mt20id) {
-        Showing showing = showRepository.findById(mt20id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 공연이 없습니다"));
-        List<Review> reviews = showing.getReviews();
-        return reviews;
+    public List<ReviewResponseDTO> read(String mt20id) {
+        Showing showing = showRepository.findById(mt20id).orElseThrow(
+                () -> new IllegalArgumentException("해당 공연을 찾을수 없습니다"));
+        List<Review> reviews = reviewRepository.findByShowing(showing);
+        List<ReviewResponseDTO> reviewResponseDTOS = reviews.stream()
+                .map(review -> ReviewResponseDTO.toDTO(review))
+                .collect(Collectors.toList());
+//        for(int i = 0; i < reviews.size(); i++) {
+//            Review review = reviews.get(i);
+//            reviewResponseDTOS.add(ReviewResponseDTO.toDTO(review));
+//        }
+        return reviewResponseDTOS;
     }
 
     //리뷰 수정
-    @Transactional
-    public void update(String mt20id, Long num, ReviewRequestDTO reviewRequestDTO) {
-        Review review = reviewRepository.findByShowingMt20idAndNum(mt20id, num)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다" + num));
+    public Review update(Long num, ReviewRequestDTO reviewRequestDTO) {
+        Review review = reviewRepository.findById(num)
+                        .orElseThrow(() -> new IllegalArgumentException("후기를 찾을수 없습니다"));
         review.update(review.getRating(), review.getContent());
+        return reviewRepository.save(review); //수정후 반환
     }
 
     //리뷰 삭제
-    @Transactional
-    public void delete(String mt20id, Long num) {
-        Review review = reviewRepository.findByShowingMt20idAndNum(mt20id, num)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다" + num));
-        reviewRepository.delete(review);
+    public void delete(Long num) {
+        reviewRepository.deleteById(num);
     }
 
 }
