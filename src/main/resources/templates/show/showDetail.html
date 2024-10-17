@@ -11,12 +11,62 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function(){
+
+
+
+            let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+            let la = $('input[name=la]').val();
+            let lo = $('input[name=lo]').val();
+            let options = { //지도를 생성할 때 필요한 기본 옵션
+                center: new kakao.maps.LatLng(la, lo), //지도의 중심좌표.
+                level: 3 //지도의 레벨(확대, 축소 정도)
+            };
+            let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+            var markerPosition = new kakao.maps.LatLng(la, lo);  // 마커가 표시될 위치
+            var marker = new kakao.maps.Marker({  // 마커 생성
+                position: markerPosition
+            });
+            marker.setMap(map);
+
+            // 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성
+            //위치정보 길찾기로 넘기기
+            var iwContent = '<div style="padding:5px;">' + $('input[name=fcltynm]').val() +
+                    '<br> <a href="https://map.kakao.com/link/to/' + $('input[name=adres]').val() +
+                    ',' + la + ',' + lo + '" style="color:blue" target="_blank">길찾기</a></div>',
+                iwPosition = new kakao.maps.LatLng(la, lo),
+                iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+
+            var infowindow = new kakao.maps.InfoWindow({
+                content: iwContent,
+                position: iwPosition,
+                removable: iwRemoveable
+            });
+
+            kakao.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+            });
+
             calculateTotalPrice();
+
 
             $("#count").change(function(){
                 calculateTotalPrice();
             });
         });
+
+        //즐겨찾기 로그인체크
+        const isLogin = $('input[name=isLogin]').val();
+        console.log("로그인여부" + isLogin);
+        function checkLogin(){
+            if(!isLogin){
+                alert("로그인 후 이용해주세요");
+                location.href="members/login";
+            }
+            return true;
+        }
+        //즐겨찾기 추가, 취소 alert
+        let favoriteShow = document.getElementsByClassName('btn-primary')
 
         function calculateTotalPrice() {
             const count = $("#count").val();
@@ -364,55 +414,6 @@
         </div>
 
     </div>
-
-    <script>
-        //즐겨찾기 로그인체크
-        const isLogin = $('input[name=isLogin]').val();
-        console.log("로그인여부" + isLogin);
-        function checkLogin(){
-            if(!isLogin){
-                alert("로그인 후 이용해주세요");
-                return false;
-            }
-            return true;
-        }
-        //즐겨찾기 추가, 취소 alert
-        let favoriteShow = document.getElementsByClassName('btn-primary')
-
-        let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-        let la = $('input[name=la]').val();
-        let lo = $('input[name=lo]').val();
-        let options = { //지도를 생성할 때 필요한 기본 옵션
-            center: new kakao.maps.LatLng(la, lo), //지도의 중심좌표.
-            level: 3 //지도의 레벨(확대, 축소 정도)
-        };
-        let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-        var markerPosition = new kakao.maps.LatLng(la, lo);  // 마커가 표시될 위치
-        var marker = new kakao.maps.Marker({  // 마커 생성
-            position: markerPosition
-        });
-        marker.setMap(map);
-
-        // 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성
-        //위치정보 길찾기로 넘기기
-        var iwContent = '<div style="padding:5px;">' + $('input[name=fcltynm]').val() +
-                '<br> <a href="https://map.kakao.com/link/to/' + $('input[name=adres]').val() +
-                ',' + la + ',' + lo + '" style="color:blue" target="_blank">길찾기</a></div>',
-            iwPosition = new kakao.maps.LatLng(la, lo),
-            iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
-
-        var infowindow = new kakao.maps.InfoWindow({
-            content: iwContent,
-            position: iwPosition,
-            removable: iwRemoveable
-        });
-
-        kakao.maps.event.addListener(marker, 'click', function () {
-            infowindow.open(map, marker);
-        });
-    </script>
-
 
 </div>
 </html>
