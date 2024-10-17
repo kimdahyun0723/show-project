@@ -61,7 +61,7 @@
         function checkLogin(){
             if(!isLogin){
                 alert("로그인 후 이용해주세요");
-                location.href="members/login";
+                location.href="/members/login";
             }
             return true;
         }
@@ -86,6 +86,8 @@
             const name = [[${member != null ? member.name : ''}]];
             console.log(email);
             console.log(name);
+
+            checkLogin();
 
             IMP.init("imp23776017");
             IMP.request_pay(
