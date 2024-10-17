@@ -1,10 +1,7 @@
 package com.keduit.show.service;
 
 import com.keduit.show.constant.Role;
-import com.keduit.show.dto.KakaoDTO;
-import com.keduit.show.dto.MemberDTO;
-import com.keduit.show.dto.MemberUpdateDTO;
-import com.keduit.show.dto.NaverDTO;
+import com.keduit.show.dto.*;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.MemberImg;
 import com.keduit.show.repository.MemberImgRepository;
@@ -17,6 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -65,22 +66,6 @@ public class MemberService implements UserDetailsService {
             memberImgRepository.save(memberImg);
         }
 
-    }  public void naverLogin(NaverDTO naverDTO) {
-        if (naverDTO == null) {
-            throw new IllegalArgumentException("naverDTO cannot be null");
-        }
-        String userId = naverDTO.getName();
-        Member member = memberRepository.findById(userId);
-
-        if(member == null) {
-            member = new Member();
-            member.setId(naverDTO.getId());
-            member.setEmail(naverDTO.getEmail());
-            member.setName(naverDTO.getName());
-            member.setRole(Role.NAVER);
-            memberRepository.save(member);
-        }
-
     }
 
 
@@ -118,9 +103,36 @@ public class MemberService implements UserDetailsService {
         memberRepository.delete(member);
     }
 
+    public void deleteMemberByNum(Long num) {
+        Member member = memberRepository.findById(num).orElseThrow(EntityNotFoundException::new);
+        memberRepository.delete(member);
+    }
+
     public void updateMember(String id, MemberUpdateDTO memberUpdateDTO) {
         Member member = findMember(id);
         member.updateMember(memberUpdateDTO, passwordEncoder);
 
+    }
+
+    public List<MemberListDTO> findMembers() {
+        List<Member> members = memberRepository.findAll();
+        List<MemberListDTO> memberListDTOS = new ArrayList<>();
+        for (Member member : members) {
+            MemberListDTO memberListDTO = new MemberListDTO();
+            memberListDTO.setId(member.getId());
+            memberListDTO.setNum(member.getNum());
+            memberListDTO.setRole(member.getRole());
+            memberListDTO.setEmail(member.getEmail());
+            memberListDTO.setPhone(member.getPhone());
+            memberListDTO.setName(member.getName());
+            memberListDTOS.add(memberListDTO);
+        }
+        return memberListDTOS;
+    }
+
+    public void updateMemberByAdmin(MemberListDTO memberListDTO) {
+        Member member = memberRepository.findById(memberListDTO.getNum()).orElseThrow(EntityNotFoundException::new);
+
+        member.updateMemberByAdmin(memberListDTO);
     }
 }

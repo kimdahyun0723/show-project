@@ -15,10 +15,9 @@
             width: 100%;
             padding: 20px 0;
             text-align: left; /* 기본적으로 왼쪽 정렬 */
-            position: fixed; /* 푸터를 화면 하단에 고정 */
+            position: relative; /* 푸터를 화면 하단에 고정 */
             bottom: 0; /* 하단에 위치 */
             left: 0;
-            z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
             display: flex; /* Flexbox 사용 */
             justify-content: space-between; /* 좌우로 공간을 분리 */
             align-items: center; /* 수직 가운데 정렬 */
@@ -48,8 +47,8 @@
 
     <footer class="footer">
         <div>
-            <div class="footer-logo">SHOW Korea</div>
-            <div class="footer-description">Experience the Best of Entertainment with SHOW Korea</div>
+            <div class="footer-logo"></div>
+            <div class="footer-description">@Experience the Best of Entertainment with SHOW Korea</div>
         </div>
 
         <!-- 소셜 미디어 아이콘 섹션 (오른쪽으로 이동) -->

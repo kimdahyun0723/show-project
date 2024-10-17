@@ -75,7 +75,7 @@
             </button>
         </div>
         <div th:unless="${#strings.isEmpty(boardDTO.num)}">
-            <div th:if="${boardDTO.createBy == memberId}" style="text-align: center">
+            <div th:if="${boardDTO.createBy == memberId || role.equals('ADMIN')}" style="text-align: center">
                 <button th:formaction="@{'/board/modify/' + ${boardDTO.num}}" type="submit"
                         class="btn btn-danger">
                     수정

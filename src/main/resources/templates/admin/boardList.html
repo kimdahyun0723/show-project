@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/adminLayout.html}">
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+
+    $(document).ready(function () {
+      $('#searchBtn').on("click", function (e) {
+        e.preventDefault();
+        page(0);
+      });
+    });
+
+    function deleteMember(num) {
+      if (confirm("게시글을 삭제하시겠습니까?")) {
+        location.href = "/admin/managementBoard/delete?num=" + num; // num을 쿼리 파라미터로 추가
+      }
+    }
+
+    function showBoard(num) {
+      location.href = "/board/boardDtl/" + num;
+    }
+
+    function page(page) {
+      const searchDateType = $("#searchDateType").val(); // 상품 등록 기간
+      const searchBy = $("#searchBy").val();
+      const searchQuery = $("#searchQuery").val();
+
+      location.href = "/admin/managementBoard/list/" + page + "?searchDateType=" + searchDateType
+              + "&searchBy=" + searchBy
+              + "&searchQuery=" + searchQuery;
+    }
+
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+
+  <form th:action="@{'/admin/managementBoard/list/' + ${boards.number}}" role="form" method="get" th:object="${boards}">
+  <table class="table text-center">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">게시글번호</th>
+      <th scope="col">제목</th>
+      <th scope="col">작성자</th>
+      <th scope="col">작성일</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${boards}" class="table-sm">
+      <th scope="row" th:text="${board.num}" class="align-middle"></th>
+      <td th:text="${board.title}" class="align-middle"></td>
+      <td th:text="${board.createBy}" class="align-middle"></td>
+      <td th:text="${#temporals.format(board.regTime, 'yyyy-MM-dd')}" class="align-middle"></td>
+      <td>
+        <button type="button" class="btn btn-primary" th:onclick="|showBoard(${board.num})|">수정</button>
+        <button type="button" class="btn btn-danger" th:onclick="|deleteMember(${board.num})|">삭제</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+    <div th:with="start = ${(boards.number / maxPage) * maxPage + 1},
+            end = (${(boards.totalPages == 0) ? 1 :
+            (start + (maxPage - 1) < boards.totalPages ? start + (maxPage - 1) :
+            boards.totalPages)})">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${boards.first} ? 'disabled'">
+          <a th:onclick="'javascript: page(' + ${boards.number -1 } + ')'"
+             aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">
+                            Previous
+                        </span>
+          </a>
+        </li>
+
+        <!-- Page 객체에서 number는 현재 페이지를 나타냄. -->
+        <!-- [[${page}]]: 타임리프에서 HTML콘텐츠 영역 안에 직접 데이터를 출력할 때 사용-->
+        <!-- Page 객체에서 시작 페이지는 0부터 이므로 해당 페이지를 호출할 때에는 page -1을 함. -->
+        <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
+            th:classappend="${boards.number eq page - 1} ? 'active' : ''">
+          <a th:onclick="'javascript:page(' +${page - 1} + ')'"
+             th:inline="text" class="page-link">[[${page}]]</a>
+        </li>
+
+        <li class="page-item" th:classappend="${boards.last} ? 'disabled'">
+          <a th:onclick="'javascript: page(' + ${boards.number + 1 } + ')'"
+             aria-label="Next" class="page-link">
+                        <span aria-hidden="true">
+                            Next
+                        </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-inline justify-content-center" th:object="${boardSearchDTO}">
+      <select th:field="*{searchDateType}" class="form-control" style="width:auto;" id="searchDateType">
+        <option value="all">전체기간</option>
+        <option value="1d">1일</option>
+        <option value="1w">1주</option>
+        <option value="1m">1개월</option>
+        <option value="6m">6개월</option>
+      </select>
+      <select th:field="*{searchBy}" class="form-control" style="width:auto;" id="searchBy">
+        <option value="title">제목</option>
+        <option value="createBy">등록자</option>
+      </select>
+      <input th:field="*{searchQuery}" class="form-control" placeholder="검색어를 입력해주세요." id="searchQuery">
+      <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+    </div>
+  </form>
+</div>

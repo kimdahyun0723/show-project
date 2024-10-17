@@ -38,7 +38,6 @@ public class MemberController {
 
     private final KakaoService kakaoService;
 
-    private final NaverService naverService;
 
 
     private final PasswordEncoder passwordEncoder;
@@ -71,7 +70,6 @@ public class MemberController {
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
-        model.addAttribute("naverUrl", naverService.getNaverLogin());
 
         return "member/loginForm";
     }
@@ -89,7 +87,6 @@ public class MemberController {
 
         model.addAttribute("member", member);
         model.addAttribute("image", image);
-        System.out.println(principal.getName() + "==============================================");
 
 
         return "/member/info";

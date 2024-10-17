@@ -4,7 +4,9 @@ import com.keduit.show.dto.BoardDTO;
 import com.keduit.show.dto.BoardSearchDTO;
 import com.keduit.show.dto.ReplyResponseDTO;
 import com.keduit.show.entity.Board;
+import com.keduit.show.entity.Member;
 import com.keduit.show.service.BoardService;
+import com.keduit.show.service.MemberService;
 import com.keduit.show.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,8 @@ public class BoardController {
     private final BoardService boardService;
 
     private final ReplyService replyService;
+
+    private final MemberService memberService;
 
     @GetMapping({"/board", "/board/{page}"})
     public String BoardManage(BoardSearchDTO boardSearchDTO, @PathVariable("page") Optional<Integer> page, Model model, Principal principal) {
@@ -71,15 +75,19 @@ public class BoardController {
     public String showBoardModify(Model model, @PathVariable("boardId") Long boardId, Principal principal) {
 
 
-
         Board board = boardService.getBoard(boardId);
-        BoardDTO  boardDTO = BoardDTO.of(board);
+        BoardDTO boardDTO = BoardDTO.of(board);
+
+        Member member = memberService.findMember(principal.getName());
+
+        String role = member.getRole().toString();
 
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("memberId", principal.getName());
+        model.addAttribute("role", role);
         System.out.println("boardDTO=========================" + boardDTO);
 
-        return  "board/write";
+        return "board/write";
     }
 
     @PostMapping("/board/modify/{boardId}")
@@ -104,37 +112,41 @@ public class BoardController {
         Board board = boardService.getBoard(boardId);
         List<ReplyResponseDTO> replyResponseDTOList = replyService.commentList(boardId);
 
+        if (principal != null) {
+            Member member = memberService.findMember(principal.getName());
+            String role = member.getRole().toString();
+            model.addAttribute("role", role);
+        } else if (principal == null) {
+            model.addAttribute("role", "false");
+        }
+
         model.addAttribute("replys", replyResponseDTOList);
         model.addAttribute("boardDTO", boardDTO);
         String memberId = principal != null ? principal.getName() : "noOne";
         model.addAttribute("memberId", memberId);
         model.addAttribute("id", boardId);
-        model.addAttribute("userId", principal.getName());
+
+
 
         return "board/boardDtl";
     }
 
     @PostMapping("/board/delete/{boardId}")
     public String BoardDelete(@PathVariable("boardId") Long boardId, Model model, Principal principal) {
-        BoardDTO boardDTO = boardService.getBoardDtl(boardId);
-        Board board = boardService.getBoard(boardId);
-        model.addAttribute("boardDTO", boardDTO);
-        String memberId = principal != null ? principal.getName() : "noOne";
-        model.addAttribute("memberId", memberId);
+        Member member = memberService.findMember(principal.getName());
 
-        if(!boardService.validationBoard(boardId, principal.getName())) {
-            model.addAttribute("errorMessage", "삭제 권한이 없습니다.");
-            return "board/boardDtl";
+
+        if (!member.getRole().toString().equals("ADMIN")) {
+            if (!boardService.validationBoard(boardId, principal.getName())) {
+                model.addAttribute("errorMessage", "삭제 권한이 없습니다.");
+                return "board/boardDtl";
+            }
         }
-        boardService.validationBoard(boardId, principal.getName());
+
         boardService.deleteBoard(boardId);
 
         return "redirect:/board";
     }
-
-
-
-
 
 
 }

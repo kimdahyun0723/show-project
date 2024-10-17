@@ -7,11 +7,9 @@ import com.keduit.show.entity.Board;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Reply;
 import com.keduit.show.repository.BoardRepository;
-import com.keduit.show.repository.CommentRepository;
 import com.keduit.show.repository.MemberRepository;
 import com.keduit.show.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

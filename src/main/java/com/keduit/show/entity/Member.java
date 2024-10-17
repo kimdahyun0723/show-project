@@ -2,6 +2,7 @@ package com.keduit.show.entity;
 
 import com.keduit.show.constant.Role;
 import com.keduit.show.dto.MemberDTO;
+import com.keduit.show.dto.MemberListDTO;
 import com.keduit.show.dto.MemberUpdateDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +38,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private MemberImg memberImg;
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
@@ -72,6 +73,14 @@ public class Member extends BaseEntity {
         }
         this.email = memberDTO.getEmail();
         this.phone = memberDTO.getPhone();
+    }
+
+    public void updateMemberByAdmin(MemberListDTO dto) {
+        this.name = dto.getName();
+        this.email = dto.getEmail();
+        this.phone = dto.getPhone();
+        this.role = dto.getRole();
+        this.id = dto.getId();
     }
 
     //즐겨찾기 추가

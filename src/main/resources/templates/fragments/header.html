@@ -19,8 +19,7 @@
                     sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
                     <a class="nav-link" href="/admin/adminpage">관리자페이지</a>
                 </li>
-                <li class="nav-item"
-                    sec:authorize="isAuthenticated()">
+                <li class="nav-item">
                     <a class="nav-link" href="/shows">공연목록</a>
                 </li>
                 <li class="nav-item"
@@ -31,8 +30,7 @@
                     sec:authorize="isAuthenticated()">
                     <a class="nav-link" href="/members/info">마이페이지</a>
                 </li>
-                <li class="nav-item"
-                    sec:authorize="isAuthenticated()">
+                <li class="nav-item">
                     <a class="nav-link" href="/board">게시판</a>
                 </li>
                 <li class="nav-item"
