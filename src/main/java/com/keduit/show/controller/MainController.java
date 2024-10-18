@@ -38,7 +38,7 @@ public class MainController {
         } else {
             // 기본적으로 "dance" 장르의 전시를 가져옴
             filteredShows = showingList.stream()
-                    .filter(showing -> "dance".equalsIgnoreCase(showing.getGenrenm().toString()))
+                    .filter(showing -> "POPULAR_MUSIC".equalsIgnoreCase(showing.getGenrenm().toString()))
                     .limit(5)
                     .collect(Collectors.toList());
         }
@@ -61,10 +61,13 @@ public class MainController {
         // Thymeleaf 템플릿을 사용하여 HTML 문자열 생성
         StringBuilder htmlBuilder = new StringBuilder();
         for (Showing exhibition : filteredShows) {
-            htmlBuilder.append("<div class='col-lg-3 col-md-4 col-sm-6 exhibition-item'>")
+            htmlBuilder.append("<div class='col-lg-2 col-md-4 col-sm-6 exhibition-item'>")
                     .append("<a href='/show/").append(exhibition.getMt20id()).append("'>")
                     .append("<div class='poster-wrapper'>")
                     .append("<img src='").append(exhibition.getPoster()).append("' class='poster-img' alt='Exhibition Poster'>")
+                    .append("<div class='exhibition-rank'>")
+                    .append("<span>").append(filteredShows.indexOf(exhibition) + 1).append("</span>") // 순위 표시
+                    .append("</div>")
                     .append("<div class='exhibition-title'>").append(exhibition.getPrfnm()).append("</div>")
                     .append("<div class='exhibition-date'>").append(exhibition.getPrfpdfrom()).append(" ~ ").append(exhibition.getPrfpdto()).append("</div>")
                     .append("</div></a></div>");

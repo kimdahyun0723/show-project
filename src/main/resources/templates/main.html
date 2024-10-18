@@ -185,20 +185,21 @@
             <button onclick="fetchShowsByGenre('CIRCUS_MAGIC')">서커스/마술</button>
             <button onclick="fetchShowsByGenre('COMPLEX')">복합</button>
             <button onclick="fetchShowsByGenre('DANCE')">무용</button>
+            <!-- 포스터를 표시할 컨테이너 -->
             <div class="row" id="shows-container">
                 <th:block th:each="exhibition, iterStat : ${showList}">
-                            <div class="col-lg-3 col-md-4 col-sm-6 exhibition-item">
-                                <a th:href="'/show/'+${exhibition.mt20id}">
-                                    <div class="poster-wrapper">
-                                        <img th:src="${exhibition.poster}" class="poster-img" alt="Exhibition Poster">
-                                        <div class="exhibition-title" th:text="${exhibition.prfnm}">댄스 &lt;제목&gt;</div>
-                                        <div class="exhibition-date"
-                                             th:text="|${exhibition.prfpdfrom} ~ ${exhibition.prfpdto}|"></div>
-                                        <div class="exhibition-genre"
-                                             th:text="${exhibition.getGenrenm()}"></div>
-                                    </div>
-                                </a>
+                    <div class="col-lg-2 col-md-4 col-sm-6 exhibition-item">
+                        <a th:href="'/show/'+${exhibition.mt20id}">
+                            <div class="poster-wrapper">
+                                <img th:src="${exhibition.poster}" class="poster-img" alt="Exhibition Poster">
+                                <div class="exhibition-rank">
+                                    <span th:text="${iterStat.index + 1}"></span> <!-- 순위 표시 -->
+                                </div>
+                                <div class="exhibition-title" th:text="${exhibition.prfnm}">뮤지컬 &lt;제목&gt;</div>
+                                <div class="exhibition-date" th:text="|${exhibition.prfpdfrom} ~ ${exhibition.prfpdto}|"></div>
                             </div>
+                        </a>
+                    </div>
                 </th:block>
             </div>
         </div>

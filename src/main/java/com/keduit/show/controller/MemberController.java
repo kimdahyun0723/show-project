@@ -77,6 +77,7 @@ public class MemberController {
     @GetMapping("/login/error")
     public  String loginError(Model model) {
         model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
+        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
         return "member/loginForm";
     }
 
@@ -114,6 +115,7 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return "redirect:/members/updateInfo";
         }
+        System.out.println("=======================" + memberUpdateDTO.getPassword() + " ========================================password");
 
         memberService.updateMember(principal.getName(), memberUpdateDTO);
         return "redirect:/members/info";

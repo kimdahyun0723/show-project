@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/adminLayout.html}">
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+
+            //검색 버튼 클릭 이벤트
+            $('#searchBtn').on("click", function (e) {
+                e.preventDefault();
+                page(0);
+            })
+
+            // 정렬 버튼 클릭 이벤트
+            $('.sortBtn').on("click", function (e) {
+                e.preventDefault();
+                const sort = $(this).data('sort');
+                page(0, sort);
+            })
+
+        })
+
+        function page(page, sort = 'DEFAULT') {
+            const searchGenre = $('#searchGenre').val();
+            const searchLocation = $('#searchLocation').val();
+            const searchState = $('#searchState').val();
+            const searchBy = $('#searchBy').val();
+            const searchQuery = $('#searchQuery').val();
+            location.href = "/admin/managementAPI/detail/" + page +
+                "?searchGenre=" + searchGenre +
+                "&searchLocation=" + searchLocation +
+                "&searchState=" + searchState +
+                "&searchBy=" + searchBy +
+                "&searchQuery=" + searchQuery +
+                "&sort=" + sort;
+        }
+
+        function deleteShow(showId) {
+            console.log(showId)
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: '/admin/managementAPI/deleteShow/' + showId,
+                    type: 'DELETE',
+                    success: function (result) {
+                        alert('삭제되었습니다.');
+                        location.reload(); // 페이지 새로고침
+                    },
+                    error: function (xhr, status, error) {
+                        alert('삭제에 실패했습니다.');
+                    }
+                });
+            }
+        }
+
+
+
+    </script>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="container my-5">
+        <form th:action="@{'/admin/managementAPI/detail/' + ${showLists.number}}" role="form" method="get"
+              th:object="${showLists}">
+            <!-- 검색, 필터 -->
+            <div class="d-flex justify-content-center mb-4 text-center flex-column" th:object="${showSearchDTO}">
+                <div class="d-flex justify-content-center mb-2">
+                    <select th:field="*{searchGenre}" class="form-select me-2" style="width:auto;">
+                        <option value="">장르(전체)</option>
+                        <option value="POPULAR_MUSIC"
+                                th:text="${T(com.keduit.show.constant.Genre).POPULAR_MUSIC.getName()}"></option>
+                        <option value="CLASSIC"
+                                th:text="${T(com.keduit.show.constant.Genre).CLASSIC.getName()}"></option>
+                        <option value="GUGAK" th:text="${T(com.keduit.show.constant.Genre).GUGAK.getName()}"></option>
+                        <option value="ACT" th:text="${T(com.keduit.show.constant.Genre).ACT.getName()}"></option>
+                        <option value="MUSICAL"
+                                th:text="${T(com.keduit.show.constant.Genre).MUSICAL.getName()}"></option>
+                        <option value="CIRCUS_MAGIC"
+                                th:text="${T(com.keduit.show.constant.Genre).CIRCUS_MAGIC.getName()}"></option>
+                        <option value="COMPLEX"
+                                th:text="${T(com.keduit.show.constant.Genre).COMPLEX.getName()}"></option>
+                        <option value="DANCE" th:text="${T(com.keduit.show.constant.Genre).DANCE.getName()}"></option>
+                    </select>
+                    <select th:field="*{searchLocation}" class="form-select me-2" style="width:auto;">
+                        <option value="">지역(전체)</option>
+                        <option value="SEOUL"
+                                th:text="${T(com.keduit.show.constant.Location).SEOUL.getName()}"></option>
+                        <option value="GYEONGGI"
+                                th:text="${T(com.keduit.show.constant.Location).GYEONGGI.getName()}"></option>
+                        <option value="BUSAN"
+                                th:text="${T(com.keduit.show.constant.Location).BUSAN.getName()}"></option>
+                        <option value="DAEGU"
+                                th:text="${T(com.keduit.show.constant.Location).DAEGU.getName()}"></option>
+                        <option value="GWANGJU"
+                                th:text="${T(com.keduit.show.constant.Location).GWANGJU.getName()}"></option>
+                        <option value="ULSAN"
+                                th:text="${T(com.keduit.show.constant.Location).ULSAN.getName()}"></option>
+                        <option value="GYEONGBUK"
+                                th:text="${T(com.keduit.show.constant.Location).GYEONGBUK.getName()}"></option>
+                        <option value="GANGWON"
+                                th:text="${T(com.keduit.show.constant.Location).GANGWON.getName()}"></option>
+                        <option value="GANGWON_S"
+                                th:text="${T(com.keduit.show.constant.Location).GANGWON_S.getName()}"></option>
+                        <option value="INCHEON"
+                                th:text="${T(com.keduit.show.constant.Location).INCHEON.getName()}"></option>
+                        <option value="JEOLBUK"
+                                th:text="${T(com.keduit.show.constant.Location).JEOLBUK.getName()}"></option>
+                        <option value="JEOLNAM"
+                                th:text="${T(com.keduit.show.constant.Location).JEOLNAM.getName()}"></option>
+                        <option value="DAEJEON"
+                                th:text="${T(com.keduit.show.constant.Location).DAEJEON.getName()}"></option>
+                        <option value="SEJONG"
+                                th:text="${T(com.keduit.show.constant.Location).SEJONG.getName()}"></option>
+                        <option value="GYEONGNAM"
+                                th:text="${T(com.keduit.show.constant.Location).GYEONGNAM.getName()}"></option>
+                        <option value="CHUNGNAM"
+                                th:text="${T(com.keduit.show.constant.Location).CHUNGNAM.getName()}"></option>
+                        <option value="JEJU" th:text="${T(com.keduit.show.constant.Location).JEJU.getName()}"></option>
+                        <option value="CHUNGBUK"
+                                th:text="${T(com.keduit.show.constant.Location).CHUNGBUK.getName()}"></option>
+                    </select>
+                    <select th:field="*{searchState}" class="form-select me-2" style="width:auto;">
+                        <option value="">상태(전체)</option>
+                        <option value="COMPLETE"
+                                th:text="${T(com.keduit.show.constant.State).COMPLETE.getName()}"></option>
+                        <option value="ING" th:text="${T(com.keduit.show.constant.State).ING.getName()}"></option>
+                        <option value="EXPECT" th:text="${T(com.keduit.show.constant.State).EXPECT.getName()}"></option>
+                    </select>
+                    <select th:field="*{searchBy}" class="form-select me-2" style="width:auto;">
+                        <option value="">검색(전체)</option>
+                        <option value="prfnm">공연명</option>
+                        <option value="fcltynm">시설명</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <input th:field="*{searchQuery}" class="form-control me-2" placeholder="공연이나 시설의 이름을 입력해주세요"
+                           style="width: 400px;"/>
+                    <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+                </div>
+            </div>
+
+            <!-- 정렬 -->
+            <div class="text-center my-3" th:field="*{sort}">
+                <button class="btn btn-secondary sortBtn me-1" value="DEFAULT" data-sort="DEFAULT">전체</button>
+                <button class="btn btn-secondary sortBtn me-1" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
+                <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
+            </div>
+
+            <!-- 테이블 -->
+            <div>
+                <table class="table table-hover table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">포스터</th>
+                        <th scope="col">공연 이름</th>
+                        <th scope="col">공연 시설명</th>
+                        <th scope="col">공연 기간</th>
+                        <th scope="col" style="width: 5%;">삭제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="show, iterStat : ${showLists}">
+                        <tr>
+                            <th scope="row" class="align-middle">[[${iterStat.index + 1}]]</th>
+                            <td class="align-middle">
+                                <img th:src="${show.poster}" th:alt="${show.prfnm}" class="img-thumbnail"
+                                     style="width: 100px; height: auto;">
+                            </td>
+                            <td class="align-middle">[[${show.prfnm}]]</td>
+                            <td class="align-middle">[[${show.fcltynm}]]</td>
+                            <td class="align-middle">
+                                <span th:if="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdto}]]</span>
+                                <span th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</span>
+                            </td>
+                            <td class="align-middle">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteShow([[${show.mt20id}]])">삭제</button>
+                            </td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이징 -->
+            <div th:with="start=${(showLists.number / maxPage) * maxPage + 1},
+              end=${(showLists.totalPages == 0) ? 1 :
+              (start + (maxPage - 1) < showLists.totalPages ? start + (maxPage - 1) : showLists.totalPages)}">
+                <ul class="pagination justify-content-center mt-4">
+                    <li class="page-item" th:classappend="${showLists.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/managementAPI/detail/{page}(page=${showLists.number - 1}, searchGenre=${showSearchDTO.searchGenre}
+                       , searchLocation=${showSearchDTO.searchLocation}, searchState=${showSearchDTO.searchState}
+                       , searchBy=${showSearchDTO.searchBy}, searchQuery=${showSearchDTO.searchQuery}
+                       , sort=${showSearchDTO.sort})}" aria-label="Previous">
+                            <span aria-hidden="true">이전</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+                        th:classappend="${showLists.number eq page - 1} ? 'active' : ''">
+                        <a class="page-link"
+                           th:href="@{/admin/managementAPI/detail/{page}(page=${page - 1}, searchGenre=${showSearchDTO.searchGenre}
+                       , searchLocation=${showSearchDTO.searchLocation}, searchState=${showSearchDTO.searchState}
+                       , searchBy=${showSearchDTO.searchBy}, searchQuery=${showSearchDTO.searchQuery}
+                       , sort=${showSearchDTO.sort})}">
+                            [[${page}]]
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${showLists.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/managementAPI/detail/{page}(page=${showLists.number + 1}, searchGenre=${showSearchDTO.searchGenre}
+                       , searchLocation=${showSearchDTO.searchLocation}, searchState=${showSearchDTO.searchState}
+                       , searchBy=${showSearchDTO.searchBy}, searchQuery=${showSearchDTO.searchQuery}
+                       , sort=${showSearchDTO.sort})}" aria-label="Next">
+                            <span aria-hidden="true">다음</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+
+</div>
