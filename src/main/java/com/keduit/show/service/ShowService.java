@@ -61,5 +61,9 @@ public class ShowService {
         return showRepository.getShowFilterGenre(searchDTO);
     }
 
+    public List<Showing> getAllShowList() {
+        return showRepository.findAll();
+    }
+
 
 }
