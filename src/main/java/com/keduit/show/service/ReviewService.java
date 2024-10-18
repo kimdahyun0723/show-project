@@ -47,18 +47,17 @@ public class ReviewService {
         List<ReviewResponseDTO> reviewResponseDTOS = reviews.stream()
                 .map(review -> ReviewResponseDTO.toDTO(review))
                 .collect(Collectors.toList());
-//        for(int i = 0; i < reviews.size(); i++) {
-//            Review review = reviews.get(i);
-//            reviewResponseDTOS.add(ReviewResponseDTO.toDTO(review));
-//        }
         return reviewResponseDTOS;
     }
 
     //리뷰 수정
     public Review update(Long num, ReviewRequestDTO reviewRequestDTO) {
+        System.out.println("service num =========================" + num);
         Review review = reviewRepository.findById(num)
                         .orElseThrow(() -> new IllegalArgumentException("후기를 찾을수 없습니다"));
-        review.update(review.getRating(), review.getContent());
+        System.out.println(review.getRating() + "service -------------------------");
+        review.update(reviewRequestDTO.getRating(), reviewRequestDTO.getContent());
+        System.out.println(review.getRating() + "service update -------------------------");
         return reviewRepository.save(review); //수정후 반환
     }
 

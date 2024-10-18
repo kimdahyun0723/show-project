@@ -30,7 +30,8 @@
     }
     function alertCancel(){
       alert("즐겨찾기가 취소됐습니다");
-      document.cancelFavorite.submit();
+      $('form[name="cancelFavorite"]').submit();
+      // document.cancelFavorite.submit();
     }
   </script>
 </th:block>
