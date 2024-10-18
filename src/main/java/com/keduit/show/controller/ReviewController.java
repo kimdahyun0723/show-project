@@ -40,7 +40,7 @@ public class ReviewController {
     }
 
     //리뷰 삭제
-    @DeleteMapping("/api/show/{mt20id}/review/{num}")
+    @DeleteMapping("/show/{mt20id}/review/{num}")
     @ResponseBody
     public ResponseEntity<Void> delete(@PathVariable String mt20id, @PathVariable Long num) {
         reviewService.delete(num);
