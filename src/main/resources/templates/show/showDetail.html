@@ -107,7 +107,6 @@
                 }
                 return true; // 로그인 상태일 경우 폼 제출 계속
             };
-        });
 
             let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
             let la = $('input[name=la]').val();
@@ -142,8 +141,12 @@
                 infowindow.open(map, marker);
             });
 
-
             calculateTotalPrice();
+        });
+
+
+
+
             $("#count").change(function () {
                 calculateTotalPrice();
             });
