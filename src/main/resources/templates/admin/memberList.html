@@ -62,8 +62,8 @@
             <td th:text="${member.role}" class="align-middle"></td>
             <td>
                 <button type="button" class="btn btn-primary"
-                        data-toggle="modal"
-                        data-target="#memberEditModal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#memberEditModal"
                         th:data-role="${member.role}"
                         th:data-id="${member.id}"
                         th:data-email="${member.email}"
@@ -83,7 +83,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="memberEditModalLabel">회원 수정</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

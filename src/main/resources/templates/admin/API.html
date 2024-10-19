@@ -5,32 +5,33 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-
         function spin() {
             let spinner = document.getElementById("apiSpinner");
-            spinner.style.display = "block";
+            spinner.style.display = "flex"; // 'flex'로 변경하여 정렬 적용
             location.href = "/admin/managementAPI/update";
         }
-
-
     </script>
 </th:block>
 
 <div layout:fragment="content">
-        <div style="position: fixed; top:0;left: 0;width: 100%;height: 100%; display: none; background-color: rgba(0, 0, 0, 0.5); z-index: 999; justify-content: center;
-            align-items: center;" id="apiSpinner">
-            <div class="spinner-grow text-primary" role="status"
-                 style="width: 10rem; height: 10rem; position: absolute; top: 50%; left: 50%;">
-                <span class="sr-only">Loading...</span>
-            </div>
+    <!-- 로딩 스피너 -->
+    <div id="apiSpinner" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;
+         background-color: rgba(0, 0, 0, 0.5); z-index: 999; justify-content: center; align-items: center;">
+        <div class="spinner-border text-light" role="status" style="width: 5rem; height: 5rem;">
+            <span class="visually-hidden">Loading...</span>
         </div>
+    </div>
 
-    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80vh;">
-        <div style="display: flex; justify-content: space-between; width: 100%; max-width: 600px;">
-            <button type="button" class="btn btn-primary" onclick="spin()">api 업데이트</button>
-            <form action="/admin/managementAPI/delete" method="post" style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-                <select name="standard" style="margin-bottom: 10px;">
-                    <option value="1">삭제 기간 기준</option>
+    <!-- 컨텐츠 영역 -->
+    <div class="container d-flex flex-column justify-content-center align-items-center" >
+        <div class="card p-4 shadow-sm" style="width: 100%; max-width: 600px;">
+            <h3 class="card-title text-center mb-4">API 관리</h3>
+            <div class="d-flex justify-content-between mb-4">
+                <button type="button" class="btn btn-primary btn-lg" onclick="spin()">API 업데이트</button>
+            </div>
+            <form action="/admin/managementAPI/delete" method="post" class="d-flex flex-column align-items-center">
+                <label for="deleteStandard" class="form-label">삭제 기간 기준</label>
+                <select name="standard" id="deleteStandard" class="form-select mb-3" style="max-width: 200px;">
                     <option value="1">1주</option>
                     <option value="2">2주</option>
                     <option value="3">3주</option>
@@ -40,8 +41,5 @@
             </form>
         </div>
     </div>
-
-
-
-
 </div>
+</html>
