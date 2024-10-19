@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
-
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
@@ -147,17 +146,20 @@
 
 
 
-            $("#count").change(function () {
-                calculateTotalPrice();
-            });
+        $(document).on('change', '#count', function () {
+            calculateTotalPrice();
+        });
+
 
         //결제
         function calculateTotalPrice() {
             const count = $("#count").val();
             const price = $("#price").val();
             const totalPrice = count * price;
+
             $("#totalPrice").html(totalPrice + "원");
         }
+
 
         var IMP = window.IMP;
 
@@ -442,7 +444,7 @@
         <div class="d-flex">
             <div class="wd50">
 
-                <div class="text-right" th:if="${show.ticketStatus == T(com.keduit.show.constant.TicketStatus).SELL}">
+                <div class="text-right" th:if="${show.ticketStatus.name().equals('SELL')}">
                     <hr class="my-4">
                     <div class="text-right">
                         <div class="h4 text-danger text-left">
@@ -467,7 +469,7 @@
                     <button type="button" class="btn btn-primary btn-lg" onclick="requestPay()">예매하기</button>
                 </div>
                 <div class="text-right"
-                     th:if="${show.ticketStatus == T(com.keduit.show.constant.TicketStatus).SOLD_OUT}">
+                     th:if="${show.ticketStatus.name().equals('SOLD_OUT')}">
                     <button type="button" class="btn btn-danger btn-lg">매진</button>
                 </div>
             </div>
