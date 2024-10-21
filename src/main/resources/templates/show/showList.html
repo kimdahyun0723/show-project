@@ -123,35 +123,35 @@
             </div>
         </div>
 
-    <!-- 정렬 -->
-    <div class="text-center my-3" th:field="*{sort}">
-        <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
-        <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
-        <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
-    </div>
+        <!-- 정렬 -->
+        <div class="text-center my-3" th:field="*{sort}">
+            <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
+            <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
+            <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
+        </div>
 
-    <!--공연목록-->
-    <div class="row">
-        <th:block th:each="show: ${showLists}"> <!--List, ArrayList 타입 확인-->
-            <div class="col">
-                <div class="card" style="width: 18rem;">
-                    <img th:src="${show.poster}" class="card-img-top" th:alt="${show.prfnm}"> <!--이미지-->
+        <!--공연목록-->
+        <div class="row">
+            <th:block th:each="show: ${showLists}"> <!--List, ArrayList 타입 확인-->
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img th:src="${show.poster}" class="card-img-top" th:alt="${show.prfnm}"> <!--이미지-->
 
-                    <div class="card-body">
-                        <h4 class="card-title">[[${show.prfnm}]]</h4> <!--공연이름-->
-                        <p class="card-text">[[${show.fcltynm}]]</p> <!--공연시설명-->
-                        <!--공연기간 : 기간이 하루면 하나만 표시-->
-                        <p class="card-text" th:if="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdto}]]</p>
-                        <p class="card-text" th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</p>
-                        <!--공연아이디로 showDetail 로 이동 요청-->
-                        <a th:href="'/show/' + ${show.mt20id}" class="btn btn-primary">상세보기</a>
+                        <div class="card-body">
+                            <h4 class="card-title">[[${show.prfnm}]]</h4> <!--공연이름-->
+                            <p class="card-text">[[${show.fcltynm}]]</p> <!--공연시설명-->
+                            <!--공연기간 : 기간이 하루면 하나만 표시-->
+                            <p class="card-text" th:if="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdto}]]</p>
+                            <p class="card-text" th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</p>
+                            <!--공연아이디로 showDetail 로 이동 요청-->
+                            <a th:href="'/show/' + ${show.mt20id}" class="btn btn-primary">상세보기</a>
+                        </div>
+
                     </div>
-
                 </div>
-            </div>
-        </th:block>
-    </div>
-    <hr>
+            </th:block>
+        </div>
+        <hr>
 
         <!-- 페이징 정렬을 곁들인.. -->
         <div th:with="start=${(showLists.number / maxPage) * maxPage + 1},

@@ -74,6 +74,7 @@
 <div layout:fragment="content" class="content-mg">
 
     <h2 class="mb-4">구매이력</h2>
+    <a th:href="'/order/calendar'" class="btn btn-primary">달력보기</a>
     <div th:each="order :${orderPage}">
         <div class="d-flex mb-3 align-self-center">
             <h4 th:text="${#temporals.format(order.regTime, 'yyyy-MM-dd HH:mm')} + ' 주문'"></h4>

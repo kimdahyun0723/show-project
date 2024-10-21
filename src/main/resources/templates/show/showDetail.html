@@ -72,7 +72,7 @@
         .update-rating input[type=radio]:checked ~ label{
             text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
         }
-        #update-content {
+        .updateContent {
             width: 100%;
             height: 150px;
             padding: 10px;
@@ -107,6 +107,7 @@
                 return true; // 로그인 상태일 경우 폼 제출 계속
             };
 
+            //카카오 지도 api
             let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
             let la = $('input[name=la]').val();
             let lo = $('input[name=lo]').val();
@@ -142,8 +143,6 @@
 
             calculateTotalPrice();
         });
-
-
 
 
         $(document).on('change', '#count', function () {
@@ -292,15 +291,20 @@
                     content: reviewContent
                 }),
                 contentType: 'application/json',
-                success: function (data){
+                success: function (data) {
                     const reviewList = $('#review-list');
-                    if(!reviewList){
+                    if (!reviewList) {
                         console.error("후기 리스트를 찾을 수 없습니다");
                         return;
                     }
                     const starsHtml = generateStars(data.rating);
 
-                    const newReview = `
+                    const newReview = document.createElement('ul');
+                    newReview.className = 'list-group-flush';
+                    newReview.id = 'review-' + data.num;
+                    //<ul class="list-group-flush" th:id="'review-' + ${review.getNum()}">
+
+                    newReview.innerHTML = `
                     <li class="list-group-item" id="review-${data.num}">
                         <div id="rating-${data.num}">${starsHtml}</div>
                         <p id="'content-' + ${data.num}">${data.content}</p>
@@ -310,8 +314,8 @@
                         </span>
                         <div style="display: ${data.memberId === memberId ? 'block' : 'none'};">
                             <button type="button" class="badge bi bi-pencil-square"
-                                    data-toggle="collapse"
-                                    data-target=".multi-collapse-${data.num}">수정</button>
+                                    data-bs-toggle="collapse"
+                                    data-bs-target=".multi-collapse-${data.num}">수정</button>
                             <button type="button" class="badge bi bi-trash"
                                     data-id="${data.num}" onclick="deleteReview(this)">삭제</button>
                         </div>
@@ -325,7 +329,7 @@
                     $('input[name="review"]').prop('checked', false);
                     alert("후기가 작성됐습니다");
                 },
-                error: function (xhr){
+                error: function (xhr) {
                     console.log("error : ", xhr);
                     alert("error : " + xhr.statusText);
                 }
@@ -360,22 +364,27 @@
                 return;
             }
 
-            //수정된 내용
-            const newRating = document.querySelector(`input[name="update"]:checked`).value;
-            const newContent = document.getElementById('update-content').value;
-
-            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-            // 유효성 검증
-            if (newRating <= 0) {
+            // 수정된 내용 - 선택된 별점 가져오기
+            const newRatingElement = document.querySelector('input[name="update-' + reviewId + '"]:checked');
+            const newRating = newRatingElement.value;
+            console.log(newRatingElement);
+            if (!newRatingElement) {
                 alert("별점을 수정해 주세요."); // 사용자에게 알림
                 return; // 함수 종료
             }
+
+            const newContent = document.getElementById('update-content-' + reviewId).value;
             if (!newContent) {
                 alert("내용을 수정해 주세요");
                 return;
             }
+
+            console.log(newRating);
+            console.log(newContent);
+            console.log(reviewId);
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
             $.ajax({
                 url: `/show/${mt20id}/review/${reviewId}`, // 수정할 리뷰의 URL
@@ -390,10 +399,12 @@
                 contentType: 'application/json',
                 success: function() {
                     // 별점 업데이트
-                    reviewRatingElement.value = newRating;
+                    reviewRatingElement.innerHTML = generateStars(newRating);
                     // 내용 업데이트
                     reviewContentElement.textContent = newContent;
                     alert("후기가 수정되었습니다.");
+                    //수정 토글 닫기
+                    $('.multi-collapse-' + reviewId).collapse('hide');
                 },
                 error: function(xhr) {
                     console.error("Error:", xhr);
@@ -401,6 +412,13 @@
                 }
             });
         }
+
+        //수정취소
+        function resetUpdate(button){
+            const reviewId = button.getAttribute('data-id');
+            $('.multi-collapse-' + reviewId).collapse('hide');
+        }
+
 
         //후기 삭제
         function deleteReview(button){
@@ -594,10 +612,10 @@
         <!--공연후기 리스트-->
         <div class="card" id="review-list">
             <div class="card-header bi bi-chat-dots"> [[${reviewCount}]] Reviews</div>
-            <ul class="list-group-flush">
-                <th:block th:each="review : ${reviews}">
-                    <!--댓글 번호별 아이디 부여 createReview() 메서드로 리스트 innerHtml-->
-                    <li class="list-group-item" th:id="'review-' + ${review.getNum()}">
+            <th:block th:each="review : ${reviews}">
+                <!--댓글 번호별 아이디 부여 createReview() 메서드로 리스트 innerHtml-->
+                <ul class="list-group-flush" th:id="'review-' + ${review.getNum()}">
+                    <li class="list-group-item">
                         <div th:id="'rating-' + ${review.getNum()}">
                             <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
                                   th:if="${i <= review.getRating()}" style="color: gold;">★</span>
@@ -614,38 +632,52 @@
                         <!--작성자와 로그인회원이 같으면 수정, 삭제 가능-->
                         <div th:if="${review.getMemberId() == memberId}">
                             <button type="button" class="badge bi bi-pencil-square"
-                                    data-toggle="collapse"
-                                    th:attr="data-target='.multi-collapse-' + ${review.getNum()}">수정</button>
+                                    data-bs-toggle="collapse"
+                                    th:attr="data-bs-target='.multi-collapse-' + ${review.getNum()}">수정</button>
                             <button type="button" class="badge bi bi-trash"
                                     th:attr="data-id=${review.getNum()}" onclick="deleteReview(this)">삭제</button>
                         </div>
-                    </li>
 
-                    <!--후기 수정 폼-->
-                    <div th:class="'collapse multi-collapse-' + ${review.getNum()}">
-                        <form class="well">
-                            <div class="form-group">
-                                <div class="update-rating">
-                                    <input type="radio" name="update" value="5" class="form-star" id="update-rate1" th:checked="${review.getRating() == 5}">
-                                    <label for="update-rate1">★</label>
-                                    <input type="radio" name="update" value="4" class="form-star" id="update-rate2" th:checked="${review.getRating() == 4}">
-                                    <label for="update-rate2">★</label>
-                                    <input type="radio" name="update" value="3" class="form-star" id="update-rate3" th:checked="${review.getRating() == 3}">
-                                    <label for="update-rate3">★</label>
-                                    <input type="radio" name="update" value="2" class="form-star" id="update-rate4" th:checked="${review.getRating() == 2}">
-                                    <label for="update-rate4">★</label>
-                                    <input type="radio" name="update" value="1" class="form-star" id="update-rate5" th:checked="${review.getRating() == 1}">
-                                    <label for="update-rate5">★</label>
+                        <!--후기 수정 폼-->
+                        <div th:class="'collapse multi-collapse-' + ${review.getNum()}">
+                            <form class="well">
+                                <div class="form-group">
+                                    <div class="update-rating">
+                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="5" class="form-star"
+                                               th:id="'update-rate1-' + ${review.getNum()}" th:checked="${review.getRating() == 5}">
+                                        <label th:for="'update-rate1-' + ${review.getNum()}">★</label>
+
+                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="4" class="form-star"
+                                               th:id="'update-rate2-' + ${review.getNum()}" th:checked="${review.getRating() == 4}">
+                                        <label th:for="'update-rate2-' + ${review.getNum()}">★</label>
+
+                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="3" class="form-star"
+                                               th:id="'update-rate3-' + ${review.getNum()}" th:checked="${review.getRating() == 3}">
+                                        <label th:for="'update-rate3-' + ${review.getNum()}">★</label>
+
+                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="2" class="form-star"
+                                               th:id="'update-rate4-' + ${review.getNum()}" th:checked="${review.getRating() == 2}">
+                                        <label th:for="'update-rate4-' + ${review.getNum()}">★</label>
+
+                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="1" class="form-star"
+                                               th:id="'update-rate5-' + ${review.getNum()}" th:checked="${review.getRating() == 1}">
+                                        <label th:for="'update-rate5-' + ${review.getNum()}">★</label>
+                                    </div>
+                                    <textarea th:name="'update-content-' + ${review.getNum()}" th:id="'update-content-' + ${review.getNum()}"
+                                              class="form-control updateContent">[[${review.getContent()}]]</textarea>
+
                                 </div>
-                                <textarea id="update-content" class="form-control" th:text="${review.getContent()}"></textarea>
-                            </div>
-                            <button type="button" id="update-btn" class="btn btn-outline-primary bi bi-pencil-square"
-                                    th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정</button>
-                        </form>
-                    </div>
+                                <button type="button" id="update-btn" class="btn btn-outline-primary bi bi-pencil-square"
+                                        th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정</button>
+                                <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
+                                        th:attr="data-id=${review.getNum()}" onclick="resetUpdate(this)">취소</button>
+                            </form>
+                        </div>
 
-                </th:block>
-            </ul>
+                    </li>
+                </ul>
+            </th:block>
+
         </div>
     </div>
 

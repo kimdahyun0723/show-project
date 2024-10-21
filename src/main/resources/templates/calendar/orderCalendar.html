@@ -20,23 +20,45 @@
     #board :hover {
       cursor: pointer;
     }
+    /* FullCalendar 관련 스타일 */
+    #calendar {
+      margin: 40px auto;
+    }
   </style>
 </th:block>
 
 <th:block layout:fragment="script">
   <script th:inline="javascript">
-    function getBoard(no){
-      location.href = '/board/boardDtl/' + no;
-    }
-    function alertCancel(){
-      alert("즐겨찾기가 취소됐습니다");
-      $('form[name="cancelFavorite"]').submit();
-      // document.cancelFavorite.submit();
-    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+
+      // Ajax 요청을 통해 서버에서 이벤트 데이터를 가져옴
+      const request = $.ajax({
+        url: "/order/event", // 서버에서 일정 데이터를 가져오는 URL
+        method: "GET",
+      });
+
+      request.done(function(data) {
+        // FullCalendar 인스턴스 생성 및 이벤트 데이터 설정
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',  // 달력의 초기 뷰 설정
+          events: data  // 서버에서 받은 이벤트 데이터를 설정
+        });
+
+        calendar.render();  // 달력 렌더링
+      });
+
+      request.fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error fetching events: " + textStatus, errorThrown);
+      });
+    });
+
   </script>
 </th:block>
 
 <div layout:fragment="content">
+
   <div th:fragment="body" class="flex-shrink-0 p-3" style="width: 280px;" id="infoheader">
     <a href="/members/info"
        class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
@@ -74,41 +96,8 @@
   </div>
 
   <!--즐겨찾기 공연 목록-->
-  <div class="container">
-    <a th:href="'/favorite/calendar'" class="btn btn-primary">달력보기</a>
-    <div class="row">
-      <th:block th:each="show: ${showings}">
-        <div class="col">
+  <div id='calendar'>
 
-          <div class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="${show.poster}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
-              </div>
-
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title" th:text="${show.prfnm}"></h5>
-                  <p class="card-text" th:text="${show.fcltynm}"></p>
-                  <!--공연기간 : 기간이 하루면 하나만 표시-->
-                  <p class="card-text" th:if="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdto}]]</p>
-                  <p class="card-text" th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</p>
-                  <a th:href="'/show/' + ${show.mt20id}" class="btn btn-primary">상세보기</a>
-                  <!--즐겨찾기 취소-->
-                  <form th:name="cancelFavorite" th:action="@{/favorite/{mt20id}/cancel(mt20id=${show.mt20id})}" th:method="post">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <button type="button" th:onclick="alertCancel()" class="btn btn-outline-primary">즐겨찾기 취소</button>
-                  </form>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </th:block>
-
-    </div>
   </div>
 </div>
 

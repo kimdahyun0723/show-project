@@ -16,6 +16,10 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     @Query("select f from Favorite f where f.member.num = :memberNum and f.showing.mt20id = :mt20id")
     Optional<Favorite> findByIds(@Param("memberNum") Long memberNum, @Param("mt20id") String mt20id);
 
+    //특정회원의 즐겨찾기 리스트
+    @Query("select f from Favorite f where f.member.num = :memberNum")
+    List<Favorite> findReviewByMemberNum(@Param("memberNum") Long memberNum);
+
     //하나의 즐겨찾기 삭제
     @Modifying
     @Transactional
