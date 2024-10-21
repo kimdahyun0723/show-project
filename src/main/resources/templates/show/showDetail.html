@@ -682,7 +682,7 @@
                         <p th:text="${review.getContent()}" th:id="'content-' + ${review.getNum()}">내용</p>
 
                         <span>
-                            <span style="font-size: small" th:text="${${review.getObfuscatedMemberName()}}">작성자아이디</span>
+                            <span style="font-size: small" th:text="${review.getObfuscatedMemberName()}">작성자아이디</span>
                             <span style="font-size: small" th:text="${review.getCreateDate()}">작성일</span>&nbsp;
                         </span>
 
