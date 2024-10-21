@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -20,59 +19,84 @@ public class MainController {
     @Autowired
     private ShowService showService;
 
+    // 메인 페이지에서 처음 8개의 전시회만 보여줌
     @GetMapping("/")
-    public String main(@RequestParam(required = false) String genre, Model model) {
-        // 일주일 전후 사이 공연 리스트
+    public String main(Model model) {
+        // 전체 전시회 목록
         List<Showing> shows = showService.getShow();
-        model.addAttribute("exhibitionList", shows);
 
+        // 처음에 8개만 잘라서 전달
+        List<Showing> limitedShows = shows.size() > 8 ? shows.subList(0, 8) : shows;
+        model.addAttribute("exhibitionList", limitedShows); // 처음 8개의 전시회
+        model.addAttribute("totalShows", shows.size()); // 전체 전시회 수
+
+        // 장르 필터링을 위한 데이터
         List<Showing> showingList = showService.getAllShowList();
-
-        // 장르가 제공된 경우 필터링
-        List<Showing> filteredShows;
-        if (genre != null && !genre.isEmpty()) {
-            filteredShows = showingList.stream()
-                    .filter(showing -> genre.equalsIgnoreCase(showing.getGenrenm().toString()))
-                    .limit(5)
-                    .collect(Collectors.toList());
-        } else {
-            // 기본적으로 "dance" 장르의 전시를 가져옴
-            filteredShows = showingList.stream()
-                    .filter(showing -> "dance".equalsIgnoreCase(showing.getGenrenm().toString()))
-                    .limit(5)
-                    .collect(Collectors.toList());
-        }
+        List<Showing> filteredShows = showingList.stream()
+            .filter(showing -> "dance".equalsIgnoreCase(showing.getGenrenm().toString()))
+            .limit(5) // 기본적으로 "dance" 장르 5개 가져오기
+            .collect(Collectors.toList());
 
         model.addAttribute("showList", filteredShows);
         model.addAttribute("showSearchDTO", new ShowSearchDTO()); // 필요시 DTO 추가
+
         return "main"; // main.html로 반환
     }
 
+    // 더보기 버튼 클릭 시 추가 전시회 로드
+    @GetMapping("/loadMoreShows")
+    @ResponseBody
+    public String loadMoreShows(@RequestParam int offset) {
+        List<Showing> showingList = showService.getShow();
+
+        // offset에서 시작해서 최대 8개의 전시회만 가져오기
+        List<Showing> moreShows = showingList.stream()
+            .skip(offset)
+            .limit(8)
+            .collect(Collectors.toList());
+
+        // Thymeleaf를 사용하여 HTML 문자열을 생성
+        StringBuilder htmlBuilder = new StringBuilder();
+        for (Showing exhibition : moreShows) {
+            htmlBuilder.append("<div class='col-lg-3 col-md-4 col-sm-6 exhibition-item'>")
+                .append("<a href='/show/").append(exhibition.getMt20id()).append("'>")
+                .append("<div class='poster-wrapper'>")
+                .append("<img src='").append(exhibition.getPoster()).append("' class='poster-img' alt='Exhibition Poster'>")
+                .append("<div class='exhibition-title'>").append(exhibition.getPrfnm()).append("</div>")
+                .append("<div class='exhibition-date'>").append(exhibition.getPrfpdfrom()).append(" ~ ").append(exhibition.getPrfpdto()).append("</div>")
+                .append("</div></a></div>");
+        }
+
+        return htmlBuilder.toString(); // HTML 문자열을 반환하여 AJAX 응답
+    }
+
+    // 장르 필터링에 따른 전시회 로드
     @GetMapping("/genreFilter")
-    @ResponseBody // JSON으로 응답하기 위해 사용
+    @ResponseBody
     public String fetchShowsByGenre(@RequestParam String genre) {
         List<Showing> showingList = showService.getAllShowList();
 
+        // 선택된 장르에 맞게 필터링
         List<Showing> filteredShows = showingList.stream()
-                .filter(showing -> genre.equalsIgnoreCase(showing.getGenrenm().toString()))
-                .limit(5)
-                .collect(Collectors.toList());
+            .filter(showing -> genre.equalsIgnoreCase(showing.getGenrenm().toString()))
+            .limit(5) // 최대 5개로 제한
+            .collect(Collectors.toList());
 
-        // Thymeleaf 템플릿을 사용하여 HTML 문자열 생성
+        // Thymeleaf 템플릿을 사용하여 HTML 문자열을 생성
         StringBuilder htmlBuilder = new StringBuilder();
         for (Showing exhibition : filteredShows) {
-            htmlBuilder.append("<div class='col-lg-3 col-md-4 col-sm-6 exhibition-item'>")
-                    .append("<a href='/show/").append(exhibition.getMt20id()).append("'>")
-                    .append("<div class='poster-wrapper'>")
-                    .append("<img src='").append(exhibition.getPoster()).append("' class='poster-img' alt='Exhibition Poster'>")
-                    .append("<div class='exhibition-title'>").append(exhibition.getPrfnm()).append("</div>")
-                    .append("<div class='exhibition-date'>").append(exhibition.getPrfpdfrom()).append(" ~ ").append(exhibition.getPrfpdto()).append("</div>")
-                    .append("</div></a></div>");
+            htmlBuilder.append("<div class='col-lg-2 col-md-4 col-sm-6 exhibition-item'>")
+                .append("<a href='/show/").append(exhibition.getMt20id()).append("'>")
+                .append("<div class='poster-wrapper'>")
+                .append("<img src='").append(exhibition.getPoster()).append("' class='poster-img' alt='Exhibition Poster'>")
+                .append("<div class='exhibition-rank'>")
+                .append("<span>").append(filteredShows.indexOf(exhibition) + 1).append("</span>") // 순위 표시
+                .append("</div>")
+                .append("<div class='exhibition-title'>").append(exhibition.getPrfnm()).append("</div>")
+                .append("<div class='exhibition-date'>").append(exhibition.getPrfpdfrom()).append(" ~ ").append(exhibition.getPrfpdto()).append("</div>")
+                .append("</div></a></div>");
         }
 
         return htmlBuilder.toString(); // HTML 문자열 반환
     }
-
-
-
 }
