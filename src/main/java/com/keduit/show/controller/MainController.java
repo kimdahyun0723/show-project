@@ -40,7 +40,7 @@ public class MainController {
         model.addAttribute("showList", filteredShows);
         model.addAttribute("showSearchDTO", new ShowSearchDTO()); // 필요시 DTO 추가
 
-        return "main"; // main.html로 반환
+        return "main"; // main.html로 반환ㅇ
     }
 
     // 더보기 버튼 클릭 시 추가 전시회 로드
