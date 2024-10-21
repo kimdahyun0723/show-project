@@ -33,6 +33,30 @@
       $('form[name="cancelFavorite"]').submit();
       // document.cancelFavorite.submit();
     }
+
+    $(document).ready(function (){
+
+      //검색 버튼 클릭 이벤트
+      $('#searchBtn').on("click", function (e){
+        e.preventDefault();
+        page(0);
+      })
+
+      // 정렬 버튼 클릭 이벤트
+      $('.sortBtn').on("click", function (e){
+        e.preventDefault();
+        const sort = $(this).data('sort');
+        page(0, sort);
+      })
+    })
+    function page(page, sort='DEFAULT'){
+      const searchBy = $('#searchBy').val();
+      const searchQuery = $('#searchQuery').val();
+      location.href = "/favorites/" + page +
+              "?searchBy=" + searchBy +
+              "&searchQuery=" + searchQuery +
+              "&sort=" + sort;
+    }
   </script>
 </th:block>
 
@@ -73,43 +97,106 @@
     </ul>
   </div>
 
-  <!--즐겨찾기 공연 목록-->
-  <div class="container">
-    <a th:href="'/favorite/calendar'" class="btn btn-primary">달력보기</a>
-    <div class="row">
-      <th:block th:each="show: ${showings}">
-        <div class="col">
+  <!--검색 필터-->
+  <form th:action="@{'/favorites/' + ${favorites.number}}" role="form" method="get" th:object="${favorites}">
+    <div class="d-flex justify-content-center mb-4 text-center flex-column" th:object="${searchDTO}">
+      <div class="d-flex justify-content-center mb-2 mt-3">
+      <!--검색 조건-->
+        <select th:field="*{searchBy}" class="form-select me-2" style="width:auto;">
+          <option value="">검색(전체)</option>
+          <option value="prfnm">공연명</option>
+          <option value="fcltynm">시설명</option>
+        </select>
+      </div>
 
-          <div class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img th:src="${show.poster}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
-              </div>
-
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title" th:text="${show.prfnm}"></h5>
-                  <p class="card-text" th:text="${show.fcltynm}"></p>
-                  <!--공연기간 : 기간이 하루면 하나만 표시-->
-                  <p class="card-text" th:if="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdto}]]</p>
-                  <p class="card-text" th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</p>
-                  <a th:href="'/show/' + ${show.mt20id}" class="btn btn-primary">상세보기</a>
-                  <!--즐겨찾기 취소-->
-                  <form th:name="cancelFavorite" th:action="@{/favorite/{mt20id}/cancel(mt20id=${show.mt20id})}" th:method="post">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <button type="button" th:onclick="alertCancel()" class="btn btn-outline-primary">즐겨찾기 취소</button>
-                  </form>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </th:block>
-
+      <div class="d-flex justify-content-center">
+        <input th:field="*{searchQuery}" class="form-control me-2" placeholder="공연명이나 시설명을 입력해 주세요" style="width:auto;">
+        <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+      </div>
     </div>
-  </div>
+
+    <!--정렬-->
+    <div class="text-center my-3" th:field="*{sort}">
+      <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
+      <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
+      <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
+    </div>
+
+    <!--즐겨찾기 공연 목록-->
+    <div class="container">
+      <a th:href="'/favorite/calendar'" class="btn btn-primary">달력보기</a>
+      <div class="row">
+        <th:block th:each="favorite: ${favorites}">
+          <div class="col">
+
+            <div class="card mb-3" style="max-width: 540px;">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img th:src="${favorite.getShowing().poster}" class="img-fluid rounded-start" th:alt="${favorite.getShowing().prfnm}">
+                </div>
+
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title" th:text="${favorite.getShowing().prfnm}"></h5>
+                    <p class="card-text" th:text="${favorite.getShowing().fcltynm}"></p>
+                    <!--공연기간 : 기간이 하루면 하나만 표시-->
+                    <p class="card-text" th:if="${favorite.getShowing().prfpdfrom == favorite.getShowing().prfpdto}">[[${favorite.getShowing().prfpdto}]]</p>
+                    <p class="card-text" th:unless="${favorite.getShowing().prfpdfrom == favorite.getShowing().prfpdto}">[[${favorite.getShowing().prfpdfrom}]] ~ [[${favorite.getShowing().prfpdto}]]</p>
+                    <a th:href="'/show/' + ${favorite.getShowing().mt20id}" class="btn btn-primary">상세보기</a>
+                    <!--즐겨찾기 취소-->
+                    <form th:name="cancelFavorite" th:action="@{/favorite/{mt20id}/cancel(mt20id=${favorite.getShowing().mt20id})}" th:method="post">
+                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                      <button type="button" th:onclick="alertCancel()" class="btn btn-outline-primary">즐겨찾기 취소</button>
+                    </form>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </th:block>
+
+      </div>
+    </div>
+    <hr>
+
+    <!--페이징-->
+    <div th:with="start=${(favorites.number / maxPage) * maxPage + 1},
+              end=${(favorites.totalPages == 0) ? 1 :
+              (start + (maxPage - 1) < favorites.totalPages ? start + (maxPage - 1) : favorites.totalPages)}">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${favorites.first} ? 'disabled'">
+          <a class="page-link"
+             th:href="@{/favorites/{page}(page=${favorites.number - 1}
+                       ,searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+                       , sort=${searchDTO.sort})}" aria-label="Previous">
+            <span aria-hidden="true">이전</span>
+          </a>
+        </li>
+        <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+            th:classappend="${favorites.number eq page - 1} ? 'active' : ''">
+          <a class="page-link"
+             th:href="@{/favorites/{page}(page=${page - 1}
+                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+                       , sort=${searchDTO.sort})}">
+            [[${page}]]
+          </a>
+        </li>
+        <li class="page-item" th:classappend="${favorites.last} ? 'disabled'">
+          <a class="page-link"
+             th:href="@{/favorites/{page}(page=${favorites.number + 1}
+                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+                       , sort=${searchDTO.sort})}" aria-label="Next">
+            <span aria-hidden="true">다음</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </form>
+
+
 </div>
 
 
