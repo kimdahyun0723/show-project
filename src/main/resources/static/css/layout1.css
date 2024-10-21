@@ -15,6 +15,11 @@ body {
     margin: 50px 200px 100px 200px; /* 원하는 마진 적용 */
 }
 
+.admin-content {
+    flex: 1;
+    margin: 50px 50px 50px 0;
+}
+
 .footer {
     background-color: white;
     color: black;

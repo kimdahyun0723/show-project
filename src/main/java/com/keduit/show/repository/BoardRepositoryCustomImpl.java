@@ -61,7 +61,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         List<Board> result = queryFactory.selectFrom(QBoard.board)
                 .where(regDtsAfter(boardSearchDTO.getSearchDateType()),
                         searchByLike(boardSearchDTO.getSearchBy(), boardSearchDTO.getSearchQuery()))
-                .orderBy(QBoard.board.num.desc())
+                .orderBy(QBoard.board.num.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

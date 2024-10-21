@@ -90,6 +90,9 @@ public class Showing {
     @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "showing", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites;
+
     public void removeTicket(int ticketNumber) {
         int restTicket = this.ticket - ticketNumber;
         if (restTicket < 0) {
