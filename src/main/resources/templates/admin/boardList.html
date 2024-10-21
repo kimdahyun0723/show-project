@@ -3,6 +3,14 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/adminLayout.html}">
 
+<th:block layout:fragment="css">
+  <style>
+    .page-link {
+      cursor: pointer;
+    }
+  </style>
+</th:block>
+
 <th:block layout:fragment="script">
   <script th:inline="javascript">
 
@@ -37,9 +45,8 @@
 </th:block>
 
 <div layout:fragment="content">
-
   <form th:action="@{'/admin/managementBoard/list/' + ${boards.number}}" role="form" method="get" th:object="${boards}">
-  <table class="table text-center">
+  <table class="table text-center table-bordered">
     <thead class="thead-light">
     <tr>
       <th scope="col">게시글번호</th>
@@ -71,7 +78,7 @@
           <a th:onclick="'javascript: page(' + ${boards.number -1 } + ')'"
              aria-label="Previous" class="page-link">
                         <span aria-hidden="true">
-                            Previous
+                            이전
                         </span>
           </a>
         </li>
@@ -89,27 +96,31 @@
           <a th:onclick="'javascript: page(' + ${boards.number + 1 } + ')'"
              aria-label="Next" class="page-link">
                         <span aria-hidden="true">
-                            Next
+                            다음
                         </span>
           </a>
         </li>
       </ul>
     </div>
 
-    <div class="form-inline justify-content-center" th:object="${boardSearchDTO}">
-      <select th:field="*{searchDateType}" class="form-control" style="width:auto;" id="searchDateType">
+    <div class="d-flex form-inline justify-content-center flex-column" th:object="${boardSearchDTO}">
+      <div class="d-flex justify-content-center mb-2">
+      <select th:field="*{searchDateType}" class="form-select" style="width:auto;" id="searchDateType">
         <option value="all">전체기간</option>
         <option value="1d">1일</option>
         <option value="1w">1주</option>
         <option value="1m">1개월</option>
         <option value="6m">6개월</option>
       </select>
-      <select th:field="*{searchBy}" class="form-control" style="width:auto;" id="searchBy">
+      <select th:field="*{searchBy}" class="form-select" style="width:auto;" id="searchBy">
         <option value="title">제목</option>
         <option value="createBy">등록자</option>
       </select>
-      <input th:field="*{searchQuery}" class="form-control" placeholder="검색어를 입력해주세요." id="searchQuery">
+      </div>
+      <div class="d-flex justify-content-center mb-2">
+      <input th:field="*{searchQuery}" class="form-control me-2" placeholder="검색어를 입력해주세요." id="searchQuery" style="width: 400px;">
       <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+      </div>
     </div>
   </form>
 </div>

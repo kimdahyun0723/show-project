@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
@@ -18,7 +19,13 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+
+        // CSRF 설정
+        http.csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()); // Cookie에 CSRF 토큰 저장
+
         System.out.println("------------------------ SecurityFilterChain -----------------------");
         http.formLogin()
                 .loginPage("/members/login")
@@ -31,14 +38,17 @@ public class SecurityConfig {
                         new AntPathRequestMatcher("/members/logout"),
                         new AntPathRequestMatcher("/kakao/logout")
                 ))
+                .invalidateHttpSession(true)  // 세션 무효화
+                .deleteCookies("JSESSIONID")  // JSESSIONID 쿠키 삭제
+                .clearAuthentication(true) // 인증 정보도 삭제
                 .logoutSuccessUrl("/");
-        
+
         // permitAll() : 모든 사용자가 인증없이 해당 경로에 접근 가능
         // hasRole("ADMIN") : 관리자의 경우 /admin/로 접근하는 경로를 통과시킴
         // .anyRequest().authenticated() : 위의 경우 이외의 페이지는 인증절차가 필요함
         http.authorizeRequests()
-                .mvcMatchers("/", "/members/login", "/item/**",
-                        "/images/**", "error", "favicon.ico", "/juso", "/kakao/**", "/shows/**", "/show/**", "/board/**", "/genreFilter", "/genreFilter/**", "/genreFilter**").permitAll()
+                .mvcMatchers("/", "/members/**", "/item/**",
+                        "/images/**", "error", "favicon.ico", "/kakao/**", "/shows/**", "/show/**", "/board/**", "/genreFilter", "/test").permitAll()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
 

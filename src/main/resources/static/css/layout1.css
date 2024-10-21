@@ -1,46 +1,62 @@
-/* 공통 레이아웃 스타일 */
-/*body {*/
-/*    background-color: #1c1c1c; !* 회색이 섞인 검정색 *!*/
-/*    color: #f1f1f1; !* 텍스트 색상 *!*/
-
-/*}*/
-.content-container {
-    /*margin: 50px auto;*/
-    padding: 20px;
-    /*background-color: #2c2c2c; !* 폼 영역의 배경색 *!*/
-    border-radius: 10px;
-    max-width: 800px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+html, body {
+    height: 100%; /* 페이지 전체 높이 설정 */
+    margin: 0;
+    padding: 0;
 }
 
-.btn-primary {
-    /*background-color: #4a4a4a;*/
-    border-color: #4a4a4a;
-    color: #ffffff;
+body {
+    min-height: 100vh; /* 전체 화면 높이 확보 */
+    display: flex;
+    flex-direction: column;
 }
 
-.btn-primary:hover {
-    /*background-color: #616161;*/
-    border-color: #616161;
+.content {
+    flex: 1; /* 남은 공간을 차지하도록 설정 */
+    margin: 50px 200px 100px 200px; /* 원하는 마진 적용 */
 }
 
-.btn-outline-warning {
-    color: #f1f1f1;
-    border-color: #f1f1f1;
+.admin-content {
+    flex: 1;
+    margin: 50px 50px 50px 0;
 }
 
-.btn-outline-warning:hover {
-    /*background-color: #f1f1f1;*/
-    color: #1c1c1c;
+.footer {
+    background-color: white;
+    color: black;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    padding: 20px 0;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* 푸터가 페이지 하단에 고정되도록 설정 */
 }
 
-.form-label, h5 {
-    color: #f1f1f1;
+/* 푸터 css 설정 */
+
+.footer-logo, .footer-description {
+    margin-left: 20px;
 }
 
-/*img {*/
-/*    border: 3px solid #4a4a4a;*/
-/*}*/
+.social-icons {
+    margin-right: 20px;
+}
 
-/* 추가적인 스타일을 여기에 작성하세요 */
+.social-icons a {
+    margin: 0 15px;
+    color: black;
+    text-decoration: none;
+    font-size: 22px;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #00bfa5;
+}
+
+
+
+
+
+

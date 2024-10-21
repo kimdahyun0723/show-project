@@ -164,7 +164,9 @@ public class ShowApiService {
     //showing api 연결 -> xml 파싱 -> db 저장
 //    @Async
 //    @Scheduled(cron="0 0 0 * * *") //매일 자정에 실행
-    public void saveShow() throws Exception{
+    public int saveShow() throws Exception{
+        int updateShowCount = 0;
+
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
         String result = null;
@@ -202,11 +204,14 @@ public class ShowApiService {
             if (!showRepository.existsByMt20id(showDTO.getMt20id())) {
                 Showing show = showDTO.toEntity(); // DTO를 엔티티로 변환
                 showRepository.save(show); // 데이터베이스에 저장
+                updateShowCount++;
                 System.out.println("-----------새로운 mt20id 저장됨: " + showIdlist.get(i));
             } else {
                 System.out.println("-----------이미 존재하는 mt20id: " + showIdlist.get(i));
             }
         }
+
+        return updateShowCount;
     }
 
 
@@ -274,12 +279,16 @@ public class ShowApiService {
     //공연종료 후 일주일이 지난 공연 삭제
 //    @Async
 //    @Scheduled(cron="0 0 0 * * *") //매일 자정에 실행
-    public void deleteShow(int standard){
+    public int deleteShow(int standard){
+        int deleteShowCount = 0;
         List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(standard));
         for(String showId : showIds){
             showRepository.deleteById(showId);
+            deleteShowCount++;
             System.out.println("------------------종료된 공연 삭제합니다." + showId);
         }
+
+        return deleteShowCount;
     }
 
 

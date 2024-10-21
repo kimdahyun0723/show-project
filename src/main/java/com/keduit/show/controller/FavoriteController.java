@@ -1,5 +1,7 @@
 package com.keduit.show.controller;
 
+import com.keduit.show.constant.Sort;
+import com.keduit.show.dto.FavoriteSearchDTO;
 import com.keduit.show.entity.Favorite;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Showing;
@@ -7,6 +9,9 @@ import com.keduit.show.service.FavoriteService;
 import com.keduit.show.service.MemberService;
 import com.keduit.show.service.ShowService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,13 +33,30 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     //로그인된 유저의 즐겨찾기 페이지 조회
-    @GetMapping(value = "/favorites")
-    public String favorite(Principal principal, Model model) {
+//    @GetMapping(value = "/favorites")
+//    public String favorite(Principal principal, Model model) {
+//        Member member = memberService.findMember(principal.getName());
+//        List<Favorite> favorites = member.getFavorites();
+//        List<Showing> showings = favorites.stream().map(favorite -> favorite.getShowing()).collect(Collectors.toList());
+//        model.addAttribute("showings", showings);
+//        return "show/favorite"; //즐겨찾기 페이지
+//    }
+
+    //로그인된 유저의 즐겨찾기 리스트 조회 (필터, 검색, 정렬)
+    @GetMapping({"/favorites", "/favorites/{page}"})
+    public String favorite(FavoriteSearchDTO searchDTO, @PathVariable("page")Optional<Integer> page,
+                           Model model, Principal principal) {
+        if(searchDTO.getSort() == null){
+            searchDTO.setSort(Sort.DEFAULT);
+        }
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+
         Member member = memberService.findMember(principal.getName());
-        List<Favorite> favorites = member.getFavorites();
-        List<Showing> showings = favorites.stream().map(favorite -> favorite.getShowing()).collect(Collectors.toList());
-        model.addAttribute("showings", showings);
-        return "show/favorite"; //즐겨찾기 페이지
+        Page<Favorite> favorites = favoriteService.getFavoriteFilterPage(searchDTO, pageable, member.getNum());
+        model.addAttribute("favorites", favorites);
+        model.addAttribute("searchDTO", searchDTO);
+        model.addAttribute("maxPage", 5);
+        return "show/favorite";
     }
 
     //공연상세 페이지에서 즐겨찾기 추가 요청

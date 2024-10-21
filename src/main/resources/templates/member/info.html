@@ -5,12 +5,7 @@
 
 <th:block layout:fragment="css">
     <style>
-        #infoheader > a {
-            color: white;
-        }
-        .fs-4 {
-            color: white;
-        }
+
 
     </style>
 </th:block>
@@ -18,7 +13,6 @@
 <div layout:fragment="content" >
     <!-- 회원 정보 헤더 -->
 
-    <div th:fragment="body" class="flex-shrink-0 p-3" style="width: 280px;" id="infoheader">
         <a href="/members/info" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
             <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
             <span class="fs-2 fw-semibold">마이페이지</span>
@@ -30,13 +24,24 @@
                 </a>
             </li>
             <li class="mb-1">
+                <a href="/orders"
+                   class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+                    예매이력
+                </a>
+            </li>
+            <li class="mb-1">
                 <a href="/favorites"
                    class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
                     즐겨찾기 공연
                 </a>
             </li>
+            <li class="mb-1">
+                <a href="/reviews"
+                   class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+                    나의 후기
+                </a>
+            </li>
         </ul>
-    </div>
 
     <!-- 프로필 이미지 및 업로드 폼 -->
     <div class="row justify-content-center">

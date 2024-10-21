@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">SHOW</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="/" style="padding-left: 20px;">SHOW</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="margin-right: 20px">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -21,10 +22,6 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/shows">공연목록</a>
-                </li>
-                <li class="nav-item"
-                    sec:authorize="isAuthenticated()">
-                    <a class="nav-link" href="/orders">예매이력</a>
                 </li>
                 <li class="nav-item"
                     sec:authorize="isAuthenticated()">

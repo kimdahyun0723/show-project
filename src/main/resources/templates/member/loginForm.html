@@ -5,7 +5,6 @@
 
 <!-- 사용자 css 추가 -->
 <th:block layout:fragment="css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: gray; /* 페이지 전체의 배경색을 회색으로 설정 */
@@ -109,7 +108,7 @@
                 <label for="password">비밀번호</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하십시오">
             </div>
-
+            <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}" style="color: red">Incorrect Data</p>
             <div style="text-align:center">
                 <button type="submit" class="btn btn-primary">로그인</button>
             </div>

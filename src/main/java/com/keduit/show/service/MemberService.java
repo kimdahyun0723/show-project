@@ -7,6 +7,8 @@ import com.keduit.show.entity.MemberImg;
 import com.keduit.show.repository.MemberImgRepository;
 import com.keduit.show.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -135,4 +137,10 @@ public class MemberService implements UserDetailsService {
 
         member.updateMemberByAdmin(memberListDTO);
     }
+
+    public Page<Member> getMemberPage (MemberSearchDTO memberSearchDTO, Pageable pageable) {
+        return memberRepository.getMemberPage(memberSearchDTO, pageable);
+    }
+
+
 }

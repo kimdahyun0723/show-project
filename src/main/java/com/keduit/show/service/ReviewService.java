@@ -2,6 +2,7 @@ package com.keduit.show.service;
 
 import com.keduit.show.dto.ReviewRequestDTO;
 import com.keduit.show.dto.ReviewResponseDTO;
+import com.keduit.show.dto.ReviewSearchDTO;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Review;
 import com.keduit.show.entity.Showing;
@@ -9,6 +10,8 @@ import com.keduit.show.repository.MemberRepository;
 import com.keduit.show.repository.ReviewRepository;
 import com.keduit.show.repository.ShowRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,26 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final ShowRepository showRepository;
+
+    //특정 회원의 리뷰 리스트 조회
+    public List<ReviewResponseDTO> findReviewByMember(Long memberNum){
+        List<Review> reviews = reviewRepository.findByMember(memberNum);
+        List<ReviewResponseDTO> reviewResponseDTOS = reviews.stream()
+                .map(review -> ReviewResponseDTO.toDTO(review))
+                .collect(Collectors.toList());
+        return reviewResponseDTOS;
+    }
+
+    //리뷰 번호를 기준으로 공연 이름 조회
+    public String getPrfnmByReviewNum(Long reviewNum) {
+        return reviewRepository.findPrfnmByReviewNum(reviewNum);
+    }
+
+    //필터 페이지에 따른 리뷰 전체 조회
+    public Page<Review> getReviewFilterPage(ReviewSearchDTO reviewSearchDTO, Pageable pageable, Long memberNum) {
+        return reviewRepository.getReviewFilterPage(reviewSearchDTO, pageable, memberNum);
+    }
+
 
     //리뷰추가
     public Review save(String memberId, String mt20id, ReviewRequestDTO reviewRequestDTO) {
@@ -47,18 +70,17 @@ public class ReviewService {
         List<ReviewResponseDTO> reviewResponseDTOS = reviews.stream()
                 .map(review -> ReviewResponseDTO.toDTO(review))
                 .collect(Collectors.toList());
-//        for(int i = 0; i < reviews.size(); i++) {
-//            Review review = reviews.get(i);
-//            reviewResponseDTOS.add(ReviewResponseDTO.toDTO(review));
-//        }
         return reviewResponseDTOS;
     }
 
     //리뷰 수정
     public Review update(Long num, ReviewRequestDTO reviewRequestDTO) {
+        System.out.println("service num =========================" + num);
         Review review = reviewRepository.findById(num)
                         .orElseThrow(() -> new IllegalArgumentException("후기를 찾을수 없습니다"));
-        review.update(review.getRating(), review.getContent());
+        System.out.println(review.getRating() + "service -------------------------");
+        review.update(reviewRequestDTO.getRating(), reviewRequestDTO.getContent());
+        System.out.println(review.getRating() + "service update -------------------------");
         return reviewRepository.save(review); //수정후 반환
     }
 

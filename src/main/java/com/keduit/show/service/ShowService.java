@@ -65,5 +65,10 @@ public class ShowService {
         return showRepository.findAll();
     }
 
+    // 공연 단건 삭제
+    public void deleteShow(String mt20id){
+        showRepository.deleteById(mt20id);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.keduit.show.repository;
 
+import com.keduit.show.entity.Favorite;
 import com.keduit.show.entity.Order;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("select count(o) from Order o where o.member.id = :id")
     Long countOrder(@Param("id") String id);
+
+    //특정회원의 주문 리스트
+    @Query("select o from Order o where o.member.num = :memberNum")
+    List<Order> findOrderByMemberNum(@Param("memberNum") Long memberNum);
 }

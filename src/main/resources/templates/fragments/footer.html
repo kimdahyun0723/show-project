@@ -1,49 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <div th:fragment="footer">
     <!-- 최신 Font Awesome CDN 링크 추가 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 구글 폰트와 Font Awesome 아이콘 추가 -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
-    <style>
-        /* 푸터 스타일 */
-        .footer {
-            background-color: white;
-            color: black;
-            font-family: 'Roboto', sans-serif;
-            width: 100%;
-            padding: 20px 0;
-            text-align: left; /* 기본적으로 왼쪽 정렬 */
-            position: relative; /* 푸터를 화면 하단에 고정 */
-            bottom: 0; /* 하단에 위치 */
-            left: 0;
-            display: flex; /* Flexbox 사용 */
-            justify-content: space-between; /* 좌우로 공간을 분리 */
-            align-items: center; /* 수직 가운데 정렬 */
-        }
-
-        .footer-logo, .footer-description {
-            margin-left: 20px; /* 좌측 여백 추가 */
-        }
-
-        .social-icons {
-            margin-right: 20px; /* 우측 여백 추가 */
-        }
-
-        .social-icons a {
-            margin: 0 15px;
-            color: black; /* 아이콘 색상 */
-            text-decoration: none;
-            font-size: 22px; /* 아이콘 크기 */
-            transition: color 0.3s;
-        }
-
-        .social-icons a:hover {
-            color: #00bfa5; /* 호버 시 연한 청록색 */
-        }
-
-    </style>
 
     <footer class="footer">
         <div>

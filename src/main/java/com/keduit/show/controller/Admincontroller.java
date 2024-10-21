@@ -1,18 +1,25 @@
 package com.keduit.show.controller;
 
+import com.keduit.show.constant.Sort;
 import com.keduit.show.dto.BoardSearchDTO;
 import com.keduit.show.dto.MemberListDTO;
+import com.keduit.show.dto.MemberSearchDTO;
+import com.keduit.show.dto.ShowSearchDTO;
 import com.keduit.show.entity.Board;
 import com.keduit.show.entity.Member;
+import com.keduit.show.entity.Showing;
 import com.keduit.show.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -40,25 +47,64 @@ public class Admincontroller {
         return "admin/API";
     }
 
+    @GetMapping({"/managementAPI/detail", "/managementAPI/detail/{page}"})
+    public String showList(ShowSearchDTO showSearchDTO,
+                           @PathVariable("page")Optional<Integer> page,
+                           Model model) {
+        if (showSearchDTO.getSort() == null) {
+            showSearchDTO.setSort(Sort.DEFAULT); // 기본값 설정
+        }
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+        Page<Showing> shows = showService.getShowFilterPage(showSearchDTO, pageable);
+        model.addAttribute("showLists", shows);
+        model.addAttribute("showSearchDTO", showSearchDTO);
+        model.addAttribute("maxPage", 5);
+        return "admin/showingList"; //공연목록페이지
+    }
+
     @GetMapping("/managementAPI/update")
-    public String managementAPIUpdate() throws Exception {
-        showApiService.saveShow(); //공연목록
+    public String managementAPIUpdate(RedirectAttributes redirectAttributes) throws Exception {
+        int showCount = showApiService.saveShow(); //공연목록
         showApiService.saveShowFacility(); //시설목록
-        return "admin/API";
+
+        redirectAttributes.addFlashAttribute("showCount", showCount);
+        return "redirect:/admin/managementAPI";
     }
 
     @PostMapping("/managementAPI/delete")
-    public String managementAPIDelete(@RequestParam("standard") Integer standard) throws Exception {
-        showApiService.deleteShow(standard);
-        return "admin/API";
+    public String managementAPIDelete(@RequestParam("standard") Integer standard, RedirectAttributes redirectAttributes) throws Exception {
+        int deleteShowCount = showApiService.deleteShow(standard);
+
+        redirectAttributes.addFlashAttribute("deleteShowCount", deleteShowCount);
+
+        return "redirect:/admin/managementAPI";
     }
 
-    @GetMapping("/managementMember/list")
-    public String managementMemberList(Model model) throws Exception {
-        List<MemberListDTO> memberListDTOS = memberService.findMembers();
+    @DeleteMapping("/managementAPI/deleteShow/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteShow(@PathVariable("id") String showId) {
+        try {
+            System.out.println(showId + " =====================================showid");
+            showService.deleteShow(showId); // 서비스에서 삭제 처리
+            return ResponseEntity.ok().build(); // 성공 응답
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 에러 응답
+        }
+    }
 
 
-        model.addAttribute("memberListDTOS", memberListDTOS);
+    @GetMapping({"/managementMember/list","/managementMember/list/{page}"})
+    public String managementMemberList(MemberSearchDTO memberSearchDTO, Model model, @PathVariable("page")Optional<Integer> page, Principal principal) throws Exception {
+
+        Pageable pageable = PageRequest.of(page.orElse(0), 10);
+
+        Page<Member> memberPage = memberService.getMemberPage(memberSearchDTO, pageable);
+
+        model.addAttribute("memberPage", memberPage);
+        model.addAttribute("memberSearchDTO", memberSearchDTO);
+        model.addAttribute("maxPage", 10);
+
+
         return "admin/memberList";
     }
 
@@ -78,12 +124,12 @@ public class Admincontroller {
     @GetMapping({"/managementBoard/list", "managementBoard/list/{page}"})
     public String managementBoardList(BoardSearchDTO boardSearchDTO, @PathVariable("page") Optional<Integer> page, Model model, Principal principal) {
 
-        Pageable pageable = PageRequest.of(page.orElse(0), 5);
+        Pageable pageable = PageRequest.of(page.orElse(0), 10);
         Page<Board> boards = boardService.getBoardsPage(boardSearchDTO, pageable);
 
         model.addAttribute("boards", boards);
-        model.addAttribute("maxPage", 10);
         model.addAttribute("boardSearchDTO", boardSearchDTO);
+        model.addAttribute("maxPage", 10);
 
         return "admin/boardList";
 

@@ -68,6 +68,16 @@ public class ShowController {
         //로그인 체크 여부 전달
         model.addAttribute("isLogin", principal != null);
 
+
+        //공연후기 리스트 전달
+        List<ReviewResponseDTO> reviewResponseDTOS = reviewService.read(mt20id);
+        model.addAttribute("reviews", reviewResponseDTOS);
+
+        //리뷰 작성 js 에서 쓸거
+        model.addAttribute("mt20id", mt20id); //공연아이디
+        String memberId = principal != null ? principal.getName() : "no";
+        model.addAttribute("memberId", memberId); //로그인회원아이디
+
         //즐겨찾기 버튼 활성화
         if (principal != null) { //로그인 여부
             String id = principal.getName();
@@ -78,19 +88,11 @@ public class ShowController {
             for (Favorite favorite : favorites) {
                 if (favorite.getShowing().getMt20id().equals(mt20id)) {
                     model.addAttribute("favoriteShow", "btn-primary");
+                    return "show/showDetail";
                 }
             }
         }
         model.addAttribute("favoriteShow", "btn-outline-primary");
-
-        //공연후기 리스트 전달
-        List<ReviewResponseDTO> reviewResponseDTOS = reviewService.read(mt20id);
-        model.addAttribute("reviews", reviewResponseDTOS);
-
-        //리뷰 작성 js 에서 쓸거
-        model.addAttribute("mt20id", mt20id); //공연아이디
-        String memberId = principal != null ? principal.getName() : "no";
-        model.addAttribute("memberId", memberId); //로그인회원아이디
 
         return "show/showDetail";
     }

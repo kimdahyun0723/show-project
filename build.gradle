@@ -44,8 +44,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
 	// https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect
 	implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect'
-	// https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity5
-	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5'
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson
 	implementation group: 'com.google.code.gson', name: 'gson'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
