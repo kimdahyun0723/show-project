@@ -26,6 +26,8 @@ public class QShowing extends EntityPathBase<Showing> {
 
     public final StringPath entrpsnmH = createString("entrpsnmH");
 
+    public final ListPath<Favorite, QFavorite> favorites = this.<Favorite, QFavorite>createList("favorites", Favorite.class, QFavorite.class, PathInits.DIRECT2);
+
     public final StringPath fcltynm = createString("fcltynm");
 
     public final EnumPath<com.keduit.show.constant.Genre> genrenm = createEnum("genrenm", com.keduit.show.constant.Genre.class);

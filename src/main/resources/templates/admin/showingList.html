@@ -3,7 +3,13 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/adminLayout.html}">
 
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
 <th:block layout:fragment="script">
+
     <script th:inline="javascript">
 
         $(document).ready(function () {
@@ -39,11 +45,17 @@
         }
 
         function deleteShow(showId) {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
             console.log(showId)
             if (confirm('정말로 삭제하시겠습니까?')) {
                 $.ajax({
                     url: '/admin/managementAPI/deleteShow/' + showId,
                     type: 'DELETE',
+                    headers: {
+                      [csrfHeader]: csrfToken
+                    },
                     success: function (result) {
                         alert('삭제되었습니다.');
                         location.reload(); // 페이지 새로고침
@@ -61,7 +73,7 @@
 </th:block>
 
 <div layout:fragment="content">
-    <div class="container my-5">
+    <div class="my-5">
         <form th:action="@{'/admin/managementAPI/detail/' + ${showLists.number}}" role="form" method="get"
               th:object="${showLists}">
             <!-- 검색, 필터 -->
@@ -150,7 +162,7 @@
 
             <!-- 테이블 -->
             <div>
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered text-center">
                     <thead class="thead-light">
                     <tr>
                         <th scope="col">#</th>
@@ -158,7 +170,7 @@
                         <th scope="col">공연 이름</th>
                         <th scope="col">공연 시설명</th>
                         <th scope="col">공연 기간</th>
-                        <th scope="col" style="width: 5%;">삭제</th>
+                        <th scope="col" style="width: 8%;">삭제</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -176,7 +188,7 @@
                                 <span th:unless="${show.prfpdfrom == show.prfpdto}">[[${show.prfpdfrom}]] ~ [[${show.prfpdto}]]</span>
                             </td>
                             <td class="align-middle">
-                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteShow([[${show.mt20id}]])">삭제</button>
+                                <button type="button" class="btn btn-danger btn-sm" th:onclick="deleteShow([[${show.mt20id}]])">삭제</button>
                             </td>
                         </tr>
                     </th:block>
