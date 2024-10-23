@@ -1,40 +1,58 @@
-/* 드롭다운 메뉴 스타일 */
-.navbar-nav .dropdown {
-    position: relative;
+/* 전체 네비게이션 배경과 글자 색상 설정 */
+
+.header {
+    background-color: #fefaee;
 }
 
-/* 드롭다운 메뉴가 기본적으로 숨겨짐 */
-.navbar-nav .dropdown-menu {
-    display: none; /* 기본적으로 숨김 */
-    position: absolute; /* 드롭다운 메뉴 위치 */
-    top: 100%; /* 상위 메뉴 바로 아래에 표시 */
-    left: 0;
-    background-color: #34495e;
-    border: none;
-    border-radius: 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    opacity: 0; /* 초기에는 투명하게 설정 */
-    visibility: hidden; /* 초기에 보이지 않도록 설정 */
-    transition: opacity 0.3s ease, visibility 0.3s ease; /* 서브 메뉴 애니메이션 */
+.navbar {
+    background-color: #fefaee; /* 배경색 */
 }
 
-/* 마우스를 올렸을 때 드롭다운 메뉴가 보이도록 설정 */
-.navbar-nav .nav-item:hover .dropdown-menu {
-    display: block;
-    opacity: 1; /* 드롭다운 메뉴가 서서히 보이도록 설정 */
-    visibility: visible; /* 보이도록 설정 */
+.navbar .nav-link {
+    color: #615674; /* 글자색 */
 }
 
-/* 드롭다운 아이템 스타일 */
-.navbar-nav .dropdown-item {
-    color: #ecf0f1;
-    padding: 10px 20px;
-    font-size: 16px;
-    text-decoration: none;
+.navbar .nav-link:hover {
+    color: #9b8bba; /* 링크에 마우스를 올렸을 때 */
 }
 
-/* 드롭다운 아이템 호버 시 스타일 */
-.navbar-nav .dropdown-item:hover {
-    background-color: #f39c12; /* 호버 시 황금색 배경 */
-    color: #fff;
+/* 로고와 내비게이션 간격 조정 */
+.navbar-brand {
+    padding-left: 40px; /* 로고와 메뉴 사이의 간격 */
+}
+
+/* 메뉴 아이템 간 간격 조정 */
+.navbar-nav .nav-item .nav-link {
+    padding-right: 15px; /* 메뉴 간 간격 */
+}
+
+/* 햄버거 버튼 크기 및 아이콘 조정 */
+.navbar-toggler {
+    padding: 0.25rem 0.75rem;
+    font-size: 1.25rem;
+    border-radius: 0.25rem;
+}
+
+/* 현재 활성화된 페이지 강조 */
+.navbar-nav .nav-item.active .nav-link {
+    font-weight: bold;
+    border-bottom: 1px solid #615674; /* 현재 페이지 하단에 강조선 추가 */
+}
+
+/* 로고 이미지 크기*/
+.logo_img{
+    width: 100%;
+    height: 50px;
+
+}
+
+/* 작은 화면에서 반응형 중앙 정렬 */
+@media (max-width: 768px) {
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .navbar-brand {
+        margin: auto;
+    }
 }

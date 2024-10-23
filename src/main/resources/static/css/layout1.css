@@ -20,40 +20,6 @@ body {
     margin: 50px 50px 50px 0;
 }
 
-.footer {
-    background-color: white;
-    color: black;
-    font-family: 'Roboto', sans-serif;
-    width: 100%;
-    padding: 20px 0;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto; /* 푸터가 페이지 하단에 고정되도록 설정 */
-}
-
-/* 푸터 css 설정 */
-
-.footer-logo, .footer-description {
-    margin-left: 20px;
-}
-
-.social-icons {
-    margin-right: 20px;
-}
-
-.social-icons a {
-    margin: 0 15px;
-    color: black;
-    text-decoration: none;
-    font-size: 22px;
-    transition: color 0.3s;
-}
-
-.social-icons a:hover {
-    color: #00bfa5;
-}
 
 
 
