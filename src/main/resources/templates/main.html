@@ -312,6 +312,46 @@
     </style>
 </th:block>
 
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        let offset = 8; // 처음에 이미 8개의 전시회를 로드했으므로 offset을 8로 시작
+        const limit = 8; // 한 번에 로드할 전시회 수
+
+        function loadMore() {
+            $.ajax({
+                url: "/loadMoreShows",
+                method: "GET",
+                data: { offset: offset, limit: limit },
+                success: function(response) {
+                    $('#exhibition-container').append(response);
+                    offset += limit;
+                },
+                error: function(xhr, status, error) {
+                    console.error("전시회 로드 중 오류 발생:", status, error);
+                    console.log("응답 내용: ", xhr.responseText); // 서버에서 반환한 에러 메시지를 출력
+                }
+            });
+        }
+
+        function fetchShowsByGenre(genre) {
+            $.ajax({
+                url: "/genreFilter",
+                method: "GET",
+                data: { genre: genre },
+                success: function(response) {
+                    // 서버에서 반환된 HTML을 장르별 전시회 컨테이너에 대체
+                    $('#shows-container').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("장르 필터링 중 오류 발생:", error);
+                }
+            });
+        }
+
+    </script>
+</th:block>
+
 <div layout:fragment="content">
     <div class="container mt-5">
         <h1 class="section-title">주목할만한 전시회</h1>
