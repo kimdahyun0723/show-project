@@ -9,23 +9,17 @@
 
 <th:block layout:fragment="css">
     <style>
-        .content-mg{
-            flex: 1; /* 남은 공간을 모두 차지하게 설정 */
-            margin-left:30%;
-            margin-right:30%;
-            margin-top:2%;
-            margin-bottom:100px;
+        #sidebar ul li {
+            padding: 20px 0;
+            font-size: 20px;
+        }
+        #select-nav {
+            background-color: #615674;
+        }
+        #select-nav span{
+            color: white;
         }
 
-        .card{
-            width:750px;
-            height:100%;
-            padding:30px;
-            margin-bottom:20px;
-        }
-        .fs18{
-            font-size:18px
-        }
     </style>
 </th:block>
 
@@ -71,62 +65,114 @@
 
 
 
-<div layout:fragment="content" class="content-mg">
+<div layout:fragment="content">
+<!--    구매이력-->
 
-    <h2 class="mb-4">구매이력</h2>
-    <a th:href="'/order/calendar'" class="btn btn-primary">달력보기</a>
-    <div th:each="order :${orderPage}">
-        <div class="d-flex mb-3 align-self-center">
-            <h4 th:text="${#temporals.format(order.regTime, 'yyyy-MM-dd HH:mm')} + ' 주문'"></h4>
-            <div class="ml-3">
-                <th:block th:if="${order.status.name().equals('ORDER')}">
-                    <button type="button" class="btn btn-outline-secondary"
-                            th:value="${order.num}" th:onclick="cancelOrder(this.value)">
-                        주문취소
-                    </button>
-                </th:block>
-                <th:block th:unless="${order.status.name().equals('ORDER')}">
-                    <h4>(취소완료)</h4>
-                </th:block>
-            </div>
-
+    <div class="d-flex flex-nowrap">
+        <!-- 마이페이지 사이드바 -->
+        <div class="d-flex flex-column flex-shrink-0" id="sidebar"
+             style="width: 20%; min-height: 100vh; padding: 30px 20px; background-color: #fefaee; box-sizing: border-box;">
+            <a href="/members/info" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <span class="fs-4"><i class="bi bi-person-circle"></i> 마이페이지</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="/members/myBoards" class="nav-link link-body-emphasis" aria-current="page">
+                        <i class="bi bi-clipboard" style="width: 16px; height: 16px;"></i>
+                        나의 게시글
+                    </a>
+                </li>
+                <li id="select-nav">
+                    <a href="/orders" class="nav-link link-body-emphasis">
+                        <span><i class="bi bi-cart-check" style="width: 16px; height: 16px;"></i> 예매 이력</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/favorites" class="nav-link link-body-emphasis">
+                        <i class="bi bi-suit-heart" style="width: 16px; height: 16px;"></i>
+                        공연 즐겨찾기
+                    </a>
+                </li>
+                <li>
+                    <a href="/reviews" class="nav-link link-body-emphasis">
+                        <i class="bi bi-stickies" style="width: 16px; height: 16px;"></i>
+                        나의 공연 후기
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div class="card d-flex">
-            <div class="d-flex mb-3">
 
-                <div class="align-self-center w-75">
-                    <img th:src="${order.getShowing().getPoster()}" alt="대표이지미">
-                    <span class="js24 font-weight-bold" th:text="${order.getShowing().getPrfnm()}"></span>
-                    <div class="fs18 font-weight-right">
-                        <span th:text="${order.getShowing().getPcseguidance()} + '원'"></span>
-                        <span th:text="${order.count} + '개'"></span>
+        <div class="d-flex flex-column flex-shrink-0" style="width: 70%; padding: 50px 100px;">
+            <p style="margin-bottom: 30px;">* 예매 이력 페이지 입니다<br>
+                <strong>예매한 공연</strong>의 조회가 가능하며, 주문 취소가 가능합니다<br>
+                달력을 누르면 예매한 공연의 일정을 조회할 수 있습니다</p>
+            <a th:href="'/order/calendar'" class="btn btn-secondary" style="width: 30%; margin-bottom: 30px;">
+                <i class="bi bi-calendar-check"></i> 달력보기</a>
+
+<!--            예매내역-->
+            <div th:each="order : ${orderPage}">
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-4">
+                            <img th:src="${order.getShowing().getPoster()}" alt="대표이미지" class="img-fluid"
+                                 style="width: 100%; height: auto; object-fit: cover;">
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title" th:text="${#temporals.format(order.regTime, 'yyyy-MM-dd HH:mm')} + ' 주문'"></h4>
+                                <h5 class="card-title" th:text="${order.getShowing().getPrfnm()}">공연이름</h5>
+                                <p class="card-text" th:text="${order.getShowing().getFcltynm()}">공연장</p>
+                                <p class="card-text">
+                                    <span th:text="${order.getShowing().getPcseguidance()} + '원'"></span>
+                                    <span th:text="${order.count} + '개'"></span>
+                                </p>
+                                <div class="d-flex">
+                                    <a th:href="'/show/' + ${order.getShowing().getMt20id()}" class="btn btn-secondary" style="margin-right: 20px;">상세보기</a>
+
+                                    <th:block th:if="${order.status.name().equals('ORDER')}">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                th:value="${order.num}" th:onclick="cancelOrder(this.value)">
+                                            주문취소
+                                        </button>
+                                    </th:block>
+                                    <th:block th:unless="${order.status.name().equals('ORDER')}">
+                                        <h4>(취소완료)</h4>
+                                    </th:block>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div th:with="start=${(orderPage.number/maxPage)*maxPage + 1},
+            <div th:with="start=${(orderPage.number/maxPage)*maxPage + 1},
     end=(${(orderPage.totalPages == 0) ? 1 : (start + (maxPage - 1) < orderPage.totalPages ? start + (maxPage - 1) : orderPage.totalPages)})">
-        <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center">
 
-            <li class="page-item" th:classappend="${orderPage.number eq 0}?'disabled':''">
-                <a th:href="@{'/orders/' + ${orderPage.number -1}}" aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>Previous</span>
-                </a>
-            </li>
+                    <li class="page-item" th:classappend="${orderPage.number eq 0}?'disabled':''">
+                        <a th:href="@{'/orders/' + ${orderPage.number -1}}" aria-label='Previous' class="page-link">
+                            <span aria-hidden='true'>Previous</span>
+                        </a>
+                    </li>
 
-            <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
-                th:classappend="${orderPage.number eq page -1}?'active':''">
-                <a th:href="@{'/orders/' + ${page -1}}" th:inline="text" class="page-link">[[${page}]]</a>
-            </li>
+                    <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
+                        th:classappend="${orderPage.number eq page -1}?'active':''">
+                        <a th:href="@{'/orders/' + ${page -1}}" th:inline="text" class="page-link">[[${page}]]</a>
+                    </li>
 
-            <li class="page-item" th:classappend="${orderPage.number+1 ge orderPage.totalPages}?'disabled':''">
-                <a th:href="@{'/orders/' + ${orderPage.number+1}}" aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>Next</span>
-                </a>
-            </li>
-        </ul>
+                    <li class="page-item" th:classappend="${orderPage.number+1 ge orderPage.totalPages}?'disabled':''">
+                        <a th:href="@{'/orders/' + ${orderPage.number+1}}" aria-label='Next' class="page-link">
+                            <span aria-hidden='true'>Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 
 </div>

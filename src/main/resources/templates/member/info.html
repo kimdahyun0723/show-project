@@ -5,88 +5,109 @@
 
 <th:block layout:fragment="css">
     <style>
-
-
+        ul li {
+            padding: 20px 0;
+            font-size: 20px;
+        }
     </style>
 </th:block>
 
 <div layout:fragment="content" >
-    <!-- 회원 정보 헤더 -->
-
-        <a href="/members/info" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-            <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-            <span class="fs-2 fw-semibold">마이페이지</span>
-        </a>
-        <ul class="list-unstyled ps-0">
-            <li class="mb-1">
-                <a href="/members/myBoards" class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                    내가 쓴 글
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="/orders"
-                   class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                    예매이력
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="/favorites"
-                   class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                    즐겨찾기 공연
-                </a>
-            </li>
-            <li class="mb-1">
-                <a href="/reviews"
-                   class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                    나의 후기
-                </a>
-            </li>
-        </ul>
-
-    <!-- 프로필 이미지 및 업로드 폼 -->
-    <div class="row justify-content-center">
-        <div class="col-md-4 text-center">
-            <img th:src="${image.url}" class="img-fluid rounded-circle" alt="Profile picture">
-            <form th:action="@{/image/upload}" th:method="post" enctype="multipart/form-data" class="mt-2">
-                <div class="mb-3">
-                    <input type="file" class="form-control" name="file" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Profile Picture</button>
-            </form>
+    <!-- 회원 정보 -->
+    <div class="d-flex flex-nowrap">
+        <!-- 마이페이지 사이드바 -->
+        <div class="d-flex flex-column flex-shrink-0"
+             style="width: 20%; min-height: 100vh; padding: 30px 20px; background-color: #fefaee; box-sizing: border-box;">
+            <a href="/members/info" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <span class="fs-4"><i class="bi bi-person-circle"></i> 마이페이지</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="/members/myBoards" class="nav-link link-body-emphasis" aria-current="page">
+                        <i class="bi bi-clipboard" style="width: 16px; height: 16px;"></i>
+                        나의 게시글
+                    </a>
+                </li>
+                <li>
+                    <a href="/orders" class="nav-link link-body-emphasis">
+                        <i class="bi bi-cart-check" style="width: 16px; height: 16px;"></i>
+                        예매 이력
+                    </a>
+                </li>
+                <li>
+                    <a href="/favorites" class="nav-link link-body-emphasis">
+                        <i class="bi bi-suit-heart" style="width: 16px; height: 16px;"></i>
+                        공연 즐겨찾기
+                    </a>
+                </li>
+                <li>
+                    <a href="/reviews" class="nav-link link-body-emphasis">
+                        <i class="bi bi-stickies" style="width: 16px; height: 16px;"></i>
+                        나의 공연 후기
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <div class="dropdown">
+                <img th:src="${image.url}" class="img-fluid rounded-circle" alt="Profile picture" style="width: 32px; height: 32px;">
+                <strong th:text="${member.getId()}"></strong>
+            </div>
         </div>
 
-        <!-- 회원 정보 표시 -->
-        <div class="col-md-6">
-            <form th:action="@{/member/update}" th:method="post">
-                <!-- 이름 -->
-                <div class="mb-6">
-                    <label for="name" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="name" name="name" th:value="${member.getName()}" readonly>
+        <!-- 사이드바 오른쪽의 프로필 이미지 및 업로드 폼 -->
+        <div class="d-flex flex-column flex-shrink-0" style="width: 70%; padding: 50px 100px;">
+            <p style="margin-bottom: 30px;">* 회원정보 수정 페이지 입니다<br><strong>프로필 이미지, 이름, 전화번호</strong>만 변경 가능합니다</p>
+            <div class="row justify-content-center">
+                <div class="col-md-5 text-center">
+                    <h4 style="float: left;">프로필 이미지</h4>
+                    <img th:src="${image.url}" class="img-fluid rounded-circle" alt="Profile picture" style="width: 80%; height: auto; aspect-ratio: 1 / 1;">
+                    <form th:action="@{/image/upload}" th:method="post" enctype="multipart/form-data" class="mt-2">
+                        <div class="mb-3" >
+                            <input type="file" class="form-control" name="file" accept="image/*" required style="margin-top: 20px;">
+                        </div>
+                        <button type="submit" class="btn btn-outline-secondary" style="margin-top: 20px;">프로필 이미지 수정</button>
+                    </form>
                 </div>
 
-                <!-- 아이디 -->
-                <div class="mb-6">
-                    <label for="id" class="form-label">아이디</label>
-                    <input type="text" class="form-control" id="id" name="id" th:value="${member.getId()}" readonly>
-                </div>
+                <!-- 회원 정보 표시 -->
+                <div class="col-md-7">
+                    <h4>회원 정보</h4>
+                    <form th:action="@{/member/update}" th:method="post">
+                        <!-- 이름 -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">이름</label>
+                            <input type="text" class="form-control" id="name" name="name" th:value="${member.getName()}" readonly>
+                        </div>
 
-                <!-- 이메일 -->
-                <div class="mb-6">
-                    <label for="email" class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="email" name="email" th:value="${member.getEmail()}" readonly>
-                </div>
+                        <!-- 아이디 -->
+                        <div class="mb-3">
+                            <label for="id" class="form-label">아이디</label>
+                            <input type="text" class="form-control" id="id" name="id" th:value="${member.getId()}" readonly>
+                        </div>
 
-                <!-- 전화번호 -->
-                <div class="mb-6">
-                    <label for="phone" class="form-label">전화번호</label>
-                    <input type="text" class="form-control" id="phone" name="phone" th:value="${member.getPhone()}" readonly>
-                </div>
-            </form>
+                        <!-- 이메일 -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">이메일</label>
+                            <input type="email" class="form-control" id="email" name="email" th:value="${member.getEmail()}" readonly>
+                        </div>
 
-            <!-- 정보 수정 및 회원 탈퇴 버튼 -->
-            <a th:href="@{/members/updateInfo}" class="btn btn-outline-warning" style="margin-top: 20px;">정보 수정</a>
+                        <!-- 전화번호 -->
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">전화번호</label>
+                            <input type="text" class="form-control" id="phone" name="phone" th:value="${member.getPhone()}" readonly>
+                        </div>
+                    </form>
+
+                    <!-- 정보 수정 버튼 -->
+                    <div class="text-center" style="width: 100%;">
+                        <a th:href="@{/members/updateInfo}" class="btn btn-outline-secondary" style="margin-top: 20px;">정보 수정</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
 
 </html>

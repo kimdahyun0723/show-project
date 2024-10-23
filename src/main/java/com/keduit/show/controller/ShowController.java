@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +69,6 @@ public class ShowController {
         //로그인 체크 여부 전달
         model.addAttribute("isLogin", principal != null);
 
-
         //공연후기 리스트 전달
         List<ReviewResponseDTO> reviewResponseDTOS = reviewService.read(mt20id);
         model.addAttribute("reviews", reviewResponseDTOS);
@@ -83,16 +83,16 @@ public class ShowController {
             String id = principal.getName();
             Member member = memberService.findMember(principal.getName());
             model.addAttribute("member", member);
-            //즐겨찾기 여부 전달
+            //즐겨찾기 여부 전달 - 버튼 스타일 변경
             List<Favorite> favorites = member.getFavorites();
             for (Favorite favorite : favorites) {
                 if (favorite.getShowing().getMt20id().equals(mt20id)) {
-                    model.addAttribute("favoriteShow", "btn-primary");
+                    model.addAttribute("favoriteShow", "btn-warning");
                     return "show/showDetail";
                 }
             }
         }
-        model.addAttribute("favoriteShow", "btn-outline-primary");
+        model.addAttribute("favoriteShow", "btn-outline-warning");
 
         return "show/showDetail";
     }

@@ -5,53 +5,66 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <!-- Font Awesome 라이브러리 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
+        /* 별점 스타일 */
         .review-rating {
             display: inline-block;
             direction: rtl;
             border: 0;
         }
-
         .review-rating legend {
             text-align: right;
         }
-
         .update-rating {
             display: inline-block;
             direction: rtl;
             border: 0;
         }
-
         .update-rating legend {
             text-align: right;
         }
-
         #review-form input[type=radio] {
             display: none;
         }
-
         #review-form label {
             font-size: 3em;
             color: transparent;
             text-shadow: 0 0 0 #f0f0f0;
         }
-
         #review-form label:hover {
             text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
         }
-
         #review-form label:hover ~ label {
             text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
         }
-
         #review-form input[type=radio]:checked ~ label {
             text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
         }
+        .update-rating input[type=radio] {
+            display: none;
+        }
+        .update-rating label {
+            font-size: 2em;
+            color: transparent;
+            text-shadow: 0 0 0 #f0f0f0;
+        }
+        .update-rating label:hover {
+            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+        }
+        .update-rating label:hover ~ label {
+            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+        }
+        .update-rating input[type=radio]:checked ~ label {
+            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+        }
 
+        /* 후기 내용 입력 창 */
         #review-content {
             width: 100%;
             height: 150px;
@@ -59,32 +72,9 @@
             box-sizing: border-box;
             border: solid 1.5px #D3D3D3;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 20px;
             resize: none;
         }
-
-        .update-rating input[type=radio] {
-            display: none;
-        }
-
-        .update-rating label {
-            font-size: 1em;
-            color: transparent;
-            text-shadow: 0 0 0 #f0f0f0;
-        }
-
-        .update-rating label:hover {
-            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
-        }
-
-        .update-rating label:hover ~ label {
-            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
-        }
-
-        .update-rating input[type=radio]:checked ~ label {
-            text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
-        }
-
         .updateContent {
             width: 100%;
             height: 150px;
@@ -92,16 +82,221 @@
             box-sizing: border-box;
             border: solid 1.5px #D3D3D3;
             border-radius: 5px;
-            font-size: 10px;
+            font-size: 20px;
             resize: none;
+            margin: 10px 0;
         }
+
+        /* 즐겨찾기 버튼 스타일 */
+        #favoriteForm .btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #favoriteForm .btn i.fa-heart {
+            color: red;
+            font-size: 24px;
+        }
+
+        #show-name {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .badge {
+            font-size: 20px;
+        }
+        .poster img {
+            margin-bottom: 20px;
+            width: 350px;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        /*공연목록*/
+        .show-info {
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 20px 0;
+            flex: 1 0 65%;
+        }
+        .show-info ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .show-info li {
+            margin-bottom: 30px;
+        }
+        .show-info strong {
+            display: inline-block;
+            width: 120px; /* 항목 제목의 고정 너비 */
+            font-weight: bold;
+            color: #333;
+        }
+        .show-info span {
+            color: #555;
+        }
+
+        /*결제창 스타일*/
+        #order-box {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px 40px;
+            text-align: center;
+            background-color: #fafafa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+        }
+        #order-box p {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+        #order-box p strong {
+            display: block;
+            margin-bottom: 10px;
+        }
+        #order-box input[type="number"] {
+            width: 100px;
+            margin: 10px auto;
+            padding: 5px;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #order-box h3 {
+            font-size: 24px;
+            color: #333;
+            margin-top: 20px;
+        }
+        /* 버튼 스타일 */
+        .btn-primary {
+            background-color: #615674;
+            color: #fff;
+            font-size: 20px;
+            padding: 15px 0;
+            width: 100%;
+            border-radius: 10px;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #6f4dcc;
+        }
+        .bi-bag-check-fill {
+            font-size: 24px;
+            color: #615674;
+            margin-right: 5px;
+        }
+        #order-box span {
+            display: block;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Nav-tabs 스타일 */
+        .nav-tabs {
+            border-bottom: 2px solid #e5e5e5;
+            padding-bottom: 0px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+        .nav-tabs .nav-item {
+            flex: 1;
+            text-align: center;
+        }
+        .nav-tabs .nav-link {
+            color: #666;
+            font-size: 20px;
+            font-weight: normal;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: none;
+            display: block;
+        }
+        .nav-tabs .nav-link.active {
+            color: black;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            height: 5px;
+            background-color: #615674; /* 선택된 탭의 밑선 색상 */
+            width: 100%;
+        }
+
+        /*공연리스트 ul*/
+        .list-group-flush {
+            padding: 10px 40px 0 40px;
+            margin: 10px 0 0 0;
+        }
+
+        #map {
+            width: 1000px;
+            height: 700px;
+        }
+
+
     </style>
 </th:block>
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
+
         $(document).ready(function () {
 
+            kakao.maps.load(function(){
+                //카카오 지도 api
+                let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+                let la = $('input[name=la]').val();
+                let lo = $('input[name=lo]').val();
+                let options = { //지도를 생성할 때 필요한 기본 옵션
+                    center: new kakao.maps.LatLng(la, lo), //지도의 중심좌표.
+                    level: 3 //지도의 레벨(확대, 축소 정도)
+                };
+                let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+                map.relayout(); //레이아웃 재계산
+
+                let markerPosition = new kakao.maps.LatLng(la, lo);  // 마커가 표시될 위치
+                let marker = new kakao.maps.Marker({  // 마커 생성
+                    position: markerPosition
+                });
+                marker.setMap(map);
+
+                // 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성
+                //위치정보 길찾기로 넘기기
+                let iwContent = '<div style="padding:5px; display: inline-block; word-wrap: break-word;">' +
+                        $('input[name=fcltynm]').val() +
+                        '<br> <a href="https://map.kakao.com/link/to/' + $('input[name=adres]').val() +
+                        ',' + la + ',' + lo + '" style="color:blue; display: inline-block;" target="_blank">길찾기</a></div>',
+                    iwPosition = new kakao.maps.LatLng(la, lo),
+                    iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+
+                let infowindow = new kakao.maps.InfoWindow({
+                    content: iwContent,
+                    position: iwPosition,
+                    removable: iwRemoveable
+                });
+
+                kakao.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                });
+            });
+
+            //리뷰 수정 토글
             $(document).on('click', '.modifyReview', function (e) {
                 e.preventDefault();
                 const target = $(this).data('bs-target'); // Collapse 대상 요소를 가져옴
@@ -126,40 +321,7 @@
                 return true; // 로그인 상태일 경우 폼 제출 계속
             };
 
-            //카카오 지도 api
-            let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-            let la = $('input[name=la]').val();
-            let lo = $('input[name=lo]').val();
-            let options = { //지도를 생성할 때 필요한 기본 옵션
-                center: new kakao.maps.LatLng(la, lo), //지도의 중심좌표.
-                level: 3 //지도의 레벨(확대, 축소 정도)
-            };
-            let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-            var markerPosition = new kakao.maps.LatLng(la, lo);  // 마커가 표시될 위치
-            var marker = new kakao.maps.Marker({  // 마커 생성
-                position: markerPosition
-            });
-            marker.setMap(map);
-
-            // 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성
-            //위치정보 길찾기로 넘기기
-            var iwContent = '<div style="padding:5px;">' + $('input[name=fcltynm]').val() +
-                    '<br> <a href="https://map.kakao.com/link/to/' + $('input[name=adres]').val() +
-                    ',' + la + ',' + lo + '" style="color:blue" target="_blank">길찾기</a></div>',
-                iwPosition = new kakao.maps.LatLng(la, lo),
-                iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
-
-            var infowindow = new kakao.maps.InfoWindow({
-                content: iwContent,
-                position: iwPosition,
-                removable: iwRemoveable
-            });
-
-            kakao.maps.event.addListener(marker, 'click', function () {
-                infowindow.open(map, marker);
-            });
-
+            //전체금액계산
             calculateTotalPrice();
         });
 
@@ -185,12 +347,8 @@
             const count = $("#count").val();
             const price = $("#price").val();
             const totalPrice = count * price;
-            const email = [[${member != null ? member.email : ''
-        }]]
-            ;
-            const name = [[${member != null ? member.name : ''
-        }]]
-            ;
+            const email = [[${member != null ? member.email : ''}]];
+            const name = [[${member != null ? member.name : ''}]];
             console.log(email);
             console.log(name);
 
@@ -326,15 +484,18 @@
                     const newReview = `
     <ul class="list-group-flush" id="review-${data.num}">
         <li class="list-group-item">
-            <div id="rating-${data.num}">${starsHtml}</div>
-            <p id="content-${data.num}">${data.content}</p>
-            <span style="font-size: small">${data.obfuscatedMemberName}</span>
-
+            <span>
+                <span style="color: gray">${data.obfuscatedMemberName}</span>
+                <span style="color: gray">  |  </span>
+                <span style="color: gray">${data.createDate}</span>&nbsp;
+            </span>
+            <div id="rating-${data.num}" style="margin-top: 16px;">${starsHtml}</div>
+            <p id="content-${data.num}" style="font-size:20px; margin: 16px 0;">${data.content}</p>
             <!-- 수정, 삭제 버튼 -->
             <div style="display: ${data.memberId === memberId ? 'block' : 'none'};">
-                <button type="button" class="badge bi bi-pencil-square modifyReview"
+                <button type="button" class="btn btn-secondary bi bi-pencil-square modifyReview"
                         data-bs-toggle="collapse" data-bs-target=".multi-collapse-${data.num}">수정</button>
-                <button type="button" class="badge bi bi-trash deleteReview"
+                <button type="button" class="btn btn-secondary bi bi-trash deleteReview"
                         data-id="${data.num}" onclick="deleteReview(this)">삭제</button>
             </div>
 
@@ -366,13 +527,14 @@
                         <textarea name="update-content-${data.num}" id="update-content-${data.num}"
                                   class="form-control updateContent">${data.content}</textarea>
                     </div>
-                    <button type="button" id="update-btn" class="btn btn-outline-primary bi bi-pencil-square"
+                    <button type="button" id="update-btn" class="btn btn-outline-secondary bi bi-pencil-square"
                             data-id="${data.num}" onclick="updateReview(this)">수정</button>
-                    <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
+                    <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
                             data-id="${data.num}" onclick="resetUpdate(this)">취소</button>
                 </form>
             </div>
         </li>
+        <hr>
     </ul>`;
 
                     // 새롭게 추가된 리뷰를 리스트에 추가
@@ -395,9 +557,9 @@
             let starsHtml = '';
             for (let i = 1; i <= 5; i++) {
                 if (i <= rating) {
-                    starsHtml += '<span style="color: gold;">★</span>'; // gold 색상
+                    starsHtml += '<span style="color: gold; font-size: 25px;">★</span>'; // gold 색상
                 } else {
-                    starsHtml += '<span style="color: lightgray;">★</span>'; // lightgray 색상
+                    starsHtml += '<span style="color: lightgray; font-size: 25px;">★</span>'; // lightgray 색상
                 }
             }
             return starsHtml;
@@ -499,7 +661,6 @@
                     }
                 });
             }
-
         }
 
     </script>
@@ -509,35 +670,78 @@
 <div layout:fragment="content">
     <input type="hidden" id="showNum" th:value="${show.mt20id}">
     <script type="text/javascript"
-            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=35267baa78fc79afc7626fc0349548fe"></script>
+            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=35267baa78fc79afc7626fc0349548fe"></script>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 
 
     <div class="container">
-        <div class="d-flex">
-            <div class="wd50">
 
+        <!--공연상태-->
+        <div th:switch="${show.prfstate.name()}">
+            <span th:case="'EXPECT'" class="badge bg-secondary">공연예정</span>
+            <span th:case="'ING'" class="badge bg-secondary">공연중</span>
+            <span th:case="'COMPLETE'" class="badge bg-secondary">공연완료</span>
+        </div>
+
+        <input type="hidden" id="showDetail" th:value="${show.mt20id}">
+        <!--공연이름-->
+        <h1 id="show-name" th:text="${show.prfnm}"></h1>
+        <p id="show-genre" th:text="${show.getGenrenm().name}"></p>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-start" style="gap: 20px; margin-bottom: 100px;">
+
+            <!--포스터-->
+            <div class="poster flex-grow-1 me-2" style="flex-basis: 30%;">
+                <img th:src="${show.poster}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
+
+                <!--즐겨찾기 : submit 하면 마이페지이로 보냄-->
+                <form id="favoriteForm" th:action="@{/favorite}" th:method="post" onsubmit="return checkLogin();"
+                      class="d-inline-flex align-items-center">
+                    <input type="hidden" name="mt20id" th:value="${show.mt20id}">
+                    <input type="hidden" name="isLogin" th:value="${isLogin}">
+                    <button type="submit" class="btn" th:classappend="${favoriteShow}" style="margin-right: 10px;">
+                        <i class="fas fa-heart"></i></button>
+                    <span style="font-size: 20px;">Favorite <strong>[[${show.likeCount}]]</strong></span>
+                </form>
+            </div>
+
+            <!--공연정보-->
+            <div class="show-info" style="flex: 1 1 30%; min-width: 250px;">
+                <ul>
+                    <li><strong>공연장소</strong> <span th:text="${show.fcltynm}"></span></li>
+                    <li><strong>공연기간</strong> <span th:text="${show.prfpdfrom} + ' ~ ' + ${show.prfpdto}"></span></li>
+                    <li><strong>관람시간</strong> <span th:text="${show.prfruntime}"></span></li>
+                    <li><strong>관람연령</strong> <span th:text="${show.prfage}"></span></li>
+                    <li><strong>가격</strong> <span th:text="|${show.pcseguidance}원|"></span></li>
+                    <li>
+                        <strong>잔여티켓</strong>
+                        <span th:if="${show.getTicket() == 0}" th:text="'매진'"></span>
+                        <span th:unless="${show.getTicket() == 0}" th:text="${show.getTicket()} + '매'"></span>
+                    </li>
+                    <li><strong>주최지</strong>
+                        <span th:if="${!show.entrpsnmH.isBlank()}" th:text="${show.entrpsnmH}"></span>
+                        <span th:unless="${!show.entrpsnmH.isBlank()}">정보없음</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!--결제-->
+            <div class="wd50" style="flex: 1 1 30%; min-width: 250px;">
                 <div class="text-right" th:if="${show.ticketStatus.name().equals('SELL')}">
-                    <hr class="my-4">
-                    <div class="text-right">
-                        <div class="h4 text-danger text-left">
-                            <input type="hidden" th:value="${show.pcseguidance}" id="price" name="price">
-                            <span th:text="${show.pcseguidance}"></span> 원
+                    <div id="order-box">
+                        <input type="hidden" th:value="${show.pcseguidance}" id="price" name="price">
 
+                        <p><strong>상시상품</strong></p>
+                        <p><strong>날짜, 좌석 선택 없이<br>예매를 진행하세요</strong></p>
+                        <!--수량 선택-->
+                        <i class="bi bi-bag-check-fill"></i><span> 수량을 선택해 주세요</span>
+                        <input type="number" class="form-control" name="count" id="count" value="1" min="1">
+                        <!--총 금액-->
+                        <div style="display: flex; align-items: center;
+                            justify-content: space-between; width: 100%; font-weight: bold;">
+                            <h3 style="margin-left: 10px;"><i class="bi bi-wallet"></i> 전체금액</h3>
+                            <h3 class="font-weight-bold" name="totalPrice" id="totalPrice" style="margin-left: 10px;"></h3>
                         </div>
-                        <div class="input-group w-50">
-                            <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            수량
-                        </span>
-                            </div>
-                            <input type="number" class="form-control" name="count" id="count" value="1" min="1">
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                    <div class="text-right mgt-50">
-                        <h5>결제금액</h5>
-                        <h3 class="font-weight-bold" name="totalPrice" id="totalPrice"></h3>
                     </div>
                     <button type="button" class="btn btn-primary btn-lg" onclick="requestPay()">예매하기</button>
                 </div>
@@ -546,213 +750,184 @@
                     <button type="button" class="btn btn-danger btn-lg">매진</button>
                 </div>
             </div>
-        </div>
 
-        <input type="hidden" id="showDetail" th:value="${show.mt20id}">
-        <h1 th:text="${show.prfnm}"></h1>
+        </div> <!--flex-->
 
-        <!--공연상태-->
-        <div th:switch="${show.prfstate.name()}">
-            <span th:case="'EXPECT'" class="badge bg-primary">공연예정</span>
-            <span th:case="'ING'" class="badge bg-success">공연중</span>
-            <span th:case="'COMPLETE'" class="badge bg-secondary">공연완료</span>
-        </div>
+        <!--네비게이션 탭스-->
+        <div>
 
-        <div class="d-flex">
-            <div class="poster">
-                <img th:src="${show.poster}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
-            </div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link active" href="#tab-detail" aria-controls="tab-detail" role="tab" data-bs-toggle="tab">
+                        세부정보</a></li>
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link" href="#tab-address" aria-controls="tab-address" role="tab" data-bs-toggle="tab">
+                        장소</a></li>
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link" href="#tab-review" aria-controls="tab-review" role="tab" data-bs-toggle="tab">
+                        관람후기([[${reviews.size()}]])</a></li>
+            </ul>
 
-            <!--즐겨찾기 : submit 하면 마이페지이로 보냄-->
-            <form th:action="@{/favorite}" th:method="post" onsubmit="return checkLogin();">
-                <input type="hidden" name="mt20id" th:value="${show.mt20id}">
-                <input type="hidden" name="isLogin" th:value="${isLogin}">
-                <button type="submit" class="btn" th:classappend="${favoriteShow}">즐겨찾기</button>
-                <h4 th:text="${show.likeCount}"></h4>
-            </form>
-
-            <div class="table">
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <th scope="row">공연장소</th>
-                        <td th:text="${show.fcltynm}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">공연기간</th>
-                        <td th:text="${show.prfpdfrom} + '~' + ${show.prfpdto}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">관람시간</th>
-                        <td th:text="${show.prfruntime}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">관람연령</th>
-                        <td th:text="${show.prfage}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">가격</th>
-                        <td th:text="|${show.pcseguidance}원|"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">잔여티켓수량</th>
-                        <td th:if="${show.getTicket() == 0}" th:text="매진"></td>
-                        <td th:unless="${show.getTicket() == 0}" th:text="${show.getTicket()} + '매'"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">출연진</th>
-                        <td th:text="${show.prfcast}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">제작진</th>
-                        <td th:text="${show.prfcrew}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">기획사</th>
-                        <td th:text="${show.entrpsnm}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">주최</th>
-                        <td th:text="${show.entrpsnmH}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <img th:src="${show.styurl}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
-        </div>
-
-        <!--장소 지도 띄우기-->
-        <input type="hidden" name="la" th:value="${showFacility.la}">
-        <input type="hidden" name="lo" th:value="${showFacility.lo}">
-        <input type="hidden" name="fcltynm" th:value="${show.fcltynm}">
-        <input type="hidden" name="adres" th:value="${showFacility.adres}">
-        <h3 th:text="${showFacility.adres}"></h3>
-        <div id="map" style="width: 500px; height: 400px;"></div>
-
-
-        <!--공연후기 작성 폼 createReview()으로 실행-->
-        <div class="card">
-            <div class="card-header bi bi-chat-right-dots"> Write a Review</div>
-            <form id="review-form">
-                <!--로그인이 되어잇을 경우-->
-                <div th:if="${isLogin} == true">
-                    <div class="card-body">
-                        <div class="review-rating">
-                            <span class="text-bold">별점을 선택해주세요</span>
-                            <input type="radio" name="review" value="5" class="form-star" id="rate1">
-                            <label for="rate1">★</label>
-                            <input type="radio" name="review" value="4" class="form-star" id="rate2">
-                            <label for="rate2">★</label>
-                            <input type="radio" name="review" value="3" class="form-star" id="rate3">
-                            <label for="rate3">★</label>
-                            <input type="radio" name="review" value="2" class="form-star" id="rate4">
-                            <label for="rate4">★</label>
-                            <input type="radio" name="review" value="1" class="form-star" id="rate5">
-                            <label for="rate5">★</label>
-                        </div>
-                        <textarea name="review" id="review-content" class="form-control"
-                                  placeholder="후기를 입력하세요"></textarea>
-                    </div>
-                    <button type="submit" id="review-save-btn" class="btn btn-outline-primary bi bi-pencil-square">등록
-                    </button>
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade show active" id="tab-detail">
+                    <p style="color: #615674; margin-bottom: 50px;">※ 티켓 예매 시 본 상세페이지의 안내사항에 동의한 것으로 간주하며, 본 내용은 상황에 따라 추가, 변경될 수 있습니다.<br>
+                        공연 관람에 지장이나 불이익을 받지 않도록 관람 전 반드시 공연 안내사항을 재확인 바랍니다.</p>
+                    <h5 style="margin-bottom: 20px;"><strong>출연진</strong></h5>
+                    <p th:if="${!show.prfcast.isBlank()}" th:text="${show.prfcast}" style="margin-bottom: 50px;"></p>
+                    <p th:unless="${!show.prfcast.isBlank()}" style="margin-bottom: 50px;">정보없음</p>
+                    <h5 style="margin-bottom: 20px;"><strong>제작진</strong></h5>
+                    <p th:if="${!show.prfcrew.isBlank()}" th:text="${show.prfcrew}" style="margin-bottom: 50px;"></p>
+                    <p th:unless="${!show.prfcrew.isBlank()}" style="margin-bottom: 50px;">정보없음</p>
+                    <h5 style="margin-bottom: 20px;"><strong>공연 상세 포스터</strong></h5>
+                    <img th:src="${show.styurl}" class="img-fluid rounded-start" th:alt="${show.prfnm}">
                 </div>
-                <!--로그인이 안되어 잇는 경우-->
-                <div th:unless="${isLogin} == true">
-                    <div class="card-body" style="font-size: small">
-                        로그인 후 이용가능 합니다
-                    </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="tab-address">
+                    <!--장소 지도 띄우기-->
+                    <input type="hidden" name="la" th:value="${showFacility.la}">
+                    <input type="hidden" name="lo" th:value="${showFacility.lo}">
+                    <input type="hidden" name="fcltynm" th:value="${show.fcltynm}">
+                    <input type="hidden" name="adres" th:value="${showFacility.adres}">
+                    <h5 style="margin-bottom: 20px;" th:text="${show.fcltynm}"></h5>
+                    <p style="margin-bottom: 50px;">주소 : [[${showFacility.adres}]]</p>
+                    <div id="map" style="width: 1000px; height: 700px; border: 2px solid gray;"></div>
                 </div>
-            </form>
-        </div>
 
-        <!--공연후기 리스트-->
-        <div class="card" id="review-list">
-            <div class="card-header bi bi-chat-dots"> [[${reviewCount}]] Reviews</div>
-            <th:block th:each="review : ${reviews}">
-                <!--댓글 번호별 아이디 부여 createReview() 메서드로 리스트 innerHtml-->
-                <ul class="list-group-flush" th:id="'review-' + ${review.getNum()}">
-                    <li class="list-group-item">
-                        <div th:id="'rating-' + ${review.getNum()}">
-                            <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
-                                  th:if="${i <= review.getRating()}" style="color: gold;">★</span>
-                            <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
-                                  th:if="${i > review.getRating()}" style="color: lightgray;">★</span>
-                        </div>
-                        <p th:text="${review.getContent()}" th:id="'content-' + ${review.getNum()}">내용</p>
-
-                        <span>
-                            <span style="font-size: small" th:text="${review.getObfuscatedMemberName()}">작성자아이디</span>
-                            <span style="font-size: small" th:text="${review.getCreateDate()}">작성일</span>&nbsp;
-                        </span>
-
-                        <!--작성자와 로그인회원이 같으면 수정, 삭제 가능-->
-                        <div th:if="${review.getMemberId() == memberId}">
-                            <button type="button" class="badge bi bi-pencil-square"
-                                    data-bs-toggle="collapse"
-                                    th:attr="data-bs-target='.multi-collapse-' + ${review.getNum()}">수정
-                            </button>
-                            <button type="button" class="badge bi bi-trash"
-                                    th:attr="data-id=${review.getNum()}" onclick="deleteReview(this)">삭제
-                            </button>
-                        </div>
-
-                        <!--후기 수정 폼-->
-                        <div th:class="'collapse multi-collapse-' + ${review.getNum()}">
-                            <form class="well">
-                                <div class="form-group">
-                                    <div class="update-rating">
-                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="5"
-                                               class="form-star"
-                                               th:id="'update-rate1-' + ${review.getNum()}"
-                                               th:checked="${review.getRating() == 5}">
-                                        <label th:for="'update-rate1-' + ${review.getNum()}">★</label>
-
-                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="4"
-                                               class="form-star"
-                                               th:id="'update-rate2-' + ${review.getNum()}"
-                                               th:checked="${review.getRating() == 4}">
-                                        <label th:for="'update-rate2-' + ${review.getNum()}">★</label>
-
-                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="3"
-                                               class="form-star"
-                                               th:id="'update-rate3-' + ${review.getNum()}"
-                                               th:checked="${review.getRating() == 3}">
-                                        <label th:for="'update-rate3-' + ${review.getNum()}">★</label>
-
-                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="2"
-                                               class="form-star"
-                                               th:id="'update-rate4-' + ${review.getNum()}"
-                                               th:checked="${review.getRating() == 2}">
-                                        <label th:for="'update-rate4-' + ${review.getNum()}">★</label>
-
-                                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="1"
-                                               class="form-star"
-                                               th:id="'update-rate5-' + ${review.getNum()}"
-                                               th:checked="${review.getRating() == 1}">
-                                        <label th:for="'update-rate5-' + ${review.getNum()}">★</label>
+                <div role="tabpanel" class="tab-pane fade" id="tab-review">
+                    <p style="margin-bottom: 20px;"><strong>※ 꼭 읽어주세요</strong></p>
+                    <p style="margin-bottom: 50px;">게시판 운영 규정에 어긋난다고 판단되는 게시글은 사전 통보없이 블라인드 처리될 수 있습니다. <br>
+                        사전 경고에도 불구하고 불량 게시물을 계속적으로 게재한 게시자의 경우 게시판 작성 권한이 제한됩니다.</p>
+                    <!--공연후기 작성 폼 createReview()으로 실행-->
+                    <div class="card" style="margin-bottom: 20px">
+                        <div class="card-header bi bi-chat-right-dots" style="background-color: #fefaee;"> Write a Review</div>
+                        <form id="review-form">
+                            <!--로그인이 되어잇을 경우-->
+                            <div th:if="${isLogin} == true">
+                                <div class="card-body">
+                                    <div class="review-rating" style="margin-bottom: 15px;">
+                                        <button type="submit" id="review-save-btn" class="btn btn-secondary bi bi-pencil-square">후기작성</button>
+                                        <span class="text-bold">별점을 선택해주세요</span>
+                                        <input type="radio" name="review" value="5" class="form-star" id="rate1">
+                                        <label for="rate1">★</label>
+                                        <input type="radio" name="review" value="4" class="form-star" id="rate2">
+                                        <label for="rate2">★</label>
+                                        <input type="radio" name="review" value="3" class="form-star" id="rate3">
+                                        <label for="rate3">★</label>
+                                        <input type="radio" name="review" value="2" class="form-star" id="rate4">
+                                        <label for="rate4">★</label>
+                                        <input type="radio" name="review" value="1" class="form-star" id="rate5">
+                                        <label for="rate5">★</label>
                                     </div>
-                                    <textarea th:name="'update-content-' + ${review.getNum()}"
-                                              th:id="'update-content-' + ${review.getNum()}"
-                                              class="form-control updateContent">[[${review.getContent()}]]</textarea>
-
+                                    <textarea name="review" id="review-content" class="form-control"
+                                              placeholder="후기를 입력하세요"></textarea>
                                 </div>
-                                <button type="button" id="update-btn"
-                                        class="btn btn-outline-primary bi bi-pencil-square"
-                                        th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정
-                                </button>
-                                <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
-                                        th:attr="data-id=${review.getNum()}" onclick="resetUpdate(this)">취소
-                                </button>
-                            </form>
-                        </div>
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            </div>
+                            <!--로그인이 안되어 잇는 경우-->
+                            <div th:unless="${isLogin} == true">
+                                <div class="card-body" style="font-size: small">
+                                    로그인 후 이용가능 합니다
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
-                    </li>
-                </ul>
-            </th:block>
+                    <!--공연후기 리스트-->
+                    <div class="card" id="review-list">
+                        <div class="card-header bi bi-chat-dots" style="background-color: #fefaee;"> [[${reviewCount}]] Reviews</div>
+                        <th:block th:each="review : ${reviews}">
+                            <!--댓글 번호별 아이디 부여 createReview() 메서드로 리스트 innerHtml-->
+                            <ul class="list-group-flush" th:id="'review-' + ${review.getNum()}">
+                                <li class="list-group-item">
+                                    <span>
+                                        <span style="color: gray;" th:text="${review.getObfuscatedMemberName()}">작성자</span>
+                                        <span style="color: gray">  |  </span>
+                                        <span style="color: gray;" th:text="${review.getCreateDate()}">작성일</span>&nbsp;
+                                    </span>
+                                    <div th:id="'rating-' + ${review.getNum()}" style="margin-top: 16px">
+                                        <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
+                                              th:if="${i <= review.getRating()}" style="color: gold; font-size: 25px;">★</span>
+                                        <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
+                                              th:if="${i > review.getRating()}" style="color: lightgray; font-size: 25px;">★</span>
+                                    </div>
+                                    <p th:text="${review.getContent()}" th:id="'content-' + ${review.getNum()}"
+                                       style="font-size:20px; margin: 16px 0;">내용</p>
 
-        </div>
-    </div>
+                                    <!--작성자와 로그인회원이 같으면 수정, 삭제 가능-->
+                                    <div th:if="${review.getMemberId() == memberId}">
+                                        <button type="button" class="btn btn-secondary bi bi-pencil-square"
+                                                data-bs-toggle="collapse"
+                                                th:attr="data-bs-target='.multi-collapse-' + ${review.getNum()}">수정
+                                        </button>
+                                        <button type="button" class="btn btn-secondary bi bi-trash"
+                                                th:attr="data-id=${review.getNum()}" onclick="deleteReview(this)">삭제
+                                        </button>
+                                    </div>
+
+                                    <!--후기 수정 폼-->
+                                    <div th:class="'collapse multi-collapse-' + ${review.getNum()}">
+                                        <form class="well">
+                                            <div class="form-group" style="margin-top: 20px;">
+                                                <div class="update-rating">
+                                                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="5"
+                                                           class="form-star"
+                                                           th:id="'update-rate1-' + ${review.getNum()}"
+                                                           th:checked="${review.getRating() == 5}">
+                                                    <label th:for="'update-rate1-' + ${review.getNum()}">★</label>
+
+                                                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="4"
+                                                           class="form-star"
+                                                           th:id="'update-rate2-' + ${review.getNum()}"
+                                                           th:checked="${review.getRating() == 4}">
+                                                    <label th:for="'update-rate2-' + ${review.getNum()}">★</label>
+
+                                                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="3"
+                                                           class="form-star"
+                                                           th:id="'update-rate3-' + ${review.getNum()}"
+                                                           th:checked="${review.getRating() == 3}">
+                                                    <label th:for="'update-rate3-' + ${review.getNum()}">★</label>
+
+                                                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="2"
+                                                           class="form-star"
+                                                           th:id="'update-rate4-' + ${review.getNum()}"
+                                                           th:checked="${review.getRating() == 2}">
+                                                    <label th:for="'update-rate4-' + ${review.getNum()}">★</label>
+
+                                                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="1"
+                                                           class="form-star"
+                                                           th:id="'update-rate5-' + ${review.getNum()}"
+                                                           th:checked="${review.getRating() == 1}">
+                                                    <label th:for="'update-rate5-' + ${review.getNum()}">★</label>
+                                                </div>
+                                                <textarea th:name="'update-content-' + ${review.getNum()}"
+                                                          th:id="'update-content-' + ${review.getNum()}"
+                                                          class="form-control updateContent">[[${review.getContent()}]]</textarea>
+
+                                            </div>
+                                            <button type="button" id="update-btn"
+                                                    class="btn btn-outline-secondary bi bi-pencil-square"
+                                                    th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
+                                                    th:attr="data-id=${review.getNum()}" onclick="resetUpdate(this)">취소
+                                            </button>
+                                        </form>
+                                    </div> <!--후기 수정 폼-->
+
+                                </li>
+                                <hr>
+                            </ul>
+                        </th:block>
+
+                    </div><!--공연후기 리스트-->
+
+                </div><!--공연후기 tab-->
+            </div>
+        </div><!--tab-->
+
+    </div><!--container-->
 
 </div>
 </html>
