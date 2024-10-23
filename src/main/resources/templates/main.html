@@ -396,27 +396,6 @@
         </div>
     </div>
 </div>
-<!-- JavaScript 및 AJAX 스크립트 -->
-<th:block layout:fragment="script">
-    <script>
-        // 장르 필터링 기능
-        function fetchShowsByGenre(genre) {
-            $.ajax({
-                url: '/genreFilter', // 서버에서 데이터를 가져올 URL
-                type: 'GET',
-                data: {genre: genre}, // 장르를 쿼리 파라미터로 전달
-                success: function (data) {
-                    $('#shows-container').empty(); // 기존 포스터 삭제
-                    $('#shows-container').append(data); // 새로운 포스터 추가
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error: " + status + error);
-                }
-            });
-        }
 
-    </script>
-
-</th:block>
 </html>
 

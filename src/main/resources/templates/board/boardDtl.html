@@ -26,42 +26,51 @@
         });
 
         function editComment(button) {
-            const id = [[${id}]];
-            const commentId = button.getAttribute('data-id');
-            const replyContentElement = document.getElementById('replyContent-' + commentId); // 댓글 내용 요소 찾기
+            const replyId = button.getAttribute('data-id'); // 수정할 댓글 ID
+            const boardId = [[${id}]]; // 게시글 ID
+            const replyContentElement = document.getElementById('update-content-' + replyId); // 수정할 댓글 내용 가져오기
 
             if (!replyContentElement) {
-                console.error("댓글 내용을 찾을 수 없습니다."); // 에러 메시지 로깅
+                console.error("수정할 댓글 내용을 찾을 수 없습니다."); // 오류 처리
                 return;
             }
 
-            const commentContent = replyContentElement.textContent; // 댓글 내용 가져오기
+            const newContent = replyContentElement.value; // 입력된 새로운 댓글 내용
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-            const newContent = prompt('Edit your comment:', commentContent);
-            if (newContent) {
-                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            // Ajax로 댓글 수정 요청
+            $.ajax({
+                url: `/board/${boardId}/reply/${replyId}/update`,
+                type: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
+                },
+                data: JSON.stringify({reply: newContent}), // 수정된 댓글 내용
+                contentType: 'application/json', // JSON 형식으로 데이터 전송
+                success: function (data) {
+                    // 성공적으로 수정되면 화면에 바로 반영
+                    const originalReplyElement = document.getElementById('replyContent-' + replyId);
+                    originalReplyElement.textContent = newContent; // 댓글 내용 업데이트
+                    alert("댓글이 수정되었습니다.");
 
-                // AJAX 요청 보내기
-                $.ajax({
-                    url: `/board/${id}/reply/${commentId}/update`,
-                    type: 'POST',
-                    headers: {
-                        [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
-                    },
-                    data: JSON.stringify({reply: newContent}), // 'reply' 필드에 수정된 댓글 내용
-                    contentType: 'application/json', // JSON 형식으로 데이터 전송
-                    success: function (data) {
-                        replyContentElement.textContent = newContent; // 댓글 내용 업데이트
-                        alert("댓글이 수정되었습니다."); // 수정 완료 메시지
-                    },
-                    error: function (xhr) {
-                        console.error("Error:", xhr);
-                        alert("Error occurred: " + xhr.statusText); // 에러 메시지 표시
-                    }
-                });
-            }
+                    // 수정 완료 후 콜랩스를 닫음
+                    $('.multi-collapse-' + replyId).collapse('hide');
+                },
+                error: function (xhr) {
+                    console.error("Error:", xhr);
+                    alert("댓글 수정 중 오류가 발생했습니다: " + xhr.statusText);
+                }
+            });
         }
+
+        //수정취소
+        function resetUpdate(button) {
+            const reviewId = button.getAttribute('data-id');
+            $('.multi-collapse-' + reviewId).collapse('hide');
+        }
+
+
 
         function submitComment() {
             const id = [[${id}]]; // 게시글 ID
@@ -72,7 +81,7 @@
 
             // AJAX 요청 보내기
             $.ajax({
-                url: `/board/${id}/reply`, // 댓글 작성 URL
+                url: `/addReply/${id}/reply`, // 댓글 작성 URL
                 type: 'POST',
                 headers: {
                     [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
@@ -99,11 +108,37 @@
                             <small class="text-muted">${data.regTime}</small>
                         </div>
                     </div>
-                    <div style="display: ${data.userId === currentUserId ? 'block' : 'none'};"> <!-- 수정 및 삭제 버튼 추가 -->
-                        <button type="button" class="btn btn-sm btn-outline-warning" data-id="${data.num}" onclick="editComment(this)">Edit</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger" data-id="${data.num}" onclick="deleteComment(this)">Delete</button>
+
+                    <!-- 수정 및 삭제 버튼 추가 -->
+                    <div style="display: ${data.userId === currentUserId ? 'block' : 'none'};">
+                        <button type="button" class="badge bi bi-pencil-square"
+                                data-bs-toggle="collapse"
+                                data-bs-target=".multi-collapse-${data.num}">수정
+                        </button>
+                        <button type="button" class="badge bi bi-trash"
+                                data-id="${data.num}" onclick="deleteComment(this)">삭제
+                        </button>
                     </div>
                 </div>
+
+                <!--후기 수정 폼-->
+                    <div class="collapse multi-collapse-${data.num}">
+                        <form class="well">
+                            <div class="form-group">
+                                <textarea name="update-content-${data.num}"
+                                          id="update-content-${data.num}"
+                                          class="form-control updateContent">${data.reply}</textarea>
+
+                            </div>
+                            <button type="button" id="update-btn"
+                                    class="btn btn-outline-primary bi bi-pencil-square"
+                                    data-id="${data.num}" onclick="editComment(this)">수정
+                            </button>
+                            <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
+                                    data-id="${data.num}" onclick="resetUpdate(this)">취소
+                            </button>
+                        </form>
+                    </div>
             `;
                     commentList.appendChild(newComment); // 새 댓글 추가
 
@@ -111,10 +146,13 @@
                     document.getElementById('replyContent').value = '';
                     alert("댓글이 작성되었습니다."); // 피드백 알림
                 },
-                error: function (xhr) {
-                    console.error("Error:", xhr);
-                    alert("로그인 후 이용하세요"); // 에러 메시지 표시
-                    location.href = "/members/login";
+                error: function (xhr, status, error) {
+                    if (xhr.status == '401') {
+                        alert("로그인 후 이용하세요")
+                        location.href = "/members/login";
+                    } else {
+                        alert("댓글 작성 실패")
+                    }
                 }
             });
         }
@@ -230,13 +268,34 @@
                         </div>
                     </div>
                     <div th:if="${reply.getUserId() == memberId || role.equals('ADMIN')}">
-                        <button type="button" class="btn btn-sm btn-outline-warning" th:attr="data-id=${reply.getNum()}"
-                                onclick="editComment(this)">Edit
+                        <button type="button" class="badge bi bi-pencil-square"
+                                data-bs-toggle="collapse"
+                                th:attr="data-bs-target='.multi-collapse-' + ${reply.getNum()}">수정
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger" th:attr="data-id=${reply.getNum()}"
-                                onclick="deleteComment(this)">Delete
+                        <button type="button" class="badge bi bi-trash"
+                                th:attr="data-id=${reply.getNum()}" onclick="deleteComment(this)">삭제
                         </button>
                     </div>
+
+                    <!--후기 수정 폼-->
+                    <div th:class="'collapse multi-collapse-' + ${reply.getNum()}">
+                        <form class="well">
+                            <div class="form-group">
+                                <textarea th:name="'update-content-' + ${reply.getNum()}"
+                                          th:id="'update-content-' + ${reply.getNum()}"
+                                          class="form-control updateContent">[[${reply.getReply}]]</textarea>
+
+                            </div>
+                            <button type="button" id="update-btn"
+                                    class="btn btn-outline-primary bi bi-pencil-square"
+                                    th:attr="data-id=${reply.getNum()}" onclick="editComment(this)">수정
+                            </button>
+                            <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
+                                    th:attr="data-id=${reply.getNum()}" onclick="resetUpdate(this)">취소
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>

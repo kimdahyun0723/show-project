@@ -43,32 +43,32 @@ public class MainController {
         return "main"; // main.html로 반환ㅇ
     }
 
-    // 더보기 버튼 클릭 시 추가 전시회 로드
     @GetMapping("/loadMoreShows")
     @ResponseBody
-    public String loadMoreShows(@RequestParam int offset) {
+    public String loadMoreShows(@RequestParam int offset, @RequestParam int limit) {
         List<Showing> showingList = showService.getShow();
 
-        // offset에서 시작해서 최대 8개의 전시회만 가져오기
-        List<Showing> moreShows = showingList.stream()
-            .skip(offset)
-            .limit(8)
-            .collect(Collectors.toList());
+        // offset부터 limit개까지의 전시회만 가져옴
+        List<Showing> limitedShows = showingList.stream()
+                .skip(offset) // 시작 지점부터 건너뜀
+                .limit(limit) // limit 개수만큼 가져옴
+                .collect(Collectors.toList());
 
-        // Thymeleaf를 사용하여 HTML 문자열을 생성
+        // Thymeleaf 템플릿을 사용하여 HTML 문자열을 생성
         StringBuilder htmlBuilder = new StringBuilder();
-        for (Showing exhibition : moreShows) {
+        for (Showing exhibition : limitedShows) {
             htmlBuilder.append("<div class='col-lg-3 col-md-4 col-sm-6 exhibition-item'>")
-                .append("<a href='/show/").append(exhibition.getMt20id()).append("'>")
-                .append("<div class='poster-wrapper'>")
-                .append("<img src='").append(exhibition.getPoster()).append("' class='poster-img' alt='Exhibition Poster'>")
-                .append("<div class='exhibition-title'>").append(exhibition.getPrfnm()).append("</div>")
-                .append("<div class='exhibition-date'>").append(exhibition.getPrfpdfrom()).append(" ~ ").append(exhibition.getPrfpdto()).append("</div>")
-                .append("</div></a></div>");
+                    .append("<a href='/show/").append(exhibition.getMt20id()).append("'>")
+                    .append("<div class='poster-wrapper'>")
+                    .append("<img src='").append(exhibition.getPoster()).append("' class='poster-img' alt='Exhibition Poster'>")
+                    .append("<div class='exhibition-title'>").append(exhibition.getPrfnm()).append("</div>")
+                    .append("<div class='exhibition-date'>").append(exhibition.getPrfpdfrom()).append(" ~ ").append(exhibition.getPrfpdto()).append("</div>")
+                    .append("</div></a></div>");
         }
 
-        return htmlBuilder.toString(); // HTML 문자열을 반환하여 AJAX 응답
+        return htmlBuilder.toString(); // HTML 문자열 반환
     }
+
 
     // 장르 필터링에 따른 전시회 로드
     @GetMapping("/genreFilter")
@@ -98,5 +98,10 @@ public class MainController {
         }
 
         return htmlBuilder.toString(); // HTML 문자열 반환
+    }
+
+    @GetMapping("/error/403")
+    public String error403() {
+        return "forbidden";
     }
 }
