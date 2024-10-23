@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
 
 <div th:fragment="footer">
     <!-- 최신 Font Awesome CDN 링크 추가 -->
@@ -9,6 +11,7 @@
 
     <footer class="footer">
         <div>
+            <link rel="stylesheet" href="/css/footer.css">
             <div class="footer-logo"></div>
             <div class="footer-description">@Experience the Best of Entertainment with SHOW Korea</div>
         </div>

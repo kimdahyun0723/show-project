@@ -85,7 +85,6 @@ public class BoardController {
         model.addAttribute("boardDTO", boardDTO);
         model.addAttribute("memberId", principal.getName());
         model.addAttribute("role", role);
-        System.out.println("boardDTO=========================" + boardDTO);
 
         return "board/write";
     }
@@ -97,7 +96,6 @@ public class BoardController {
 
         boardService.updateBoard(boardDTO, boardId);
 
-        System.out.println("boardDTO=========================" + boardDTO);
         redirectAttributes.addFlashAttribute("message", "작업이 완료되었습니다.");
 
 

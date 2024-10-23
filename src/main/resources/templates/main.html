@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+<html lang="en" layout:decorate="~{layouts/layout1}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout1}">
-
+      xmlns:th="http://www.thymeleaf.org/">
 <th:block layout:fragment="css">
     <style>
         /* 슬라이드 이미지 크기 조정 */
@@ -16,15 +15,6 @@
         .carousel-caption {
             background-color: rgba(0, 0, 0, 0.5); /* 텍스트 가독성을 위한 반투명 배경 */
             padding: 10px;
-        }
-
-        /* 슬라이드 버튼 크기 및 색상 조정 */
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: rgba(50, 50, 50, 0.5); /* 버튼을 진한 회색으로 설정 */
-            width: 40px;
-            height: 40px;
-            border-radius: 50%; /* 버튼을 동그랗게 설정 */
         }
 
         /* 주목할만한 전시회, 금주의 전시회 제목에 Noto Sans 적용 */
@@ -89,57 +79,248 @@
             text-align: center;
         }
 
-        /* 장르별 랭킹 스타일 */
-        .genre-filter {
+        .carousel-item img {
+            max-height: 400px; /* 이미지의 최대 높이를 설정 */
+            width: 100%; /* 너비는 슬라이드에 맞게 설정 */
+            object-fit: contain; /* 이미지 비율을 유지하며 잘리지 않도록 설정 */
+            object-position: center; /* 이미지 중앙에 배치 */
+        }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.5); /* 텍스트 가독성을 위한 반투명 배경 */
+            padding: 10px;
+        }
+
+        /* 슬라이드 버튼 크기 및 색상 조정 */
+        .carousel-control-next-icon {
+            background-color: rgba(50, 50, 50, 0.5); /* 버튼을 진한 회색으로 설정 */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; /* 버튼을 동그랗게 설정 */
+        }
+
+        .carousel-control-prev-icon {
+            background-color: rgba(50, 50, 50, 0.5); /* 버튼을 진한 회색으로 설정 */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; /* 버튼을 동그랗게 설정 */
+        }
+
+        /* 주목할만한 전시회, 금주의 전시회 제목에 Noto Sans 적용 */
+        .section-title {
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: left; /* 왼쪽 정렬 */
+            margin-left: 20px; /* 왼쪽에 여백을 추가 */
             margin-bottom: 30px;
-            text-align: left;
-            margin-left: 20px;
         }
 
-        .genre-filter button {
-            margin-right: 10px;
-            font-size: 16px;
+        /* 금주의 전시회 날짜 색상 설정 */
+        .exhibition-date {
+            font-size: 0.9rem;
+            color: gray;
         }
 
-        /* 버튼 활성화 시 스타일 */
-        .btn-active {
-            background-color: black;
+        /* 포스터 스타일 및 크기 */
+        .exhibition-item {
+            margin-bottom: 30px;
+        }
+
+        /* 링크 기본 스타일 제거 */
+        .exhibition-item a {
+            text-decoration: none; /* 기본 밑줄 제거 */
+            color: inherit; /* 기본 파란색 제거, 텍스트 상속된 색상 사용 */
+        }
+
+        .exhibition-item a:hover {
+            text-decoration: none; /* 호버 시에도 밑줄 제거 */
+        }
+
+        .exhibition-item img {
+            width: 100%;
+            height: 350px; /* 고정된 포스터 크기 */
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease; /* 호버 애니메이션 추가 */
+        }
+
+        .exhibition-item img:hover {
+            transform: scale(1.05); /* 호버 시 이미지 커짐 */
+        }
+
+        .exhibition-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .poster-wrapper {
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+
+        /* 포스터 래퍼 */
+        .poster-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease; /* 호버 시 그림자만 변경 */
+        }
+
+        /* 포스터 이미지 */
+        .poster-img {
+            width: 100%;
+            height: 350px; /* 고정된 포스터 크기 */
+            object-fit: cover; /* 이미지가 포스터 영역 안에서 잘리지 않도록 */
+            border-radius: 10px;
+            border: 1px black; /* 검은색 테두리 추가 */
+            transition: transform 0.3s ease; /* 부드러운 확대 효과 */
+        }
+
+
+        /* 1행 5열 그리드 레이아웃 */
+        .exhibition-item {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        /* 제목 스타일 */
+        .exhibition-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* 날짜 스타일 */
+        .exhibition-date {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        /* 장르 스타일 */
+
+
+        /* 슬라이드 이미지 크기 조정 */
+        .carousel-item img {
+            max-height: 400px; /* 이미지의 최대 높이를 설정 */
+            width: 100%; /* 너비는 슬라이드에 맞게 설정 */
+            object-fit: contain; /* 이미지 비율을 유지하며 잘리지 않도록 설정 */
+            object-position: center; /* 이미지 중앙에 배치 */
+        }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.5); /* 텍스트 가독성을 위한 반투명 배경 */
+            padding: 10px;
+        }
+
+
+        /* 주목할만한 전시회, 금주의 전시회 제목에 Noto Sans 적용 */
+        .section-title {
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: left; /* 왼쪽 정렬 */
+            margin-left: 20px; /* 왼쪽에 여백을 추가 */
+            margin-bottom: 30px;
+        }
+
+        /* 금주의 전시회 날짜 색상 설정 */
+        .exhibition-date {
+            font-size: 0.9rem;
+            color: gray;
+        }
+
+        /* 포스터 스타일 및 크기 */
+        .exhibition-item {
+            margin-bottom: 30px;
+        }
+
+        /* 링크 기본 스타일 제거 */
+        .exhibition-item a {
+            text-decoration: none; /* 기본 밑줄 제거 */
+            color: inherit; /* 기본 파란색 제거, 텍스트 상속된 색상 사용 */
+        }
+
+        .exhibition-item a:hover {
+            text-decoration: none; /* 호버 시에도 밑줄 제거 */
+        }
+
+        .exhibition-item img {
+            width: 100%;
+            height: 350px; /* 고정된 포스터 크기 */
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease; /* 호버 애니메이션 추가 */
+        }
+
+        .exhibition-item img:hover {
+            transform: scale(1.05); /* 호버 시 이미지 커짐 */
+        }
+
+        .exhibition-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* 순위 숫자만 이미지 위에 배치 */
+        .exhibition-rank {
+            position: absolute;
+            top: 290px; /* 포스터 상단에서 3px 아래 */
+            left: 5px; /* 포스터 왼쪽에서 5px 오른쪽 */
             color: white;
+            font-family: "Roboto", sans-serif;
+            font-size: 56px; /* 순위 크기 */
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 가독성을 위한 그림자 */
+            z-index: 10; /* 포스터 이미지 위에 표시 */
+        }
+
+        .genre-filter {
+            padding: 20px 0;
+        }
+
+        /* 장르 필터 버튼을 타원형으로 변경 */
+        .genre-filter button {
+            padding: 10px 20px; /* 버튼 안쪽 여백 (세로, 가로) */
+            font-size: 16px; /* 텍스트 크기 */
+            border: solid 1px gray; /* 기본 테두리 검은색 */
+            background-color: white; /* 버튼 배경 색상 */
+            color: black; /* 텍스트 색상 */
+            cursor: pointer; /* 커서를 포인터로 변경 */
+            border-radius: 50px; /* 버튼을 타원형으로 변경하는 핵심 부분 */
+            transition: border 0.3s ease; /* 호버 시 배경색 변경을 위한 애니메이션 */
+        }
+
+        /* 호버 시 배경색 변경 */
+        .genre-filter button:hover {
+            border-color: black; /* 호버 시 어두운 파란색으로 변경 */
+        }
+
+        /* 랭킹 포스터 간격 설정ㅇ */
+        #shows-container .exhibition-item {
+            margin-bottom: 40px; /* 아래쪽 간격 */
+            margin-right: 35px; /* 오른쪽 간격 */
         }
 
     </style>
 </th:block>
 
-<th:block layout:fragment="script">
-    <script>
-        function fetchShowsByGenre(genre) {
-            $.ajax({
-                url: '/genreFilter', // 서버에서 데이터를 가져올 URL
-                type: 'GET',
-                data: { genre: genre }, // 장르를 쿼리 파라미터로 전달
-                success: function(data) {
-                    $('#shows-container').empty(); // 기존 내용을 비우기
-                    $('#shows-container').append(data); // 새로운 데이터를 추가
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX Error: " + status + error);
-                }
-            });
-        }
-
-
-    </script>
-</th:block>
-
 <div layout:fragment="content">
     <div class="container mt-5">
         <h1 class="section-title">주목할만한 전시회</h1>
-        <div id="exhibitionCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel slide" data-bs-ride="carousel" id="exhibitionCarousel">
             <div class="carousel-inner">
                 <th:block th:each="exhibition, stat : ${exhibitionList}">
                     <div class="carousel-item" th:class="${stat.index == 0} ? 'carousel-item active' : 'carousel-item'">
                         <a th:href="'/show/'+${exhibition.mt20id}">
-                            <img th:src="${exhibition.poster}" alt="Exhibition Poster">
+                            <img alt="Exhibition Poster" th:src="${exhibition.poster}">
                         </a>
                         <div class="carousel-caption d-none d-md-block">
                             <h5 th:text="${exhibition.prfnm}">Exhibition Title</h5>
@@ -148,25 +329,26 @@
                     </div>
                 </th:block>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#exhibitionCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#exhibitionCarousel"
+                    type="button">
+                <span aria-hidden="true" class="carousel-control-prev-icon"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#exhibitionCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#exhibitionCarousel"
+                    type="button">
+                <span aria-hidden="true" class="carousel-control-next-icon"></span>
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
         <div class="weekly-exhibition mt-5">
             <h1 class="section-title">금주의 전시회</h1>
-            <div class="row">
+            <div class="row" id="exhibition-container">
                 <th:block th:each="exhibition : ${exhibitionList}">
                     <div class="col-lg-3 col-md-4 col-sm-6 exhibition-item">
                         <a th:href="'/show/'+${exhibition.mt20id}">
                             <div class="poster-wrapper">
-                                <img th:src="${exhibition.poster}" class="poster-img" alt="Exhibition Poster">
+                                <img alt="Exhibition Poster" class="poster-img" th:src="${exhibition.poster}">
                                 <div class="exhibition-title" th:text="${exhibition.prfnm}">뮤지컬 &lt;제목&gt;</div>
-                                <div class="exhibition-venue" th:text="${exhibition.fcltynm}">장소</div>
                                 <div class="exhibition-date"
                                      th:text="|${exhibition.prfpdfrom} ~ ${exhibition.prfpdto}|"></div>
                             </div>
@@ -174,29 +356,38 @@
                     </div>
                 </th:block>
             </div>
+            <!-- 더보기 버튼 -->
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" id="load-more" onclick="loadMore()">더보기</button>
+            </div>
         </div>
+
+
         <div>
             <h1>장르별 랭킹</h1>
-            <button onclick="fetchShowsByGenre('POPULAR_MUSIC')">대중음악</button>
-            <button onclick="fetchShowsByGenre('CLASSIC')">클래식</button>
-            <button onclick="fetchShowsByGenre('GUGAK')">국악</button>
-            <button onclick="fetchShowsByGenre('ACT')">연극</button>
-            <button onclick="fetchShowsByGenre('MUSICAL')">뮤지컬</button>
-            <button onclick="fetchShowsByGenre('CIRCUS_MAGIC')">서커스/마술</button>
-            <button onclick="fetchShowsByGenre('COMPLEX')">복합</button>
-            <button onclick="fetchShowsByGenre('DANCE')">무용</button>
+            <div class="genre-filter">
+                <button onclick="fetchShowsByGenre('POPULAR_MUSIC')">대중음악</button>
+                <button onclick="fetchShowsByGenre('CLASSIC')">클래식</button>
+                <button onclick="fetchShowsByGenre('GUGAK')">국악</button>
+                <button onclick="fetchShowsByGenre('ACT')">연극</button>
+                <button onclick="fetchShowsByGenre('MUSICAL')">뮤지컬</button>
+                <button onclick="fetchShowsByGenre('CIRCUS_MAGIC')">서커스/마술</button>
+                <button onclick="fetchShowsByGenre('COMPLEX')">복합</button>
+                <button onclick="fetchShowsByGenre('DANCE')">무용</button>
+            </div>
             <!-- 포스터를 표시할 컨테이너 -->
             <div class="row" id="shows-container">
                 <th:block th:each="exhibition, iterStat : ${showList}">
                     <div class="col-lg-2 col-md-4 col-sm-6 exhibition-item">
                         <a th:href="'/show/'+${exhibition.mt20id}">
                             <div class="poster-wrapper">
-                                <img th:src="${exhibition.poster}" class="poster-img" alt="Exhibition Poster">
+                                <img alt="Exhibition Poster" class="poster-img" th:src="${exhibition.poster}">
                                 <div class="exhibition-rank">
                                     <span th:text="${iterStat.index + 1}"></span> <!-- 순위 표시 -->
                                 </div>
                                 <div class="exhibition-title" th:text="${exhibition.prfnm}">뮤지컬 &lt;제목&gt;</div>
-                                <div class="exhibition-date" th:text="|${exhibition.prfpdfrom} ~ ${exhibition.prfpdto}|"></div>
+                                <div class="exhibition-date"
+                                     th:text="|${exhibition.prfpdfrom} ~ ${exhibition.prfpdto}|"></div>
                             </div>
                         </a>
                     </div>
@@ -207,3 +398,4 @@
 </div>
 
 </html>
+

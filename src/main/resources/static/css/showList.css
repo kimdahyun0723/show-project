@@ -1,0 +1,123 @@
+/* 전체 페이지 배경과 기본 글자 스타일 */
+body {
+    background-color: #fefaee; /* 배경색 */
+    color: #615674; /* 글자색 */
+    font-family: 'Roboto', sans-serif; /* 구글 폰트 적용 */
+}
+
+/* 카드 레이아웃 스타일 */
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 카드에 그림자 효과 */
+    border-radius: 10px; /* 카드 모서리 둥글게 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 호버 시 효과 */
+    background-color: #ffffff; /* 카드 배경색 */
+    height: 100%; /* 카드가 flexbox에서 동일한 높이를 가지도록 설정 */
+    display: flex;
+    flex-direction: column; /* 카드 내 요소들을 위에서 아래로 정렬 */
+    margin-bottom: 20px; /* 카드 간 간격 추가 */
+}
+
+.card-body {
+    flex-grow: 1; /* 카드 내용부가 남은 공간을 채울 수 있게 설정 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 내용부와 버튼 사이 여백 균일하게 */
+    padding: 10px; /* 카드 내부 여백 */
+}
+
+/* 카드 이미지 스타일 */
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 250px; /* 고정된 높이로 이미지 비율 통일 */
+    object-fit: cover; /* 이미지 비율 유지 및 잘림 처리 */
+    width: 100%;
+}
+
+/* 카드 텍스트와 타이틀 스타일 */
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #615674; /* 제목 글자색 */
+    margin-bottom: 10px;
+    text-align: left; /* 왼쪽 정렬 */
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #615674; /* 설명 글자색 */
+    text-align: left; /* 왼쪽 정렬 */
+    margin-bottom: 10px; /* 설명과 버튼 사이 여백 */
+}
+
+/* 상세보기 버튼 스타일 */
+.btn-primary {
+    background-color: #615674;
+    border: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+    margin-top: auto; /* 버튼이 카드 하단에 위치하도록 설정 */
+    width: 100%;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background-color: #9b8bba; /* 버튼 호버 시 색상 변경 */
+}
+
+/* 동일한 높이의 카드가 flexbox 안에 정렬되도록 설정 */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px; /* 카드들 간의 간격 추가 */
+}
+
+.col {
+    display: flex;
+    margin-bottom: 20px;
+    flex-basis: 30%; /* 카드가 일정한 크기를 가지도록 설정 */
+    max-width: 30%;
+}
+
+/* 검색 필터 및 정렬 버튼 스타일 */
+.form-select {
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    padding: 5px;
+    color: #615674;
+}
+
+.sortBtn {
+    background-color: #fefaee;
+    border: 1px solid #615674;
+    color: #615674;
+    padding: 5px 10px;
+}
+
+.sortBtn:hover {
+    background-color: #615674;
+    color: #fefaee; /* 호버 시 배경과 글자색 반전 */
+}
+
+/* 페이징 스타일 */
+.pagination .page-link {
+    color: #615674;
+    border: 1px solid #cccccc;
+}
+
+.pagination .active .page-link {
+    background-color: #615674;
+    color: #ffffff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #cccccc;
+}
+
+.pagination .page-link:hover {
+    background-color: #9b8bba;
+    color: #ffffff;
+}
