@@ -49,7 +49,7 @@ public class FavoriteController {
         if(searchDTO.getSort() == null){
             searchDTO.setSort(Sort.DEFAULT);
         }
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
 
         Member member = memberService.findMember(principal.getName());
         Page<Favorite> favorites = favoriteService.getFavoriteFilterPage(searchDTO, pageable, member.getNum());
