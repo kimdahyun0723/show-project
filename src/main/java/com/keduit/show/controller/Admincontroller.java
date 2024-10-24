@@ -38,7 +38,7 @@ public class Admincontroller {
 
     @GetMapping("/adminpage")
     public String adminpage() {
-        return "admin/main";
+        return "admin/API";
     }
 
     @GetMapping("/managementAPI")
