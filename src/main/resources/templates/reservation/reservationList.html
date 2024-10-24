@@ -146,6 +146,11 @@
                     </a>
                 </li>
             </ul>
+            <hr>
+            <div class="dropdown">
+                <img th:src="${image.url}" class="img-fluid rounded-circle" alt="Profile picture" style="width: 32px; height: 32px;">
+                <strong th:text="${member.getId()}"></strong>
+            </div>
         </div>
 
         <div class="d-flex flex-column flex-shrink-0" style="width: 75%; padding: 50px;">

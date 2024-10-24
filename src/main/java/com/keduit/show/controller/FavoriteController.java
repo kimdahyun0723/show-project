@@ -2,10 +2,12 @@ package com.keduit.show.controller;
 
 import com.keduit.show.constant.Sort;
 import com.keduit.show.dto.FavoriteSearchDTO;
+import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.entity.Favorite;
 import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Showing;
 import com.keduit.show.service.FavoriteService;
+import com.keduit.show.service.MemberImgService;
 import com.keduit.show.service.MemberService;
 import com.keduit.show.service.ShowService;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +33,8 @@ public class FavoriteController {
     private final MemberService memberService;
     private final ShowService showService;
     private final FavoriteService favoriteService;
+    private final MemberImgService memberImgService;
 
-    //로그인된 유저의 즐겨찾기 페이지 조회
-//    @GetMapping(value = "/favorites")
-//    public String favorite(Principal principal, Model model) {
-//        Member member = memberService.findMember(principal.getName());
-//        List<Favorite> favorites = member.getFavorites();
-//        List<Showing> showings = favorites.stream().map(favorite -> favorite.getShowing()).collect(Collectors.toList());
-//        model.addAttribute("showings", showings);
-//        return "show/favorite"; //즐겨찾기 페이지
-//    }
 
     //로그인된 유저의 즐겨찾기 리스트 조회 (필터, 검색, 정렬)
     @GetMapping({"/favorites", "/favorites/{page}"})
@@ -56,6 +50,10 @@ public class FavoriteController {
         model.addAttribute("favorites", favorites);
         model.addAttribute("searchDTO", searchDTO);
         model.addAttribute("maxPage", 5);
+
+        ImageResponseDTO image = memberImgService.findImage(principal.getName());
+        model.addAttribute("image", image);
+        model.addAttribute("member", member);
         return "show/favorite";
     }
 

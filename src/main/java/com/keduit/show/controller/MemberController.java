@@ -96,8 +96,10 @@ public class MemberController {
     @GetMapping("/updateInfo")
     public String updateInfo(Model model, Principal principal) {
         Member member = memberService.findMember(principal.getName());
-
         model.addAttribute("member", member);
+
+        ImageResponseDTO image = memberImgService.findImage(principal.getName());
+        model.addAttribute("image", image);
 
         return "member/updateInfo";
     }
@@ -126,6 +128,10 @@ public class MemberController {
         Member member = memberService.findMember(principal.getName());
         List<Board> boards = boardService.findBoard(member);
         model.addAttribute("boards", boards);
+
+        ImageResponseDTO image = memberImgService.findImage(principal.getName());
+        model.addAttribute("image", image);
+        model.addAttribute("member", member);
         return "member/myBoards";
     }
 
