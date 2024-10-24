@@ -1,7 +1,11 @@
 package com.keduit.show.controller;
 
+import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.dto.OrderDTO;
+import com.keduit.show.entity.Member;
 import com.keduit.show.entity.Order;
+import com.keduit.show.service.MemberImgService;
+import com.keduit.show.service.MemberService;
 import com.keduit.show.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +29,8 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final MemberService memberService;
+    private final MemberImgService memberImgService;
 
     @PostMapping("/order")
     public @ResponseBody ResponseEntity order(@RequestBody @Valid OrderDTO orderDTO, BindingResult bindingResult, Principal principal) {
@@ -55,11 +61,15 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0,4);
 
         Page<Order> orderPage = orderService.getOrderList(principal.getName(), pageable);
-
-
+        
         model.addAttribute("orderPage", orderPage);
         model.addAttribute("page", pageable.getPageNumber());
         model.addAttribute("maxPage", 5);
+
+        Member member = memberService.findMember(principal.getName());
+        ImageResponseDTO image = memberImgService.findImage(principal.getName());
+        model.addAttribute("image", image);
+        model.addAttribute("member", member);
 
         return "reservation/reservationList";
     }

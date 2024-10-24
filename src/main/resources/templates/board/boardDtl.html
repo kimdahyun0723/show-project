@@ -96,49 +96,61 @@
                     }
 
                     const newComment = document.createElement('div');
-                    newComment.className = 'media mb-4';
+                    newComment.className = 'media';
                     newComment.id = 'comment-' + data.num; // 댓글 ID 설정
                     newComment.innerHTML = `
+                <!--댓글 생성 inner html-->
                 <div class="media-body">
-                    <div class="d-flex align-items-start">
-                        <img class="d-flex mr-3 rounded-circle" src="${data.imageUrl}" alt="User image" width="50">
-                        <div>
-                            <h5 class="mt-0">${data.userId}</h5>
-                            <p id="replyContent-${data.num}">${data.reply}</p> <!-- 댓글 내용 ID 설정 -->
-                            <small class="text-muted">${data.regTime}</small>
+                    <div class="d-flex align-items-start w-100">
+                        <div class="w-100">
+                            <div class="d-flex align-items-center" style="margin-bottom: 20px;">
+                                <img class="mr-3 rounded-circle" src="${data.imageUrl}" alt="User image" width="40" height="40">
+                                <p class="mb-0 ms-3">${data.userId}</p>
+                                <span class="ms-3">|</span>
+                                <small class="text-muted ms-3">${data.regTime}</small>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h5 id="replyContent-${data.num}">${data.reply}</h5>
+                                </div>
+
+                                <div style="display: ${data.userId === currentUserId ? 'block' : 'none'}">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                                        <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target=".multi-collapse-${data.num}">수정
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
+                                                data-id="${data.num}" onclick="deleteComment(this)">삭제
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
                         </div>
                     </div>
 
-                    <!-- 수정 및 삭제 버튼 추가 -->
-                    <div style="display: ${data.userId === currentUserId ? 'block' : 'none'};">
-                        <button type="button" class="badge bi bi-pencil-square"
-                                data-bs-toggle="collapse"
-                                data-bs-target=".multi-collapse-${data.num}">수정
-                        </button>
-                        <button type="button" class="badge bi bi-trash"
-                                data-id="${data.num}" onclick="deleteComment(this)">삭제
-                        </button>
-                    </div>
-                </div>
-
-                <!--후기 수정 폼-->
+                    <!--후기 수정 폼-->
                     <div class="collapse multi-collapse-${data.num}">
-                        <form class="well">
-                            <div class="form-group">
+                        <form class="well mb-2">
+                            <div class="form-group" style="margin-bottom: 10px;">
                                 <textarea name="update-content-${data.num}"
                                           id="update-content-${data.num}"
                                           class="form-control updateContent">${data.reply}</textarea>
-
                             </div>
                             <button type="button" id="update-btn"
-                                    class="btn btn-outline-primary bi bi-pencil-square"
+                                    class="btn btn-outline-secondary bi bi-pencil-square"
                                     data-id="${data.num}" onclick="editComment(this)">수정
                             </button>
-                            <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
+                            <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
                                     data-id="${data.num}" onclick="resetUpdate(this)">취소
                             </button>
                         </form>
                     </div>
+
+                </div>
             `;
                     commentList.appendChild(newComment); // 새 댓글 추가
 
@@ -208,111 +220,116 @@
 </th:block>
 
 <div layout:fragment="content">
+<!--    게시글 상세-->
+    <h1 style="margin-bottom: 30px; text-align: center;">자율게시판</h1>
+    <hr style="border: 3px solid #615674;">
+
     <form role="form" method="post" th:object="${boardDTO}" enctype="multipart/form-data">
         <input type="hidden" th:field="*{num}">
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <label class="input-group-text" th:for="title">제목</label>
-            </div>
-            <input type="text" class="form-control" id="title" th:field="*{title}"
-                   placeholder="제목을 입력하세요" readonly>
-            <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="fieldError">Incorrect data</p>
-        </div>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <label class="input-group-text" th:for="content">내용</label>
-            </div>
-            <textarea class="form-control" name="content" id="content" rows="10" th:field="*{content}"
-                      placeholder="내용입력" readonly></textarea>
+
+        <h4 id="title" th:field="*{title}" th:text="*{title}">제목</h4>
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="fieldError">Incorrect data</p>
+
+        <p id="createBy" th:field="*{createBy}">작성자 : [[*{createBy}]]</p>
+        <p th:if="${#fields.hasErrors('createBy')}" th:errors="*{createBy}" class="fieldError">Incorrect data</p>
+
+        <hr>
+        <div style="min-height: 200px;">
+            <p id="content" th:field="*{content}" th:text="*{content}">내용</p>
             <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="fieldError">Incorrect data</p>
         </div>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <label class="input-group-text" th:for="writer">작성자</label>
-            </div>
-            <input id="writer" type="text" class="form-control"
-                   th:value="${boardDTO.createBy}"
-                   readonly>
-        </div>
+        <hr style="border: 3px solid #615674;">
 
-        <div th:if="${boardDTO.createBy == memberId || role.equals('ADMIN')}" style="text-align: center">
-                <button th:formaction="@{'/board/showModify/' + ${boardDTO.num}}" type="submit" class="btn btn-danger">
-                    수정
-                </button>
-            <button
-                    th:formaction="@{'/board/delete/' + ${boardDTO.num}}"
-                    type="submit"
-                    class="btn btn-danger"
-                    onclick="return confirm('삭제하시겠습니까?');">
+        <!--작성자나 관리자만 수정 삭제 가능-->
+        <div th:if="${boardDTO.createBy == memberId || role.equals('ADMIN')}" style="text-align: right">
+            <button th:formaction="@{'/board/showModify/' + ${boardDTO.num}}" type="submit"
+                    class="btn btn-secondary bi bi-pencil-square">수정</button>
+            <button th:formaction="@{'/board/delete/' + ${boardDTO.num}}" type="submit"
+                    class="btn btn-secondary bi bi-pencil-square" onclick="return confirm('삭제하시겠습니까?');">
                 삭제
             </button>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         </div>
     </form>
 
-    <!-- Display Comments -->
-    <div class="card-body" id="commentList"> <!-- 이 부분이 존재해야 합니다 -->
+    <!--    댓글 입력 폼-->
+    <div style="padding: 20px; border-top: 3px solid #615674; border-bottom: 3px solid #615674; background-color: #fefaee; margin: 30px 0;">
+        <form id="replyForm">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <textarea name="reply" class="form-control" rows="3" id="replyContent" required
+                          placeholder="댓글을 입력해주세요" style="border-radius: 0;"></textarea>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-secondary">댓글작성</button>
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        </form>
+    </div>
+
+    <!-- 댓글 리스트 -->
+    <p class="mb-1">전체 댓글 <strong style="color: #615674;">[[${replys.size()}]]</strong>개</p>
+    <div class="card-body" id="commentList" style="border-top: 3px solid #615674; padding-top: 20px;"> <!-- 이 부분이 존재해야 합니다 -->
         <div th:each="reply : ${replys}">
-            <div class="media mb-4" th:id="'comment-' + ${reply.getNum()}"> <!-- 고유 ID 설정 -->
+            <div class="media" th:id="'comment-' + ${reply.getNum()}"> <!-- 고유 ID 설정 -->
+
+                <!--댓글 생성 inner html-->
                 <div class="media-body">
-                    <div class="d-flex align-items-start">
-                        <img class="d-flex mr-3 rounded-circle" th:src="${reply.getImageUrl()}" alt="User image"
-                             width="50">
-                        <div>
-                            <h5 class="mt-0" th:text="${reply.getUserId()}">User Name</h5>
-                            <p th:text="${reply.getReply()}" th:id="'replyContent-' + ${reply.getNum()}">Comment
-                                content</p>
-                            <small class="text-muted"
-                                   th:text="${#temporals.format(reply.getRegTime(), 'yyyy-MM-dd HH:mm')}">Comment
-                                Date</small>
+                    <div class="d-flex align-items-start w-100">
+                        <div class="w-100">
+                            <div class="d-flex align-items-center" style="margin-bottom: 20px;">
+                                <img class="mr-3 rounded-circle" th:src="${reply.getImageUrl()}" alt="User image" width="40" height="40">
+                                <p class="mb-0 ms-3" th:text="${reply.getUserId()}">User Name</p>
+                                <span class="ms-3">|</span>
+                                <small class="text-muted ms-3" th:text="${#temporals.format(reply.getRegTime(), 'yyyy-MM-dd HH:mm')}">
+                                    Comment Date</small>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h5 th:text="${reply.getReply()}" th:id="'replyContent-' + ${reply.getNum()}">Comment content</h5>
+                                </div>
+
+                                <div th:if="${reply.getUserId() == memberId || role.equals('ADMIN')}">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                                        <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
+                                                data-bs-toggle="collapse"
+                                                th:attr="data-bs-target='.multi-collapse-' + ${reply.getNum()}">수정
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
+                                                th:attr="data-id=${reply.getNum()}" onclick="deleteComment(this)">삭제
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
                         </div>
-                    </div>
-                    <div th:if="${reply.getUserId() == memberId || role.equals('ADMIN')}">
-                        <button type="button" class="badge bi bi-pencil-square"
-                                data-bs-toggle="collapse"
-                                th:attr="data-bs-target='.multi-collapse-' + ${reply.getNum()}">수정
-                        </button>
-                        <button type="button" class="badge bi bi-trash"
-                                th:attr="data-id=${reply.getNum()}" onclick="deleteComment(this)">삭제
-                        </button>
                     </div>
 
                     <!--후기 수정 폼-->
                     <div th:class="'collapse multi-collapse-' + ${reply.getNum()}">
-                        <form class="well">
-                            <div class="form-group">
+                        <form class="well mb-2">
+                            <div class="form-group" style="margin-bottom: 10px;">
                                 <textarea th:name="'update-content-' + ${reply.getNum()}"
                                           th:id="'update-content-' + ${reply.getNum()}"
                                           class="form-control updateContent">[[${reply.getReply}]]</textarea>
-
                             </div>
                             <button type="button" id="update-btn"
-                                    class="btn btn-outline-primary bi bi-pencil-square"
+                                    class="btn btn-outline-secondary bi bi-pencil-square"
                                     th:attr="data-id=${reply.getNum()}" onclick="editComment(this)">수정
                             </button>
-                            <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
+                            <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
                                     th:attr="data-id=${reply.getNum()}" onclick="resetUpdate(this)">취소
                             </button>
                         </form>
                     </div>
 
                 </div>
+
             </div>
         </div>
     </div>
 
-    <div class="card my-4">
-        <h5 class="card-header">댓글 남기기</h5>
-        <div class="card-body">
-            <form id="replyForm">
-                <div class="form-group" style="margin-bottom: 10px;">
-                    <textarea name="reply" class="form-control" rows="3" id="replyContent" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">댓글작성</button>
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            </form>
-        </div>
-    </div>
 
 </div>
 </html>
