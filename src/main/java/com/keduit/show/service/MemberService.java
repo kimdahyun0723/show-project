@@ -142,5 +142,11 @@ public class MemberService implements UserDetailsService {
         return memberRepository.getMemberPage(memberSearchDTO, pageable);
     }
 
+    
+    // 더미데이터 로직
+    public List<Member> findAllMembers() {
+        return memberRepository.findAll();  // 모든 회원을 리스트로 반환
+    }
+
 
 }
