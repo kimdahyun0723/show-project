@@ -75,4 +75,23 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 
         return new PageImpl<>(result, pageable, total);
     }
+
+    @Override
+    public Page<Board> getBoardsPageWithMember(BoardSearchDTO boardSearchDTO, Pageable pageable, Long memberNum) {
+        List<Board> result = queryFactory.selectFrom(QBoard.board)
+                .where(regDtsAfter(boardSearchDTO.getSearchDateType()), searchByLike(boardSearchDTO.getSearchBy(), boardSearchDTO.getSearchQuery()))
+                .where(QBoard.board.member.num.eq(memberNum))
+                .orderBy(QBoard.board.num.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory.select(Wildcard.count)
+                .from(QBoard.board)
+                .where(regDtsAfter(boardSearchDTO.getSearchDateType()), searchByLike(boardSearchDTO.getSearchBy(), boardSearchDTO.getSearchQuery()))
+                .where(QBoard.board.member.num.eq(memberNum))
+                .orderBy(QBoard.board.num.desc())
+                .fetchOne();
+        return new PageImpl<>(result, pageable, total);
+    }
 }

@@ -1,29 +1,32 @@
 package com.keduit.show.controller;
 
+import com.keduit.show.dto.BoardSearchDTO;
 import com.keduit.show.dto.ImageResponseDTO;
 import com.keduit.show.dto.MemberDTO;
 import com.keduit.show.dto.MemberUpdateDTO;
 import com.keduit.show.entity.Board;
 import com.keduit.show.entity.Member;
+import com.keduit.show.entity.Review;
 import com.keduit.show.repository.MemberImgRepository;
 import com.keduit.show.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/members")
@@ -123,15 +126,22 @@ public class MemberController {
         return "redirect:/members/info";
     }
 
-    @GetMapping("myBoards")
-    public String myBoards(Model model, Principal principal) {
+    @GetMapping({"myBoards", "myBoards/{page}"})
+    public String myBoards(Model model, Principal principal, @PathVariable("page") Optional<Integer> page, BoardSearchDTO searchDTO) {
         Member member = memberService.findMember(principal.getName());
-        List<Board> boards = boardService.findBoard(member);
-        model.addAttribute("boards", boards);
+
+        //한페이지에 리뷰 10개
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+
+        Page<Board> boardPage = boardService.getBoardsPageWithMember(searchDTO, pageable, member.getNum());
+        model.addAttribute("boards", boardPage);
+
 
         ImageResponseDTO image = memberImgService.findImage(principal.getName());
         model.addAttribute("image", image);
         model.addAttribute("member", member);
+        model.addAttribute("maxPage", 5);
+        model.addAttribute("searchDTO", searchDTO);
         return "member/myBoards";
     }
 

@@ -12,4 +12,6 @@ public interface BoardRepositoryCustom {
 
 
     Page<Board> getBoardsPage(BoardSearchDTO boardSearchDTO, Pageable pageable);
+
+    Page<Board> getBoardsPageWithMember(BoardSearchDTO boardSearchDTO, Pageable pageable, Long BoardNum);
 }

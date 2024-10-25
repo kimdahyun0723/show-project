@@ -80,4 +80,8 @@ public class BoardService {
     public List<Board> findAllBoards() {
         return boardRepository.findAll();  // 모든 회원을 리스트로 반환
     }
+
+    public Page<Board> getBoardsPageWithMember(BoardSearchDTO boardSearchDTO, Pageable pageable, Long memberNum) {
+        return boardRepository.getBoardsPageWithMember(boardSearchDTO, pageable, memberNum);
+    }
 }
