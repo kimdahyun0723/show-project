@@ -1,6 +1,5 @@
 /* 전체 페이지 배경과 기본 글자 스타일 */
 body {
-    background-color: #fefaee; /* 배경색 */
     color: #615674; /* 글자색 */
     font-family: 'Roboto', sans-serif; /* 구글 폰트 적용 */
 }
@@ -28,10 +27,9 @@ body {
 
 /* 카드 이미지 스타일 */
 .card-img-top {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    height: 250px; /* 고정된 높이로 이미지 비율 통일 */
-    object-fit: cover; /* 이미지 비율 유지 및 잘림 처리 */
+    border-radius: 10px;
+    height: 350px; /* 모든 카드 이미지의 고정된 높이로 통일 */
+    object-fit: contain; /* 이미지 비율 유지 및 잘리지 않도록 설정 */
     width: 100%;
 }
 
@@ -71,7 +69,7 @@ body {
 .row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
     gap: 20px; /* 카드들 간의 간격 추가 */
 }
 
@@ -86,20 +84,58 @@ body {
 .form-select {
     border-radius: 5px;
     border: 1px solid #cccccc;
-    padding: 5px;
+    padding: 15px 20px;
     color: #615674;
+    margin-right: 10px; /* 필터 간 간격 추가 */
+    width: auto;
+    flex-grow: 1;
+    height: 50px; /* 버튼 높이와 동일하게 설정 */
+}
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-button {
+    padding: 15px 20px;
+    border: none;
+    background-color: #615674;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    height: 50px;
+}
+
+.search-button:hover {
+    background-color: #9b8bba;
 }
 
 .sortBtn {
-    background-color: #fefaee;
+    background-color: #615674;
     border: 1px solid #615674;
-    color: #615674;
-    padding: 5px 10px;
+    color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+    height: 50px; /* 필터와 동일한 높이 설정 */
 }
 
 .sortBtn:hover {
-    background-color: #615674;
-    color: #fefaee; /* 호버 시 배경과 글자색 반전 */
+    background-color: #9b8bba;
+    color: #ffffff; /* 호버 시 배경과 글자색 반전 */
 }
 
 /* 페이징 스타일 */
@@ -120,4 +156,15 @@ body {
 .pagination .page-link:hover {
     background-color: #9b8bba;
     color: #ffffff;
+}
+
+/* 9개 아이템이 한 페이지에 표시되도록 그리드 설정 */
+.col {
+    flex-basis: 30%; /* 각 카드가 화면의 3분의 1을 차지 */
+    max-width: 30%;
+}
+.row {
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
 }

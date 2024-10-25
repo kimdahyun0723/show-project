@@ -1,29 +1,30 @@
-/* 전체 네비게이션 배경과 글자 색상 설정 */
-
-.header {
-    background-color: #fefaee;
+/* 로고 이미지 크기 */
+.logo_img {
+    width: 150px;
+    height: auto;
 }
 
+/* Navbar 높이 설정 */
 .navbar {
-    background-color: #fefaee; /* 배경색 */
+    min-height: 80px;
+    align-items: center;
 }
 
+/* 슬로건 이미지 크기 조정 */
+.slogan_img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block; /* 이미지를 중앙에 정렬하기 위해 inline-block 설정 */
+    image-rendering: crisp-edges; /* 크롬, 사파리 등에서 이미지 선명도 최적화 */
+}
+
+/* 네비게이션 메뉴의 글자 색상 설정 */
 .navbar .nav-link {
     color: #615674; /* 글자색 */
 }
 
 .navbar .nav-link:hover {
     color: #9b8bba; /* 링크에 마우스를 올렸을 때 */
-}
-
-/* 로고와 내비게이션 간격 조정 */
-.navbar-brand {
-    padding-left: 40px; /* 로고와 메뉴 사이의 간격 */
-}
-
-/* 메뉴 아이템 간 간격 조정 */
-.navbar-nav .nav-item .nav-link {
-    padding-right: 15px; /* 메뉴 간 간격 */
 }
 
 /* 햄버거 버튼 크기 및 아이콘 조정 */
@@ -39,11 +40,20 @@
     border-bottom: 1px solid #615674; /* 현재 페이지 하단에 강조선 추가 */
 }
 
-/* 로고 이미지 크기*/
-.logo_img{
-    width: 100%;
-    height: 50px;
+/* 메뉴 아이템 간 간격 조정 및 글자 가운데 정렬 */
+.navbar-nav .nav-item .nav-link {
+    display: inline-flex; /* inline-flex로 변경하여 옆으로 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: center; /* 수평 가운데 정렬 */
+}
 
+/* 메뉴 아이템 구분선(파이프) 추가 */
+.navbar-nav .nav-item:not(:last-child)::after {
+    content: "|"; /* 파이프 문자 추가 */
+    margin-left: 10px; /* 구분선 왼쪽 여백 */
+    margin-right: 10px; /* 구분선 오른쪽 여백 */
+    color: #615674; /* 구분선 색상 */
+    vertical-align: middle; /* 파이프 기호가 가운데 오도록 */
 }
 
 /* 작은 화면에서 반응형 중앙 정렬 */
