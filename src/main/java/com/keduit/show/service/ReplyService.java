@@ -13,7 +13,7 @@ public interface ReplyService {
      * 댓글 작성
 
      */
-    Reply writeComment(ReplyRequestDTO replyRequestDTO, Long boardId, String email);
+    Reply writeComment(ReplyRequestDTO replyRequestDTO, Long boardId, String Id);
 
     /**
      * 댓글 조회

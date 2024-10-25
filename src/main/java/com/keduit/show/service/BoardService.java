@@ -75,4 +75,9 @@ public class BoardService {
        List<Board> boards =  boardRepository.findByMember(member);
         return boards;
     }
+
+    // 더미데이터 로직
+    public List<Board> findAllBoards() {
+        return boardRepository.findAll();  // 모든 회원을 리스트로 반환
+    }
 }
