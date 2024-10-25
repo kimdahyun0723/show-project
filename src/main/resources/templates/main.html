@@ -27,12 +27,18 @@
 
         /* 금주의 전시회 스타일 */
         .section-title {
-            font-family: 'Noto Sans', sans-serif;
             font-size: 32px;
             font-weight: 700;
             text-align: left; /* 왼쪽 정렬 */
             margin-left: 20px; /* 왼쪽에 여백을 추가 */
             margin-bottom: 30px;
+        }
+
+        .second-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-left: 20px; /* 왼쪽에 여백을 추가 */
+            text-align: left; /* 왼쪽 정렬 */
         }
 
         .exhibition-date {
@@ -90,7 +96,6 @@
             top: 290px; /* 포스터 상단에서 3px 아래 */
             left: 5px; /* 포스터 왼쪽에서 5px 오른쪽 */
             color: white;
-            font-family: 'Roboto', sans-serif;
             font-size: 56px; /* 순위 크기 */
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 가독성을 위한 그림자 */
@@ -232,7 +237,7 @@
 
 
         <div>
-            <h1>장르별 랭킹</h1>
+            <h1 class="second-title">장르별 랭킹</h1>
             <div class="genre-filter">
                 <button onclick="fetchShowsByGenre('POPULAR_MUSIC')">대중음악</button>
                 <button onclick="fetchShowsByGenre('CLASSIC')">클래식</button>

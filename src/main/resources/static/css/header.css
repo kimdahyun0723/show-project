@@ -18,6 +18,10 @@
     image-rendering: crisp-edges; /* 크롬, 사파리 등에서 이미지 선명도 최적화 */
 }
 
+.nav-font {
+    font-size: 20px;
+}
+
 /* 네비게이션 메뉴의 글자 색상 설정 */
 .navbar .nav-link {
     color: #615674; /* 글자색 */
