@@ -1,49 +1,59 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="header" th:class="header">
+<div th:class="header" th:fragment="header">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+
+    <!-- 부트스트랩 내비게이션 바 -->
     <nav class="navbar navbar-expand-lg" style="background-color: #fefaee;">
-        <a class="navbar-brand" href="/" style="padding-left: 20px;">
-            <img class="logo_img" src="/images/logo.png" alt="logo">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="margin-right: 20px">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container-fluid d-flex justify-content-between align-items-center">
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item"
-                    sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                    <a class="nav-link" href="/admin/adminpage">관리자페이지</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/shows">공연목록</a>
-                </li>
-                <li class="nav-item"
-                    sec:authorize="isAuthenticated()">
-                    <a class="nav-link" href="/members/info">마이페이지</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/board">게시판</a>
-                </li>
-                <li class="nav-item"
-                    sec:authorize="isAnonymous()">
-                    <a class="nav-link" href="/members/login">로그인</a>
-                </li>
-                <!-- 일반 로그아웃 링크는 로그인한 사용자에게만 보임 -->
-                <li class="nav-item" sec:authorize="isAuthenticated() and hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')">
-                    <a class="nav-link" href="/members/logout">로그아웃</a>
-                </li>
-                <!-- 카카오 로그아웃 링크는 카카오 로그인한 사용자에게만 보임 -->
-                <li class="nav-item" sec:authorize="isAuthenticated() and !hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')">
-                    <a class="nav-link"
-                       href="https://kauth.kakao.com/oauth/logout?client_id=f48ecc65ecda977f9898414bd97c69ce&logout_redirect_uri=http://localhost:8282/kakao/logout">로그아웃</a>
-                </li>
-            </ul>
+            <!-- 로고 부분 (왼쪽 끝에 패딩 추가) -->
+            <a class="navbar-brand" href="/" style="padding-left: 20px;">
+                <img class="logo_img" src="/images/logo.png" alt="logo">
+            </a>
 
+            <!-- 슬로건 -->
+            <div class="navbar-slogan">
+                <img class="slogan_img" src="/images/sival.png" alt="slogan">
+            </div>
+
+            <!-- 햄버거 메뉴 버튼 (작은 화면에서 보임) -->
+            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler"
+                    data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" style="margin-right: 20px"
+                    type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- 내비게이션 메뉴 (오른쪽 끝에 정렬) -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav">  <!-- 메뉴를 오른쪽 끝으로 정렬 -->
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                        <a class="nav-link" href="/admin/adminpage">관리자페이지</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shows">공연목록</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="/members/info">마이페이지</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/board">게시판</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link" href="/members/login">로그인</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated() and hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')">
+                        <a class="nav-link" href="/members/logout">로그아웃</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated() and !hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')">
+                        <a class="nav-link"
+                           href="https://kauth.kakao.com/oauth/logout?client_id=f48ecc65ecda977f9898414bd97c69ce&logout_redirect_uri=http://localhost:8282/kakao/logout">로그아웃</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 </div>

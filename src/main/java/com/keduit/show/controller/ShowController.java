@@ -48,7 +48,7 @@ public class ShowController {
         if (showSearchDTO.getSort() == null) {
             showSearchDTO.setSort(Sort.DEFAULT); // 기본값 설정
         }
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 8);
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 9);
         Page<Showing> shows = showService.getShowFilterPage(showSearchDTO, pageable);
         model.addAttribute("showLists", shows);
         model.addAttribute("showSearchDTO", showSearchDTO);
