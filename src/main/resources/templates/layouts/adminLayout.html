@@ -10,6 +10,9 @@
           rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous">
 
+    <!-- 헤더 전용 CSS -->
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+
     <!-- layout css -->
     <link th:href="@{/css/layout1.css}" rel="stylesheet">
 
@@ -26,10 +29,9 @@
 <body>
 <div th:replace="fragments/header::header"></div>
 
-<div class="d-flex" style="flex: 1;">
-    <div th:replace="fragments/adminPage" class="col-10"></div>
-    <div layout:fragment="content" class="admin-content col-10"></div>
-</div>
+<!--<div th:replace="fragments/adminPage" class="col-10"></div>-->
+<div layout:fragment="content" class="content"></div>
+
 <div th:replace="fragments/footer::footer"></div>
 </body>
 </html>

@@ -9,22 +9,21 @@
 
 <th:block layout:fragment="css">
   <style>
-    #infoheader > a {
-      color: white;
-    }
-    .fs-4 {
-      color: white;
-    }
-    tr > th {
-      color: white;
-    }
-    tr > td {
-      color: white;
+    #sidebar ul li {
+      padding: 20px 0;
+      font-size: 20px;
     }
     #board :hover {
       cursor: pointer;
     }
+    #select-nav {
+      background-color: #615674;
+    }
+    #select-nav span{
+      color: white;
+    }
 
+    /*후기 별표*/
     .update-rating{
       display: inline-block;
       direction: rtl;
@@ -61,20 +60,51 @@
       resize: none;
     }
 
+    /* 기본 페이지 항목 색상 */
+    .pagination .page-item .page-link {
+      background-color: #fefaee;  /* 기본 배경색 */
+      color: #000;                /* 기본 텍스트 색 */
+      border-color: #fefaee;       /* 테두리 색상 */
+    }
+    /* 현재 활성화된 페이지 색상 */
+    .pagination .page-item.active .page-link {
+      background-color: #615674;   /* 활성화된 배경색 */
+      color: #fff;                 /* 활성화된 텍스트 색 */
+      border-color: #615674;       /* 활성화된 테두리 색상 */
+    }
+    /* 비활성화된 항목(이전/다음) 색상 */
+    .pagination .page-item.disabled .page-link {
+      background-color: #fefaee;
+      color: #000;                 /* 비활성화된 항목 색상 */
+      border-color: #fefaee;
+    }
+
+    .update-rating label {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+
+    tbody tr td a{
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+    .table tbody tr td {
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+    .table thead tr th{
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border-top: 3px solid #615674;
+    }
+
+
   </style>
 </th:block>
 
 <th:block layout:fragment="script">
   <script th:inline="javascript">
-    function getBoard(no){
-      location.href = '/board/boardDtl/' + no;
-    }
-    function alertCancel(){
-      alert("즐겨찾기가 취소됐습니다");
-      $('form[name="cancelFavorite"]').submit();
-      // document.cancelFavorite.submit();
-    }
-
     // 별점 생성 함수
     function generateStars(rating) {
       let starsHtml = '';
@@ -94,13 +124,6 @@
       const trElement = document.getElementById('review-' + reviewId);
       const mt20id = trElement.dataset.mt20id;
 
-      //기존 후기 태그 찾기
-      const reviewRatingElement = document.getElementById('rating-' + reviewId);
-      const reviewContentElement = document.getElementById('content-' + reviewId);
-      if(!reviewRatingElement || !reviewContentElement){
-        console.error("후기를 찾을 수 없습니다");
-        return;
-      }
 
       // 수정된 내용 - 선택된 별점 가져오기
       const newRatingElement = document.querySelector('input[name="update-' + reviewId + '"]:checked');
@@ -132,10 +155,6 @@
         }),
         contentType: 'application/json',
         success: function() {
-          // 별점 업데이트
-          reviewRatingElement.innerHTML = generateStars(newRating);
-          // 내용 업데이트
-          reviewContentElement.textContent = newContent;
           alert("후기가 수정되었습니다.");
           //수정 토글 닫기
           $('.multi-collapse-' + reviewId).collapse('hide');
@@ -208,191 +227,192 @@
 </th:block>
 
 <div layout:fragment="content">
-  <div th:fragment="body" class="flex-shrink-0 p-3" style="width: 280px;" id="infoheader">
-    <a href="/members/info"
-       class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-      <svg class="bi pe-none me-2" width="30" height="24">
-        <use xlink:href="#bootstrap"></use>
-      </svg>
-      <span class="fs-2 fw-semibold">마이페이지</span>
-    </a>
-    <ul class="list-unstyled ps-0">
-      <li class="mb-1">
-        <a href="/members/myBoards"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          내가 쓴 글
-        </a>
-      </li>
-      <li class="mb-1">
-        <a href="/orders"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          예매이력
-        </a>
-      </li>
-      <li class="mb-1">
-        <a href="/favorites"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          즐겨찾기 공연
-        </a>
-      </li>
-      <li class="mb-1">
-        <a href="/reviews"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          나의 후기
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <!--검색 필터-->
-  <form th:action="@{'/reviews/' + ${reviews.number}}" role="form" method="get" th:object="${reviews}">
-    <div class="d-flex justify-content-center mb-4 text-center flex-column" th:object="${searchDTO}">
-      <div class="d-flex justify-content-center mb-2 mt-3">
-        <!--검색 조건-->
-        <select th:field="*{searchBy}" class="form-select me-2" style="width:auto;">
-          <option value="">검색(전체)</option>
-          <option value="prfnm">공연명</option>
-          <option value="content">내용</option>
-        </select>
-      </div>
-
-      <div class="d-flex justify-content-center">
-        <input th:field="*{searchQuery}" class="form-control me-2" placeholder="공연명이나 내용을 입력해 주세요" style="width:auto;">
-        <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
-      </div>
-    </div>
-
-  <!--정렬-->
-    <div class="text-center my-3" th:field="*{sort}">
-      <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
-      <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
-      <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
-    </div>
-
-    <!--공연 후기 리스트-->
-    <div class="container">
-      <table class="table table-hover">
-        <thead>
-        <tr>
-          <th scope="col">공연이름</th>
-          <th scope="col">평점</th>
-          <th scope="col">내용</th>
-          <th scope="col">작성일</th>
-          <th scope="col">수정</th>
-          <th scope="col">삭제</th>
-        </tr>
-        </thead>
-
-        <!--      누르면 상세보기로 이동 구현하기-->
-        <tbody>
-        <th:block th:each="review, status : ${reviews}">
-          <tr th:id="'review-' + ${review.getNum()}" th:attr="data-mt20id=${review.getShowing().getMt20id()}">
-            <td scope="row">
-              <a th:href="'/show/' + ${review.getShowing().getMt20id()}">[[${prfnmMap[review.getNum()]}]]</a>
-            </td>
-            <td>
-              <div th:id="'rating-' + ${review.getNum()}">
-              <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
-                    th:if="${i <= review.getRating()}" style="color: gold;">★</span>
-                <span th:each="i : ${T(java.util.stream.IntStream).rangeClosed(1, 5).toArray()}"
-                      th:if="${i > review.getRating()}" style="color: lightgray;">★</span>
-              </div>
-            </td>
-            <td th:id="'content-' + ${review.getNum()}" th:text="${review.getContent()}"></td>
-            <td th:text="${review.getCreateDate()}"></td>
-            <td>
-              <button type="button" class="badge bi bi-pencil-square"
-                      data-bs-toggle="collapse"
-                      th:attr="data-bs-target='.multi-collapse-' + ${review.getNum()}">수정</button>
-            </td>
-            <td>
-              <button type="button" class="badge bi bi-trash"
-                      th:attr="data-id=${review.getNum()}" onclick="deleteReview(this)">삭제</button>
-            </td>
-          </tr>
-
-          <!--후기 수정 폼-->
-          <tr th:class="'collapse multi-collapse-' + ${review.getNum()}">
-            <td colspan="6">
-              <form class="well">
-                <div class="form-group">
-                  <div class="update-rating">
-                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="5" class="form-star"
-                           th:id="'update-rate1-' + ${review.getNum()}" th:checked="${review.getRating() == 5}">
-                    <label th:for="'update-rate1-' + ${review.getNum()}">★</label>
-
-                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="4" class="form-star"
-                           th:id="'update-rate2-' + ${review.getNum()}" th:checked="${review.getRating() == 4}">
-                    <label th:for="'update-rate2-' + ${review.getNum()}">★</label>
-
-                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="3" class="form-star"
-                           th:id="'update-rate3-' + ${review.getNum()}" th:checked="${review.getRating() == 3}">
-                    <label th:for="'update-rate3-' + ${review.getNum()}">★</label>
-
-                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="2" class="form-star"
-                           th:id="'update-rate4-' + ${review.getNum()}" th:checked="${review.getRating() == 2}">
-                    <label th:for="'update-rate4-' + ${review.getNum()}">★</label>
-
-                    <input type="radio" th:name="'update-' + ${review.getNum()}" value="1" class="form-star"
-                           th:id="'update-rate5-' + ${review.getNum()}" th:checked="${review.getRating() == 1}">
-                    <label th:for="'update-rate5-' + ${review.getNum()}">★</label>
-                  </div>
-                  <textarea th:name="'update-content-' + ${review.getNum()}" th:id="'update-content-' + ${review.getNum()}"
-                            class="form-control updateContent">[[${review.getContent()}]]</textarea>
-
-                </div>
-                <button type="button" id="update-btn" class="btn btn-outline-primary bi bi-pencil-square"
-                        th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정</button>
-                <button type="button" class="btn btn-outline-primary bi bi-pencil-square"
-                        th:attr="data-id=${review.getNum()}" onclick="resetUpdate(this)">취소</button>
-              </form>
-            </td>
-          </tr>
-
-        </th:block>
-        </tbody>
-
-      </table>
-    </div>
-    <hr>
-
-    <!--페이징-->
-    <div th:with="start=${(reviews.number / maxPage) * maxPage + 1},
-              end=${(reviews.totalPages == 0) ? 1 :
-              (start + (maxPage - 1) < reviews.totalPages ? start + (maxPage - 1) : reviews.totalPages)}">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${reviews.first} ? 'disabled'">
-          <a class="page-link"
-             th:href="@{/reviews/{page}(page=${reviews.number - 1}
-                       ,searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
-                       , sort=${searchDTO.sort})}" aria-label="Previous">
-            <span aria-hidden="true">이전</span>
+  <div class="d-flex flex-nowrap">
+    <!-- 마이페이지 사이드바 -->
+    <div class="d-flex flex-column flex-shrink-0" id="sidebar"
+         style="width: 25%; min-height: 100vh; padding: 30px 20px; background-color: #fefaee; box-sizing: border-box;">
+      <a href="/members/info" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <span class="fs-4"><i class="bi bi-person-circle"></i> 마이페이지</span>
+      </a>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li>
+          <a href="/members/myBoards" class="nav-link link-body-emphasis" aria-current="page">
+            <i class="bi bi-clipboard" style="width: 16px; height: 16px;"></i>
+            나의 게시글
           </a>
         </li>
-        <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
-            th:classappend="${reviews.number eq page - 1} ? 'active' : ''">
-          <a class="page-link"
-             th:href="@{/reviews/{page}(page=${page - 1}
-                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
-                       , sort=${searchDTO.sort})}">
-            [[${page}]]
+        <li>
+          <a href="/orders" class="nav-link link-body-emphasis">
+            <i class="bi bi-cart-check" style="width: 16px; height: 16px;"></i>
+            예매 이력
           </a>
         </li>
-        <li class="page-item" th:classappend="${reviews.last} ? 'disabled'">
-          <a class="page-link"
-             th:href="@{/reviews/{page}(page=${reviews.number + 1}
-                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
-                       , sort=${searchDTO.sort})}" aria-label="Next">
-            <span aria-hidden="true">다음</span>
+        <li>
+          <a href="/favorites" class="nav-link link-body-emphasis">
+            <i class="bi bi-suit-heart" style="width: 16px; height: 16px;"></i>
+            공연 즐겨찾기
+          </a>
+        </li>
+        <li id="select-nav">
+          <a href="/reviews" class="nav-link link-body-emphasis">
+            <span><i class="bi bi-stickies" style="width: 16px; height: 16px;"></i> 나의 공연 후기</span>
           </a>
         </li>
       </ul>
+      <hr>
+      <div class="dropdown">
+        <img th:src="${image.url}" class="img-fluid rounded-circle" alt="Profile picture" style="width: 32px; height: 32px;">
+        <strong th:text="${member.getId()}"></strong>
+      </div>
     </div>
 
+    <div class="d-flex flex-column flex-shrink-0" style="width: 75%; padding: 50px;">
+      <p style="margin-bottom: 30px;">* 나의 공연 후기 페이지 입니다<br>
+        공연상세 페이지에서 작성한 <strong>후기</strong>의 조회, 수정, 삭제가 가능하며 공연상세 페이지로 이동이 가능합니다</p>
+      <hr style="margin-bottom: 40px;">
 
-  </form>
+      <!--검색 필터-->
+      <form th:action="@{'/reviews/' + ${reviews.number}}" role="form" method="get" th:object="${reviews}">
+        <div class="d-flex justify-content-center align-items-center mb-4 text-center flex-row" th:object="${searchDTO}">
+          <!--검색 조건-->
+          <select th:field="*{searchBy}" class="form-select me-2" style="width:auto;">
+            <option value="">검색(전체)</option>
+            <option value="prfnm">공연명</option>
+            <option value="content">내용</option>
+          </select>
+          <!-- 검색 입력 -->
+          <input th:field="*{searchQuery}" class="form-control me-2" placeholder="공연명이나 내용을 입력해 주세요" style="width:auto; min-width: 300px;">
+          <!-- 검색 버튼 -->
+          <button id="searchBtn" type="submit" class="btn btn-secondary">검색</button>
+        </div>
+
+        <!--정렬-->
+        <div class="text-center my-3" th:field="*{sort}">
+          <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
+          <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
+          <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
+        </div>
+
+        <!--공연 후기 리스트-->
+          <table class="table table-hover">
+            <thead class="table-warning">
+            <tr>
+              <th scope="col" style="text-align: center">글번호</th>
+              <th scope="col">공연이름</th>
+              <th scope="col">작성일</th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+
+            <!--      누르면 상세보기로 이동 구현하기-->
+            <tbody>
+            <th:block th:each="review, status : ${reviews}">
+              <tr th:id="'review-' + ${review.getNum()}"
+                  th:attr="data-mt20id=${review.getShowing().getMt20id()}">
+                <td th:text="${review.num}" style="text-align: center;"></td>
+                <td scope="row">
+                  <a th:href="'/show/' + ${review.getShowing().getMt20id()}">[[${prfnmMap[review.getNum()]}]]</a>
+                </td>
+                <td th:text="${review.getCreateDate()}"></td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                    <button type="button" class="btn btn-outline-secondary"
+                            data-bs-toggle="collapse"
+                            th:attr="data-bs-target='.multi-collapse-' + ${review.getNum()}">수정</button>
+                    <button type="button" class="btn btn-outline-secondary"
+                            th:attr="data-id=${review.getNum()}" onclick="deleteReview(this)">삭제</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!--후기 수정 폼-->
+              <tr th:class="'collapse multi-collapse-' + ${review.getNum()}">
+                <td colspan="6">
+                  <form class="well">
+                    <div class="form-group">
+                      <div class="update-rating">
+                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="5" class="form-star"
+                               th:id="'update-rate1-' + ${review.getNum()}" th:checked="${review.getRating() == 5}">
+                        <label th:for="'update-rate1-' + ${review.getNum()}">★</label>
+
+                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="4" class="form-star"
+                               th:id="'update-rate2-' + ${review.getNum()}" th:checked="${review.getRating() == 4}">
+                        <label th:for="'update-rate2-' + ${review.getNum()}">★</label>
+
+                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="3" class="form-star"
+                               th:id="'update-rate3-' + ${review.getNum()}" th:checked="${review.getRating() == 3}">
+                        <label th:for="'update-rate3-' + ${review.getNum()}">★</label>
+
+                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="2" class="form-star"
+                               th:id="'update-rate4-' + ${review.getNum()}" th:checked="${review.getRating() == 2}">
+                        <label th:for="'update-rate4-' + ${review.getNum()}">★</label>
+
+                        <input type="radio" th:name="'update-' + ${review.getNum()}" value="1" class="form-star"
+                               th:id="'update-rate5-' + ${review.getNum()}" th:checked="${review.getRating() == 1}">
+                        <label th:for="'update-rate5-' + ${review.getNum()}">★</label>
+                      </div>
+                      <textarea th:name="'update-content-' + ${review.getNum()}" th:id="'update-content-' + ${review.getNum()}"
+                                class="form-control updateContent" style="font-size: 15px; margin-bottom: 10px;">[[${review.getContent()}]]</textarea>
+
+                    </div>
+                    <button type="button" id="update-btn" class="btn btn-outline-secondary bi bi-pencil-square"
+                            th:attr="data-id=${review.getNum()}" onclick="updateReview(this)">수정</button>
+                    <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
+                            th:attr="data-id=${review.getNum()}" onclick="resetUpdate(this)">취소</button>
+                  </form>
+                </td>
+              </tr>
+
+            </th:block>
+            </tbody>
+
+          </table>
+        <hr>
+
+        <!--페이징-->
+        <div th:with="start=${(reviews.number / maxPage) * maxPage + 1},
+              end=${(reviews.totalPages == 0) ? 1 :
+              (start + (maxPage - 1) < reviews.totalPages ? start + (maxPage - 1) : reviews.totalPages)}">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${reviews.first} ? 'disabled'">
+              <a class="page-link"
+                 th:href="@{/reviews/{page}(page=${reviews.number - 1}
+                       ,searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+                       , sort=${searchDTO.sort})}" aria-label="Previous">
+                <span aria-hidden="true">이전</span>
+              </a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+                th:classappend="${reviews.number eq page - 1} ? 'active' : ''">
+              <a class="page-link"
+                 th:href="@{/reviews/{page}(page=${page - 1}
+                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+                       , sort=${searchDTO.sort})}">
+                [[${page}]]
+              </a>
+            </li>
+            <li class="page-item" th:classappend="${reviews.last} ? 'disabled'">
+              <a class="page-link"
+                 th:href="@{/reviews/{page}(page=${reviews.number + 1}
+                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+                       , sort=${searchDTO.sort})}" aria-label="Next">
+                <span aria-hidden="true">다음</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+
+      </form>
+
+
+
+    </div>
+
+  </div>
+
+
 
 </div>
-
-
 </html>

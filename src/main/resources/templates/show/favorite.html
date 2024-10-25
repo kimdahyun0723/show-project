@@ -5,21 +5,62 @@
 
 <th:block layout:fragment="css">
   <style>
-    #infoheader > a {
+    #sidebar ul li {
+      padding: 20px 0;
+      font-size: 20px;
+    }
+    #select-nav {
+      background-color: #615674;
+    }
+    #select-nav span{
       color: white;
     }
-    .fs-4 {
-      color: white;
+
+    /* 기본 페이지 항목 색상 */
+    .pagination .page-item .page-link {
+      background-color: #fefaee;  /* 기본 배경색 */
+      color: #000;                /* 기본 텍스트 색 */
+      border-color: #fefaee;       /* 테두리 색상 */
     }
-    tr > th {
-      color: white;
+    /* 현재 활성화된 페이지 색상 */
+    .pagination .page-item.active .page-link {
+      background-color: #615674;   /* 활성화된 배경색 */
+      color: #fff;                 /* 활성화된 텍스트 색 */
+      border-color: #615674;       /* 활성화된 테두리 색상 */
     }
-    tr > td {
-      color: white;
+    /* 비활성화된 항목(이전/다음) 색상 */
+    .pagination .page-item.disabled .page-link {
+      background-color: #fefaee;
+      color: #000;                 /* 비활성화된 항목 색상 */
+      border-color: #fefaee;
     }
-    #board :hover {
-      cursor: pointer;
+
+    /* 기본적으로 카드의 크기를 고정하고 일정 크기 이하에서는 한줄로 나열 */
+    .card {
+      width: 500px;
+      height: 230px/* 카드의 최대 너비를 고정 */
     }
+    /* 그리드 설정: 작은 화면에서는 한 줄로 표시되도록 */
+    .card-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    /* 화면 크기가 일정 비율 이상일 때 한 줄에 2개의 카드 배치 */
+    @media (min-width: 450px) {
+      .card-wrapper .card-container {
+        flex: 0 0 calc(50% - 10px);  /* 화면의 절반 크기에서 카드 간의 여백 유지 */
+        margin-bottom: 20px;
+      }
+    }
+    /* 화면이 더 작아졌을 때 카드가 한 줄로 나열 */
+    @media (max-width: 449px) {
+      .card-wrapper .card-container {
+        flex: 0 0 100%;  /* 화면 전체를 차지 */
+        margin-bottom: 20px;
+      }
+    }
+
   </style>
 </th:block>
 
@@ -61,78 +102,87 @@
 </th:block>
 
 <div layout:fragment="content">
-  <div th:fragment="body" class="flex-shrink-0 p-3" style="width: 280px;" id="infoheader">
-    <a href="/members/info"
-       class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-      <svg class="bi pe-none me-2" width="30" height="24">
-        <use xlink:href="#bootstrap"></use>
-      </svg>
-      <span class="fs-2 fw-semibold">마이페이지</span>
-    </a>
-    <ul class="list-unstyled ps-0">
-      <li class="mb-1">
-        <a href="/members/myBoards"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          내가 쓴 글
-        </a>
-      </li>
-      <li class="mb-1">
-        <a href="/orders"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          예매이력
-        </a>
-      </li>
-      <li class="mb-1">
-        <a href="/favorites"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          즐겨찾기 공연
-        </a>
-      </li>
-      <li class="mb-1">
-        <a href="/reviews"
-           class="fs-4 ms-3 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-          나의 후기
-        </a>
-      </li>
-    </ul>
-  </div>
+<!--  공연 즐겨찾기-->
+  <div class="d-flex flex-nowrap">
 
-  <!--검색 필터-->
-  <form th:action="@{'/favorites/' + ${favorites.number}}" role="form" method="get" th:object="${favorites}">
-    <div class="d-flex justify-content-center mb-4 text-center flex-column" th:object="${searchDTO}">
-      <div class="d-flex justify-content-center mb-2 mt-3">
-      <!--검색 조건-->
-        <select th:field="*{searchBy}" class="form-select me-2" style="width:auto;">
-          <option value="">검색(전체)</option>
-          <option value="prfnm">공연명</option>
-          <option value="fcltynm">시설명</option>
-        </select>
-      </div>
-
-      <div class="d-flex justify-content-center">
-        <input th:field="*{searchQuery}" class="form-control me-2" placeholder="공연명이나 시설명을 입력해 주세요" style="width:auto;">
-        <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+    <!-- 마이페이지 사이드바 -->
+    <div class="d-flex flex-column flex-shrink-0" id="sidebar"
+         style="width: 25%; min-height: 100vh; padding: 30px 20px; background-color: #fefaee; box-sizing: border-box;">
+      <a href="/members/info" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <span class="fs-4"><i class="bi bi-person-circle"></i> 마이페이지</span>
+      </a>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li>
+          <a href="/members/myBoards" class="nav-link link-body-emphasis" aria-current="page">
+            <i class="bi bi-clipboard" style="width: 16px; height: 16px;"></i>
+            나의 게시글
+          </a>
+        </li>
+        <li>
+          <a href="/orders" class="nav-link link-body-emphasis">
+            <i class="bi bi-cart-check" style="width: 16px; height: 16px;"></i>
+            예매 이력
+          </a>
+        </li>
+        <li id="select-nav">
+          <a href="/favorites" class="nav-link link-body-emphasis">
+            <span><i class="bi bi-suit-heart" style="width: 16px; height: 16px;"></i> 공연 즐겨찾기</span>
+          </a>
+        </li>
+        <li>
+          <a href="/reviews" class="nav-link link-body-emphasis">
+            <i class="bi bi-stickies" style="width: 16px; height: 16px;"></i>
+            나의 공연 후기
+          </a>
+        </li>
+      </ul>
+      <hr>
+      <div class="dropdown">
+        <img th:src="${image.url}" class="img-fluid rounded-circle" alt="Profile picture" style="width: 32px; height: 32px;">
+        <strong th:text="${member.getId()}"></strong>
       </div>
     </div>
 
-    <!--정렬-->
-    <div class="text-center my-3" th:field="*{sort}">
-      <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
-      <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
-      <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
-    </div>
+    <div class="d-flex flex-column flex-shrink-0" style="width: 75%; padding: 50px;">
+      <p style="margin-bottom: 30px;">* 공연 즐겨찾기 페이지 입니다<br>
+        <strong>즐겨찾기한 공연</strong>의 목록과 상세조회가 가능하며, 즐겨찾기 취소가 가능합니다<br>
+        달력을 누르면 즐겨찾기한 공연의 일정을 조회할 수 있습니다</p>
+      <a th:href="'/favorite/calendar'" class="btn btn-secondary" style="width: 30%; margin-bottom: 30px;">
+        <i class="bi bi-calendar-check"></i> 달력보기</a>
+      <hr style="margin-bottom: 40px;">
 
-    <!--즐겨찾기 공연 목록-->
-    <div class="container">
-      <a th:href="'/favorite/calendar'" class="btn btn-primary">달력보기</a>
-      <div class="row">
-        <th:block th:each="favorite: ${favorites}">
-          <div class="col">
+      <!--검색 필터-->
+      <form th:action="@{'/favorites/' + ${favorites.number}}" role="form" method="get" th:object="${favorites}">
+        <div class="d-flex justify-content-center align-items-center mb-4 text-center flex-row" th:object="${searchDTO}">
+          <!-- 검색 조건 -->
+          <select th:field="*{searchBy}" class="form-select me-2" style="width:auto;">
+            <option value="">검색(전체)</option>
+            <option value="prfnm">공연명</option>
+            <option value="fcltynm">시설명</option>
+          </select>
+          <!-- 검색 입력 -->
+          <input th:field="*{searchQuery}" class="form-control me-2" placeholder="공연명이나 시설명을 입력해 주세요" style="width:auto; min-width: 300px;">
+          <!-- 검색 버튼 -->
+          <button id="searchBtn" type="submit" class="btn btn-secondary">검색</button>
+        </div>
 
+        <!--정렬-->
+        <div class="text-center my-3" th:field="*{sort}">
+          <button class="btn btn-secondary sortBtn" value="DEFAULT" data-sort="DEFAULT">전체</button>
+          <button class="btn btn-secondary sortBtn" value="DATE_DESC" data-sort="DATE_DESC">최신순</button>
+          <button class="btn btn-secondary sortBtn" value="DATE_ASC" data-sort="DATE_ASC">오래된순</button>
+        </div>
+
+        <!--즐겨찾기 공연 목록-->
+        <div class="card-wrapper">
+          <div class="card-container" th:each="favorite: ${favorites}">
             <div class="card mb-3" style="max-width: 540px;">
-              <div class="row g-0">
-                <div class="col-md-4">
-                  <img th:src="${favorite.getShowing().poster}" class="img-fluid rounded-start" th:alt="${favorite.getShowing().prfnm}">
+              <div class="row g-0 align-items-center" style="height: 100%;">
+
+                <div class="col-md-4" style="height: 100%;">
+                  <img th:src="${favorite.getShowing().poster}" class="img-fluid"
+                       th:alt="${favorite.getShowing().prfnm}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
                 </div>
 
                 <div class="col-md-8">
@@ -142,61 +192,64 @@
                     <!--공연기간 : 기간이 하루면 하나만 표시-->
                     <p class="card-text" th:if="${favorite.getShowing().prfpdfrom == favorite.getShowing().prfpdto}">[[${favorite.getShowing().prfpdto}]]</p>
                     <p class="card-text" th:unless="${favorite.getShowing().prfpdfrom == favorite.getShowing().prfpdto}">[[${favorite.getShowing().prfpdfrom}]] ~ [[${favorite.getShowing().prfpdto}]]</p>
-                    <a th:href="'/show/' + ${favorite.getShowing().mt20id}" class="btn btn-primary">상세보기</a>
-                    <!--즐겨찾기 취소-->
-                    <form th:name="cancelFavorite" th:action="@{/favorite/{mt20id}/cancel(mt20id=${favorite.getShowing().mt20id})}" th:method="post">
-                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                      <button type="button" th:onclick="alertCancel()" class="btn btn-outline-primary">즐겨찾기 취소</button>
-                    </form>
+
+                    <div class="d-flex">
+                      <a th:href="'/show/' + ${favorite.getShowing().mt20id}" class="btn btn-outline-secondary" style="margin-right: 20px;">상세보기</a>
+                      <!--즐겨찾기 취소-->
+                      <form th:name="cancelFavorite" th:action="@{/favorite/{mt20id}/cancel(mt20id=${favorite.getShowing().mt20id})}" th:method="post">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <button type="button" th:onclick="alertCancel()" class="btn btn-outline-secondary">즐겨찾기 취소</button>
+                      </form>
+                    </div>
+
                   </div>
                 </div>
 
               </div>
+
             </div>
-
           </div>
-        </th:block>
+        </div>
 
-      </div>
+        <hr style="margin-bottom: 40px;">
+
+        <!--페이징-->
+        <div th:with="start=${(favorites.number / maxPage) * maxPage + 1},
+          end=${(favorites.totalPages == 0) ? 1 :
+          (start + (maxPage - 1) < favorites.totalPages ? start + (maxPage - 1) : favorites.totalPages)}">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${favorites.first} ? 'disabled'">
+              <a class="page-link"
+                 th:href="@{/favorites/{page}(page=${favorites.number - 1}
+               ,searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+               , sort=${searchDTO.sort})}" aria-label="Previous">
+                <span aria-hidden="true">이전</span>
+              </a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+                th:classappend="${favorites.number eq page - 1} ? 'active' : ''">
+              <a class="page-link"
+                 th:href="@{/favorites/{page}(page=${page - 1}
+               , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+               , sort=${searchDTO.sort})}">
+                [[${page}]]
+              </a>
+            </li>
+            <li class="page-item" th:classappend="${favorites.last} ? 'disabled'">
+              <a class="page-link"
+                 th:href="@{/favorites/{page}(page=${favorites.number + 1}
+               , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
+               , sort=${searchDTO.sort})}" aria-label="Next">
+                <span aria-hidden="true">다음</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </form>
     </div>
-    <hr>
 
-    <!--페이징-->
-    <div th:with="start=${(favorites.number / maxPage) * maxPage + 1},
-              end=${(favorites.totalPages == 0) ? 1 :
-              (start + (maxPage - 1) < favorites.totalPages ? start + (maxPage - 1) : favorites.totalPages)}">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${favorites.first} ? 'disabled'">
-          <a class="page-link"
-             th:href="@{/favorites/{page}(page=${favorites.number - 1}
-                       ,searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
-                       , sort=${searchDTO.sort})}" aria-label="Previous">
-            <span aria-hidden="true">이전</span>
-          </a>
-        </li>
-        <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
-            th:classappend="${favorites.number eq page - 1} ? 'active' : ''">
-          <a class="page-link"
-             th:href="@{/favorites/{page}(page=${page - 1}
-                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
-                       , sort=${searchDTO.sort})}">
-            [[${page}]]
-          </a>
-        </li>
-        <li class="page-item" th:classappend="${favorites.last} ? 'disabled'">
-          <a class="page-link"
-             th:href="@{/favorites/{page}(page=${favorites.number + 1}
-                       , searchBy=${searchDTO.searchBy}, searchQuery=${searchDTO.searchQuery}
-                       , sort=${searchDTO.sort})}" aria-label="Next">
-            <span aria-hidden="true">다음</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-  </form>
-
-
+  </div>
 </div>
 
 
