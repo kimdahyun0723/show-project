@@ -74,10 +74,16 @@
 
         function submitComment() {
             const id = [[${id}]]; // 게시글 ID
-            const replyContent = document.getElementById('replyContent').value; // 댓글 내용 입력값
+            const replyContent = document.getElementById('replyContent').value.trim(); // 댓글 내용 입력값
             const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
             const currentUserId = [[${memberId}]]; // 현재 로그인한 사용자 ID
+
+            // 댓글 내용이 비어 있는지 확인
+            if (!replyContent) {
+                alert("댓글 내용을 입력해주세요.");
+                return;
+            }
 
             // AJAX 요청 보내기
             $.ajax({
@@ -86,7 +92,7 @@
                 headers: {
                     [csrfHeader]: csrfToken // CSRF 토큰을 헤더에 추가
                 },
-                data: JSON.stringify({reply: replyContent}), // 댓글 내용
+                data: JSON.stringify({ reply: replyContent }), // 댓글 내용
                 contentType: 'application/json', // JSON 형식으로 데이터 전송
                 success: function (data) {
                     const commentList = document.getElementById('commentList'); // 댓글 리스트 요소
@@ -99,7 +105,6 @@
                     newComment.className = 'media';
                     newComment.id = 'comment-' + data.num; // 댓글 ID 설정
                     newComment.innerHTML = `
-                <!--댓글 생성 inner html-->
                 <div class="media-body">
                     <div class="d-flex align-items-start w-100">
                         <div class="w-100">
@@ -109,30 +114,23 @@
                                 <span class="ms-3">|</span>
                                 <small class="text-muted ms-3">${data.regTime}</small>
                             </div>
-
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <h5 id="replyContent-${data.num}">${data.reply}</h5>
                                 </div>
-
                                 <div style="display: ${data.userId === currentUserId ? 'block' : 'none'}">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                         <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
                                                 data-bs-toggle="collapse"
-                                                data-bs-target=".multi-collapse-${data.num}">수정
-                                        </button>
+                                                data-bs-target=".multi-collapse-${data.num}">수정</button>
                                         <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
-                                                data-id="${data.num}" onclick="deleteComment(this)">삭제
-                                        </button>
+                                                data-id="${data.num}" onclick="deleteComment(this)">삭제</button>
                                     </div>
                                 </div>
                             </div>
-
                             <hr>
                         </div>
                     </div>
-
-                    <!--후기 수정 폼-->
                     <div class="collapse multi-collapse-${data.num}">
                         <form class="well mb-2">
                             <div class="form-group" style="margin-bottom: 10px;">
@@ -142,14 +140,11 @@
                             </div>
                             <button type="button" id="update-btn"
                                     class="btn btn-outline-secondary bi bi-pencil-square"
-                                    data-id="${data.num}" onclick="editComment(this)">수정
-                            </button>
+                                    data-id="${data.num}" onclick="editComment(this)">수정</button>
                             <button type="button" class="btn btn-outline-secondary bi bi-pencil-square"
-                                    data-id="${data.num}" onclick="resetUpdate(this)">취소
-                            </button>
+                                    data-id="${data.num}" onclick="resetUpdate(this)">취소</button>
                         </form>
                     </div>
-
                 </div>
             `;
                     commentList.appendChild(newComment); // 새 댓글 추가
@@ -159,15 +154,16 @@
                     alert("댓글이 작성되었습니다."); // 피드백 알림
                 },
                 error: function (xhr, status, error) {
-                    if (xhr.status == '401') {
-                        alert("로그인 후 이용하세요")
+                    if (xhr.status == 401) {
+                        alert("로그인 후 이용하세요");
                         location.href = "/members/login";
                     } else {
-                        alert("댓글 작성 실패")
+                        alert("댓글 작성 실패");
                     }
                 }
             });
         }
+
 
         function deleteComment(button) {
             const replyId = button.getAttribute('data-id'); // 댓글 ID

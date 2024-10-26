@@ -23,18 +23,18 @@ public class ReplyController {
     @PostMapping("/addReply/{id}/reply")
     @ResponseBody
     public ResponseEntity<ReplyResponseDTO> writeComment(@PathVariable Long id, @RequestBody ReplyRequestDTO replyRequestDTO, Principal principal) {
-
         try {
-        Reply savedReply = replyService.writeComment(replyRequestDTO, id, principal.getName());
-
-        // 생성된 댓글 정보를 DTO로 변환
-        ReplyResponseDTO response = new ReplyResponseDTO(savedReply);
-
-        return ResponseEntity.ok(response); // JSON 응답 반환
+            Reply savedReply = replyService.writeComment(replyRequestDTO, id, principal.getName());
+            // 댓글 정보를 DTO로 변환
+            ReplyResponseDTO response = new ReplyResponseDTO(savedReply);
+            return ResponseEntity.ok(response); // JSON 응답 반환
         } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            // 로그 추가
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
 
     @PostMapping("/board/{id}/reply/{replyId}/update")
     @ResponseBody

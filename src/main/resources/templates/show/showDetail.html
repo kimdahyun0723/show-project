@@ -397,7 +397,6 @@
                             cache: false,
                             success: function (result, status) {
                                 alert("주문이 완료되었습니다.");
-                                location.href = '/orders';
                             },
                             error: function (xhr, status, error) {
                                 if (xhr.status == '401') {
