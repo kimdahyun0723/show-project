@@ -34,7 +34,7 @@
 > 메인페이지 구현
 
 # IA 정보구조도
-<img src="src/main/resources/static/images/IA.png" width="100%" height="300px" alt="IA"></img><br/>
+<img src="src/main/resources/static/images/IA.png" width="100%" height="400px" alt="IA"></img><br/>
 
 # ERD 엔티티 관계도
 <img src="src/main/resources/static/images/ERD.png" width="100%" height="500px" alt="ERD"></img><br/> 
@@ -92,3 +92,12 @@
 * 모든 게시글을 기간이나 제목, 작성자로 검색 조회가 가능하며 수정, 삭제도 가능하다.
 
 # 주요 화면
+|메인|회원가입|
+|------|---|
+|<img src="src/main/resources/static/images/main.png" width="400px" height="250px" alt="main"></img>|<img src="src/main/resources/static/images/sign.png" width="400px" height="250px" alt="sign"></img>|
+|공연목록|공연상세|
+|<img src="src/main/resources/static/images/showlist.png" width="400px" height="250px" alt="showlist"></img>|<img src="src/main/resources/static/images/showdetail.png" width="400px" height="250px" alt="showdetail"></img>|
+|게시판|게시글|
+|<img src="src/main/resources/static/images/board.png" width="400px" height="250px" alt="board"></img>|<img src="src/main/resources/static/images/repliy.png" width="400px" height="250px" alt="repliy"></img>|
+|마이페이지|관리자페이지|
+|<img src="src/main/resources/static/images/mypage.png" width="400px" height="250px" alt="mypage"></img>|<img src="src/main/resources/static/images/adminpage.png" width="400px" height="250px" alt="adminpage"></img>|
