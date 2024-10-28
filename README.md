@@ -1,11 +1,10 @@
 ### 목차
 > [1. 프로젝트 소개](#프로젝트-소개)   
 > [2. IA 정보구조도](#IA-정보구조도)   
-> [3. ERD 엔티티 관계도](#ERD-엔티티-관계도)
-> [4. 기술 스택](#기술-스택)
-> [5. 주요 기능](#주요-기능)
-> [6. 주요 화면](#주요-화면)
-> [7. API 명세](#API-명세)
+> [3. ERD 엔티티 관계도](#ERD-엔티티-관계도)   
+> [4. 기술 스택](#기술-스택)   
+> [5. 주요 기능](#주요-기능)   
+> [6. 주요 화면](#주요-화면)    
 
 # 프로젝트 소개
 > <img src="src/main/resources/static/images/logo.png" width="300px" height="200px" alt="logo"></img><br/>
@@ -101,3 +100,4 @@
 |<img src="src/main/resources/static/images/board.png" width="400px" height="250px" alt="board"></img>|<img src="src/main/resources/static/images/repliy.png" width="400px" height="250px" alt="repliy"></img>|
 |마이페이지|관리자페이지|
 |<img src="src/main/resources/static/images/mypage.png" width="400px" height="250px" alt="mypage"></img>|<img src="src/main/resources/static/images/adminpage.png" width="400px" height="250px" alt="adminpage"></img>|
+
