@@ -5,7 +5,8 @@
 > 4. [기술 스택](#기술-스택)   
 > 5. [주요 기능](#주요-기능)   
 > 6. [주요 화면](#주요-화면)
-> 7. [향후 개선 사항](#향후-개선-사항항)
+> 7. [API 명세](#API-명세)
+> 8. [향후 개선 사항](#향후-개선-사항항)
 
 # 프로젝트 소개
 > <img src="src/main/resources/static/images/logo.png" width="300px" height="200px" alt="logo"></img><br/>
@@ -104,6 +105,54 @@
 |<img src="src/main/resources/static/images/board.png" width="400px" height="250px" alt="board"></img>|<img src="src/main/resources/static/images/repliy.png" width="400px" height="250px" alt="repliy"></img>|
 |마이페이지|관리자페이지|
 |<img src="src/main/resources/static/images/mypage.png" width="400px" height="250px" alt="mypage"></img>|<img src="src/main/resources/static/images/adminpage.png" width="400px" height="250px" alt="adminpage"></img>|
+
+# API 명세
+|Domain|URL|Method|Description|Role|
+|------|---|---|---|---|
+|Member|/admin/managementAPI|GET|관리자페이지 API 조회|Admin|
+||/admin/managementAPI/update|GET|관리자페이지 API 수정 |Admin|
+||/admin/managementAPI/delete|POST|관리자페이지 API 삭제|Admin|
+||/admin/managementAPI/detail<br>/managementAPI/detail/{page}|GET|관리자페이지 공연 조회|Admin|
+||/admin/managementAPI/deleteShow/{id}|DELETE|관리자페이지 공연 삭제|Admin|
+||/admin/managementMember/list<br>/admin/managementMember/list/{page}|GET|관리자페이지 회원 조회|Admin|
+||/admin/managementMember/delete|GET|관리자페이지 회원 삭제|Admin|
+||/admin/managementMember/editMember|POST|관리자페이지 회원정보 수정|Admin|
+||/admin/managementBoard/list<br>/admin/managementBoard/list/{page}|GET|관리자페이지 게시글 조회|Admin|
+||/admin/managementBoard/delete|GET|관리자페이지 게시글 삭제|Admin|
+||/members/agree|GET|약관동의||
+||/members/new|GET|회원가입||
+||/members/login|GET|로그인||
+||/members/delete|GET|로그아웃|User|
+||/members/info|GET|마이페이지 조회|User|
+||/members/updateInfo|GET|마이페이지 프로필 이미지 수정|User|
+||/members/update|POST|마이페이지 회원 정보 수정|User|
+||/members/myBoards<br>/members/myBoards/{page}|GET|마이페이지 내가 쓴글 조회|User|
+||/favorite/event|GET|마이페이지 즐겨찾기 달력 요청|User|
+||/order/event|GET|마이페이지 예매내역 달력 요청|User|
+|Order|/order|POST|공연상세 공연예매|User|
+||/orders<br>/orders/{page}|GET|마이페이지 예매 내역 조회|User|
+||/order/{orderNum}/cancel|POST|마이페이지 예매 취소|User|
+|Favorite|/favorites<br>/favorites/{page}|GET|마이페이지 즐겨찾기 조회|User|
+||/favorite|POST|공연상세 즐겨찾기 추가|User|
+||/favorite/{mt20id}/cancel|POST|공연상세 즐겨찾기 취소|User|
+|Review|/show/{mt20id}/review|POST|공연상세 공연후기 추가|User|
+||/show/{mt20id}/review/{num}|POST<br>DELETE|공연상세 공연후기 수정, 삭제|User|
+||//reviews<br>/reviews/{page}|GET|마이페이지 공연후기 조회|User|
+|Show|/|GET|메인페이지||
+||/loadMoreShows|GET|메인페이지 더보기 조회||
+||/genreFilter|GET|메인페이지 장르별 조회||
+||/shows<br>/shows/{page}|GET|공면목록 조회||
+||/show/{mt20id}|GET|공면상세 조회||
+|Board|/board<br>/board/{page}|GET|게시판 게시글 조회||
+||/board/write|GET|게시판 게시글 작성 폼|User|
+||/board/write|POST|게시판 게시글 작성|User|
+||/board/showModify/{boardId}|POST|게시판 게시글 수정 폼|User|
+||/board/modify/{boardId}|POST|게시판 게시글 수정|User|
+||/board/delete/{boardId}|POST|게시판 게시글 삭제|User|
+||/board/boardDtl/{boardId}|GET|게시판 게시글 상세조회||
+|Reply|/addReply/{id}/reply|POST|게시판 댓글 추가|User|
+||/board/{id}/reply/{replyId}/update|POST|게시판 댓글 수정|User|
+||/board/{id}/reply/{replyId}/remove|POST|게시판 댓글 삭제|User|
 
 > # 향후 개선 사항
 > * 회원가입 시 아이디, 이메일 중복 체크 및 휴대전화 인증 절차 구현
