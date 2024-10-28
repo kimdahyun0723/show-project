@@ -16,6 +16,8 @@
 >
 > SpringBoot 프레임워크를 사용하여 MVC 패턴의 기본적인 CRUD를 구현하고
 > AJAX를 통해 REST API를 설계하여 사용자 중심의 HTTP 비동기 처리를 구현하였습니다.
+>
+> [REFERENCE : 인터파크티켓](https://tickets.interpark.com)
 
 > ### 개발 기간
 > 2024.9.30 ~ 2024.10.25
