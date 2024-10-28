@@ -4,7 +4,8 @@
 > 3. [ERD 엔티티 관계도](#ERD-엔티티-관계도)   
 > 4. [기술 스택](#기술-스택)   
 > 5. [주요 기능](#주요-기능)   
-> 6. [주요 화면](#주요-화면)    
+> 6. [주요 화면](#주요-화면)
+> 7. [향후 개선 사항](#향후-개선-사항항)
 
 # 프로젝트 소개
 > <img src="src/main/resources/static/images/logo.png" width="300px" height="200px" alt="logo"></img><br/>
@@ -104,3 +105,10 @@
 |마이페이지|관리자페이지|
 |<img src="src/main/resources/static/images/mypage.png" width="400px" height="250px" alt="mypage"></img>|<img src="src/main/resources/static/images/adminpage.png" width="400px" height="250px" alt="adminpage"></img>|
 
+> # 향후 개선 사항
+> * 회원가입 시 아이디, 이메일 중복 체크 및 휴대전화 인증 절차 구현
+> * 회원가입 시 주소찾기 API 를 사용하여 우편번호와 상세 주소 구현
+> * 휴대전화 인증으로 아이디, 비밀번호 찾기 서비스 구현
+> * AJAX 비동기 통신으로 즐겨찾기 기능 수정
+> * 공연 예매 시 시간, 날짜, 좌석 선택과 환불 정책에 따른 환불서비스 구현
+> * 사용자들이 실시간 소통을 할 수 있는 커뮤니티 기능 구현현
