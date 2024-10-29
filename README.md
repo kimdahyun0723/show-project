@@ -154,7 +154,7 @@
 ||/board/{id}/reply/{replyId}/update|POST|게시판 댓글 수정|User|
 ||/board/{id}/reply/{replyId}/remove|POST|게시판 댓글 삭제|User|
 
-> # 향후 개선 사항
+# 향후 개선 사항
 > * 회원가입 시 아이디, 이메일 중복 체크 및 휴대전화 인증 절차 구현
 > * 회원가입 시 주소찾기 API 를 사용하여 우편번호와 상세 주소 구현
 > * 휴대전화 인증으로 아이디, 비밀번호 찾기 서비스 구현
