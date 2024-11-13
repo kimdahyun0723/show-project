@@ -49,7 +49,7 @@ public class SecurityConfig {
         // .anyRequest().authenticated() : 위의 경우 이외의 페이지는 인증절차가 필요함
         http.authorizeRequests()
                 .mvcMatchers("/", "/members/**", "/item/**",
-                        "/images/**", "error", "favicon.ico", "/kakao/**", "/shows/**", "/show/**", "/board/**", "/genreFilter", "/test", "/loadMoreShows").permitAll()
+                        "/profileImages/**", "/images/**", "error", "favicon.ico", "/kakao/**", "/shows/**", "/show/**", "/board/**", "/genreFilter", "/test", "/loadMoreShows").permitAll()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
