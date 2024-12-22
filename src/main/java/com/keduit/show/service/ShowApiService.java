@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
@@ -49,6 +50,15 @@ public class ShowApiService {
     //api 서비스키
     @Value("${serviceKey}")
     private String serviceKey;
+
+    //공연 데이터 처음 저장
+//    public int init() throws Exception{
+//        int updateCount = saveShow();
+//        saveShowFacility();
+//        System.out.println("-------------초기 데이터 저장");
+//        return updateCount;
+//    }
+
 
     //xml 노드 값과 필드변수 매칭
     private String getElementValue(Element element, String tagName) {
@@ -269,9 +279,9 @@ public class ShowApiService {
             if (!showFacilityRepository.existsByMt10id(showFacilityDTO.getMt10id())) {
                 ShowFacility showFacility = ShowFacility.toEntity(showFacilityDTO);
                 showFacilityRepository.save(showFacility);
-                System.out.println("-----------새로운 mt20id 저장됨: " + showFacilityIds.get(i));
+                System.out.println("-----------새로운 mt10id 저장됨: " + showFacilityIds.get(i));
             } else {
-                System.out.println("-----------이미 존재하는 mt20id: " + showFacilityIds.get(i));
+                System.out.println("-----------이미 존재하는 mt10id: " + showFacilityIds.get(i));
             }
         }
     }

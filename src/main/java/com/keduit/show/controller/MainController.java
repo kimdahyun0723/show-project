@@ -2,11 +2,15 @@ package com.keduit.show.controller;
 
 import com.keduit.show.dto.ShowSearchDTO;
 import com.keduit.show.entity.Showing;
+import com.keduit.show.service.ShowApiService;
 import com.keduit.show.service.ShowService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,10 +22,25 @@ public class MainController {
 
     @Autowired
     private ShowService showService;
+    @Autowired
+    private ShowApiService showApiService;
+
+    //공연 데이터 처음 저장
+//    @PostMapping("/")
+//    @ResponseBody
+//    public ResponseEntity<String> initialize(){
+//        try {
+//            showApiService.init();
+//            return ResponseEntity.ok("초기 데이터 저장 성공");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("초기 데이터 저장 실패");
+//        }
+//    }
 
     // 메인 페이지에서 처음 8개의 전시회만 보여줌
     @GetMapping("/")
     public String main(Model model) {
+
         // 전체 전시회 목록
         List<Showing> shows = showService.getShow();
 

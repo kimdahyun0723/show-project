@@ -6,7 +6,7 @@
 > 5. [주요 기능](#주요-기능)   
 > 6. [주요 화면](#주요-화면)
 > 7. [API 명세](#API-명세)
-> 8. [향후 개선 사항](#향후-개선-사항항)
+> 8. [향후 개선 사항](#향후-개선-사항)
 
 # 프로젝트 소개
 > <img src="src/main/resources/static/images/logo.png" width="300px" height="200px" alt="logo"></img><br/>
