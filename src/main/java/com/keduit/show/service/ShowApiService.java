@@ -51,14 +51,6 @@ public class ShowApiService {
     @Value("${serviceKey}")
     private String serviceKey;
 
-    //공연 데이터 처음 저장
-//    public int init() throws Exception{
-//        int updateCount = saveShow();
-//        saveShowFacility();
-//        System.out.println("-------------초기 데이터 저장");
-//        return updateCount;
-//    }
-
 
     //xml 노드 값과 필드변수 매칭
     private String getElementValue(Element element, String tagName) {
@@ -177,9 +169,6 @@ public class ShowApiService {
     public int saveShow() throws Exception{
         int updateShowCount = 0;
 
-        HttpURLConnection urlConnection = null;
-        InputStream stream = null;
-        String result = null;
         RestTemplate restTemplate = new RestTemplate();
 
         //아이디 리스트 가져오기
@@ -194,9 +183,6 @@ public class ShowApiService {
 
         List<String> showIdlist = showApiIdParseXml(xmlData);
 
-        HttpURLConnection urlConnection2 = null;
-        InputStream stream2 = null;
-        String result2 = null;
         RestTemplate restTemplate2 = new RestTemplate();
 
         for(int i = 0; i < showIdlist.size(); i++){
@@ -226,7 +212,7 @@ public class ShowApiService {
 
 
 
-    //공연 시설 xml -> list 로 파싱
+    //공연 시설 xml -> DTO 로 파싱
     public ShowFacilityDTO showFacilityApiParseXml(String xmlData) throws Exception {
         ShowFacilityDTO showFacilityDTO = null;
 
@@ -253,12 +239,7 @@ public class ShowApiService {
     }
 
     //showFacility api 연결 -> xml 파싱 -> db 저장
-//    @Async
-//    @Scheduled(cron="0 0 0 * * *") //매일 자정에 실행
     public void saveShowFacility() throws Exception{
-        HttpURLConnection urlConnection = null;
-        InputStream stream = null;
-        String result = null;
         RestTemplate restTemplate = new RestTemplate();
 
         List<String> showFacilityIds = showRepository.findMt10idAll(); //공연시설아이디 리스트
@@ -287,8 +268,6 @@ public class ShowApiService {
     }
 
     //공연종료 후 일주일이 지난 공연 삭제
-//    @Async
-//    @Scheduled(cron="0 0 0 * * *") //매일 자정에 실행
     public int deleteShow(int standard){
         int deleteShowCount = 0;
         List<String> showIds = showRepository.findMt20idByPrfpdtoBefore(LocalDate.now().minusWeeks(standard));
