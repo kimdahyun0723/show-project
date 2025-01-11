@@ -6,7 +6,8 @@
 > 5. [주요 기능](#주요-기능)   
 > 6. [주요 화면](#주요-화면)
 > 7. [API 명세](#API-명세)
-> 8. [향후 개선 사항](#향후-개선-사항)
+> 8. [AWS 배포](#AWS-배포)
+> 9. [향후 개선 사항](#향후-개선-사항)
 
 # 프로젝트 소개
 > <img src="src/main/resources/static/images/logo.png" width="300px" height="200px" alt="logo"></img><br/>
@@ -155,6 +156,8 @@
 |Reply|/addReply/{id}/reply|POST|게시판 댓글 추가|User|
 ||/board/{id}/reply/{replyId}/update|POST|게시판 댓글 수정|User|
 ||/board/{id}/reply/{replyId}/remove|POST|게시판 댓글 삭제|User|
+
+# AWS 배포포
 
 # 향후 개선 사항
 > * 회원가입 시 아이디, 이메일 중복 체크 및 휴대전화 인증 절차 구현   
