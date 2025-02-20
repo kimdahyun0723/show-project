@@ -18,7 +18,7 @@
 > 게시판 기능을 통해 사용자 간 의견을 공유하고, 공연에 대한 다양한 관점을 나눌 수 있는 플랫폼을 구축하고 이로써 사용자 친화적이고 기능적으로 완성도 높은 공연 정보 서비스를 제공합니다.
 >
 > SpringBoot 프레임워크를 사용하여 MVC 패턴의 기본적인 CRUD를 구현하고
-> AJAX를 통해 REST API를 설계하여 사용자 중심의 HTTP 비동기 처리를 구현하였습니다.
+> AJAX를 통해 REST API를 활용하여 사용자 중심의 비동기 처리를 구현하였습니다.
 >
 > **REFERENCE** [인터파크티켓](https://tickets.interpark.com)
 
@@ -140,7 +140,7 @@
 ||/favorite/{mt20id}/cancel|POST|공연상세 즐겨찾기 취소|User|
 |Review|/show/{mt20id}/review|POST|공연상세 공연후기 추가|User|
 ||/show/{mt20id}/review/{num}|POST<br>DELETE|공연상세 공연후기 수정, 삭제|User|
-||//reviews<br>/reviews/{page}|GET|마이페이지 공연후기 조회|User|
+||/reviews<br>/reviews/{page}|GET|마이페이지 공연후기 조회|User|
 |Show|/|GET|메인페이지||
 ||/loadMoreShows|GET|메인페이지 더보기 조회||
 ||/genreFilter|GET|메인페이지 장르별 조회||
@@ -181,9 +181,9 @@
 > 배포과정에서 API 데이터가 넘어오지 않았고 회원가입, 게시글 작성 등 데이터베이스와 연결된 동작에서 에러 발생   
 > 
 > **해결과정**   
-> 에러 코드를 분석한 결과 SQL ENCODING 문제 확인
-> 영어만 입력했을 때 데이터베이스와 연결이 되는것을 보고 한글 호환이 안되는 것을 파악
-> RDS 파라미터그룹에서 캐릭터 셋을 utf8mb4으로 변경
+> 에러 코드를 분석한 결과 SQL ENCODING 문제 확인   
+> 영어만 입력했을 때 데이터베이스와 연결이 되는것을 보고 한글 호환이 안되는 것을 파악   
+> RDS 파라미터그룹에서 캐릭터 셋을 utf8mb4으로 변경   
 
 
 # 향후 개선 사항
